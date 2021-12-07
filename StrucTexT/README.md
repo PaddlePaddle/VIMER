@@ -61,11 +61,11 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * performance: Results of **T-ELB** task on EPHOIE for different settings of StrucTexT models
 
 
-    | Models                         | <strong>entity-level F1 score</strong> |
-    | :----------------------------- | :------------------------------------- |
-    | StrucTexT-_eng base (paper)_   |                0.9795                  |
-    | StrucTexT-_chn&eng base_       |                0.9884                  |
-    | StrucTexT-_chn&eng large_      |                0.9930                  |
+    | Models                         | **entity-level F1 score**      |
+    | :----------------------------- | :----------------------------: |
+    | StrucTexT-_eng base (paper)_   |                0.9795          |
+    | StrucTexT-_chn&eng base_       |                0.9884          |
+    | StrucTexT-_chn&eng large_      |                0.9930          |
 
 
 ### Segment-based Entity Labeling
@@ -77,8 +77,8 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * performance: Results of **S-ELB** task on SROIE, FUNSD and XFUND for different settings of StrucTexT models.
    
 
-    | Models                         | <strong>SROIE</strong>         | <strong>FUNSD</strong>         | <strong>XFUND-ZH</strong>      |
-    | :----------------------------- | :----------------------------- | :----------------------------- | :----------------------------- | 
+    | Models                         | **SROIE**                      | **FUNSD**                      | **XFUND-ZH**                   |
+    | :----------------------------- | :----------------------------: | :----------------------------: | :----------------------------: | 
     | StrucTexT-_eng base (paper)_   |           0.9688               |           0.8309               |             -                  |
     | StrucTexT-_chn&eng base_       |           0.9827               |           0.8483               |           0.9101               |
     | StrucTexT-_chn&eng large_      |           0.9870               |           0.8756               |           0.9229               |
@@ -91,8 +91,8 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * performance: Results of **S-ELK** task on FUNSD and XFUND-ZH for different settings of StrucTexT models. Reference performance is the **F1 score** among possible pairs of given semantic entities.
 
 
-    | Models                         | <strong>FUNSD</strong>         | <strong>XFUND-ZH</strong>      |
-    | :----------------------------- | :----------------------------- | :----------------------------- |
+    | Models                         | **FUNSD**                      | **XFUND-ZH**                   |
+    | :----------------------------- | :----------------------------: | :----------------------------: |
     | StrucTexT-_eng base (paper)_   |           0.4410               |              -                 |
     | StrucTexT-_chn&eng base_       |           0.7045               |            0.8306              |
     | StrucTexT-_chn&eng large_      |           0.7421               |            0.8681              |
@@ -130,8 +130,8 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 
 ### Download inference models
 
-| Model link                                              |  Params(M) |
-| :------------------------------------------------- | :-----------|
+| Model link                                         |  Params(M)  |
+| :------------------------------------------------- | :---------: |
 | [StrucTexT Base for EPHOIE labeling](http://aisee.bj.bcebos.com/VIMER/StrucTexT/StrucTexT_base_ephoie_labeling.pdparams.tar.gz?authorization=bce-auth-v1%2Fdb0b41e2ab894ecfb1126a768c603d79%2F2021-12-02T08%3A49%3A14Z%2F-1%2Fhost%2F6f75cab944e45627d5f1f630377f4b016dd94104322136bc060912273b852d52)   | 181 |
 | [StrucTexT Large for EPHOIE labeling](http://aisee.bj.bcebos.com/VIMER/StrucTexT/StrucTexT_large_ephoie_labeling.pdparams.tar.gz?authorization=bce-auth-v1%2Fdb0b41e2ab894ecfb1126a768c603d79%2F2021-12-02T08%3A50%3A36Z%2F-1%2Fhost%2Fa4b284ef849b5ada868403cc8626d1d89d4ca3b5b89b40fc3e0b8e7ffc251753) | 458 |
 | [StrucTexT Base for FUNSD labeling](http://aisee.bj.bcebos.com/VIMER/StrucTexT/StrucTexT_base_funsd_labeling.pdparams.tar.gz?authorization=bce-auth-v1%2Fdb0b41e2ab894ecfb1126a768c603d79%2F2021-12-02T08%3A49%3A49Z%2F-1%2Fhost%2Fc3b3648f106aaaf1c73c7876c2012fa55c74016325f0352892323165c5b3a16c)     | 181 |
