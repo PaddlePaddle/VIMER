@@ -62,7 +62,7 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
 
 
     | Models                         | <strong>entity-level F1 score</strong> |
-    | :----------------------------- | :------------------------------------: |
+    | :----------------------------- | :------------------------------------- |
     | StrucTexT-_eng base (paper)_   |                0.9795                  |
     | StrucTexT-_chn&eng base_       |                0.9884                  |
     | StrucTexT-_chn&eng large_      |                0.9930                  |
@@ -77,11 +77,11 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * performance: Results of **S-ELB** task on SROIE, FUNSD and XFUND for different settings of StrucTexT models.
    
 
-    | Models                         | <strong>SROIE</strong>          | <strong>FUNSD</strong>          | <strong>XFUND-ZH</strong>       |
-    | :----------------------------- | :-----------------------------: | :-----------------------------: | :-----------------------------: | 
-    | StrucTexT-_eng base (paper)_   |           0.9688                |           0.8309                |             -                   |
-    | StrucTexT-_chn&eng base_       |           0.9827                |           0.8483                |           0.9101                |
-    | StrucTexT-_chn&eng large_      |           0.9870                |           0.8756                |           0.9229                |
+    | Models                         | <strong>SROIE</strong>         | <strong>FUNSD</strong>         | <strong>XFUND-ZH</strong>      |
+    | :----------------------------- | :----------------------------- | :----------------------------- | :----------------------------- | 
+    | StrucTexT-_eng base (paper)_   |           0.9688               |           0.8309               |             -                  |
+    | StrucTexT-_chn&eng base_       |           0.9827               |           0.8483               |           0.9101               |
+    | StrucTexT-_chn&eng large_      |           0.9870               |           0.8756               |           0.9229               |
 
 ### Segment-based Entity Linking
    Entity linking is the task of predicting the relations between semantic entities.
@@ -91,11 +91,11 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * performance: Results of **S-ELK** task on FUNSD and XFUND-ZH for different settings of StrucTexT models. Reference performance is the **F1 score** among possible pairs of given semantic entities.
 
 
-    | Models                         | <strong>FUNSD</strong>          | <strong>XFUND-ZH</strong>       |
-    | :----------------------------- | :-----------------------------: | :-----------------------------: |
-    | StrucTexT-_eng base (paper)_   |           0.4410                |              -                  |
-    | StrucTexT-_chn&eng base_       |           0.7045                |            0.8306               |
-    | StrucTexT-_chn&eng large_      |           0.7421                |            0.8681               |
+    | Models                         | <strong>FUNSD</strong>         | <strong>XFUND-ZH</strong>      |
+    | :----------------------------- | :----------------------------- | :----------------------------- |
+    | StrucTexT-_eng base (paper)_   |           0.4410               |              -                 |
+    | StrucTexT-_chn&eng base_       |           0.7045               |            0.8306              |
+    | StrucTexT-_chn&eng large_      |           0.7421               |            0.8681              |
 
 
 ## Quick Experience
