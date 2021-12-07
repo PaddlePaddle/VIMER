@@ -207,6 +207,7 @@ The following visualized images are sampled from the domestic practical applicat
 <div align="center">
     <img src="./doc/print_vis.png" width="800">
 </div>
+
 For more information and applications, please visit [Baidu OCR](https://ai.baidu.com/tech/ocr) open platform.
 
 ## Citation

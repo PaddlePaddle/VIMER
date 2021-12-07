@@ -208,6 +208,7 @@ python ./tools/eval_infer.py \
 <div align="center">
     <img src="./doc/print_vis.png" width="800">
 </div>
+
 更多相关信息与应用，请参考[Baidu OCR](https://ai.baidu.com/tech/ocr)开放平台。
 
 ## 引用
