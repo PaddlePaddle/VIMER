@@ -53,19 +53,14 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
    * datasets.
       * [EPHOIE](https://github.com/HCIILAB/EPHOIE) is collected from scanned Chinese examination papers.
       * There are 10 text types, which are marked at the character level, where means a text segment composed of characters with different categories.
-      * The required token-based entity types are as follow:
-      ```
-        Subject, Test Time, Name, School, Examination Number, Seat Number, Class, Student Number, Grade, and Score.
-      ```
-
+      * The required token-based entity types are as follow: ``` Subject, Test Time, Name, School, Examination Number, Seat Number, Class, Student Number, Grade, and Score. ```
    * performance: Results of **T-ELB** task on EPHOIE for different settings of StrucTexT models
 
-
-    | Models                         | **entity-level F1 score**      |
-    | :----------------------------- | :----------------------------: |
-    | StrucTexT-_eng base (paper)_   |                0.9795          |
-    | StrucTexT-_chn&eng base_       |                0.9884          |
-    | StrucTexT-_chn&eng large_      |                0.9930          |
+		| Models                         | **entity-level F1 score**      |
+		| :----------------------------- | :----------------------------: |
+		| StrucTexT-_eng base (paper)_   |                0.9795          |
+		| StrucTexT-_chn&eng base_       |                0.9884          |
+		| StrucTexT-_chn&eng large_      |                0.9930          |
 
 
 ### Segment-based Entity Labeling
@@ -76,12 +71,11 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
       * All the three dataset that we use the official OCR annotations and evaluate our model for information extraction.
    * performance: Results of **S-ELB** task on SROIE, FUNSD and XFUND for different settings of StrucTexT models.
    
-
-    | Models                         | **SROIE**                      | **FUNSD**                      | **XFUND-ZH**                   |
-    | :----------------------------- | :----------------------------: | :----------------------------: | :----------------------------: | 
-    | StrucTexT-_eng base (paper)_   |           0.9688               |           0.8309               |             -                  |
-    | StrucTexT-_chn&eng base_       |           0.9827               |           0.8483               |           0.9101               |
-    | StrucTexT-_chn&eng large_      |           0.9870               |           0.8756               |           0.9229               |
+		| Models                         | **SROIE**                      | **FUNSD**                      | **XFUND-ZH**                   |
+		| :----------------------------- | :----------------------------: | :----------------------------: | :----------------------------: | 
+		| StrucTexT-_eng base (paper)_   |           0.9688               |           0.8309               |             -                  |
+		| StrucTexT-_chn&eng base_       |           0.9827               |           0.8483               |           0.9101               |
+		| StrucTexT-_chn&eng large_      |           0.9870               |           0.8756               |           0.9229               |
 
 ### Segment-based Entity Linking
    Entity linking is the task of predicting the relations between semantic entities.
@@ -90,12 +84,11 @@ Note: Below performance of all **ELB** tasks are the **entity-level F1 score** t
       * [XFUND](https://github.com/doc-analysis/XFUND) is the same setting as FUNSD. We evaluate on the Chinses section of the dataset.
    * performance: Results of **S-ELK** task on FUNSD and XFUND-ZH for different settings of StrucTexT models. Reference performance is the **F1 score** among possible pairs of given semantic entities.
 
-
-    | Models                         | **FUNSD**                      | **XFUND-ZH**                   |
-    | :----------------------------- | :----------------------------: | :----------------------------: |
-    | StrucTexT-_eng base (paper)_   |           0.4410               |              -                 |
-    | StrucTexT-_chn&eng base_       |           0.7045               |            0.8306              |
-    | StrucTexT-_chn&eng large_      |           0.7421               |            0.8681              |
+		| Models                         | **FUNSD**                      | **XFUND-ZH**                   |
+		| :----------------------------- | :----------------------------: | :----------------------------: |
+		| StrucTexT-_eng base (paper)_   |           0.4410               |              -                 |
+		| StrucTexT-_chn&eng base_       |           0.7045               |            0.8306              |
+		| StrucTexT-_chn&eng large_      |           0.7421               |            0.8681              |
 
 
 ## Quick Experience
