@@ -129,9 +129,8 @@ cd /path/to/AllInOne
 tar -xf auxiliary_code.tar
 ```
 然后下载allinone_vitlarge.pdmodel模型
-```bash
-wget http://yq01-inf-hic-k8s-a100-aa24-0318.yq01.baidu.com:8909/baidu/face/AutoDL_service/autodl_service/UFO/AllInOne/allinone_vitlarge.pdmodel
-```
+[模型地址](https://aistudio.baidu.com/aistudio/datasetdetail/128025/)
+
 配置环境变量，并且运行
 ```bash
 export CUDA_VISIBLE_DEVICES=0
