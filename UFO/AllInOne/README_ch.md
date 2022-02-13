@@ -98,3 +98,43 @@ UFO 这个技术设想的出发点是视觉的大一统，即一个模型能够�
 |  UFO (ViT-Large) |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 92.55/86.19 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
 
 
+## Demo
+提供了在人脸、人体、车辆、商品四个任务的AllInOne_vitlarge.pth模型，以及相应的测试代码
+
+### 环境配置
+运行环境为python3.7， cuda11.0，cudnn8.0。使用pip的安装依赖包，如下：
+```bash
+pip install -U pip==22.0.3
+pip install -r requirements.txt
+pip install faiss-gpu --no-cache
+pip install paddlepaddle-gpu==2.2.2.post110 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
+```
+
+### 数据配置
+
+```bash
+cd /path/to/data
+# 143 GB
+wget http://yq01-sys-hic-k8s-standard-p40-0235.yq01.baidu.com:8849/datasets.tar
+tar xf datasets.tar
+```
+
+### 开始测试
+```bash
+cd /path/to/AllInOne
+```
+首先解压auxiliary_code.tar文件
+```bash
+tar -xf auxiliary_code.tar
+```
+然后下载allinone_vitlarge.pdmodel模型
+```bash
+wget http://yq01-inf-hic-k8s-a100-aa24-0318.yq01.baidu.com:8909/baidu/face/AutoDL_service/autodl_service/UFO/AllInOne/allinone_vitlarge.pdmodel
+```
+配置环境变量，并且运行
+```bash
+export CUDA_VISIBLE_DEVICES=0
+export PYTHONPATH=/path/to/AllInOne
+export FASTREID_DATASETS=/path/to/data/datasets
+python tools/ufo_train_supernet.py  evaluation_script.py 
+```
