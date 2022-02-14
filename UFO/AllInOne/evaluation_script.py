@@ -300,7 +300,7 @@ class Dict(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='AllInOne')
-    parser.add_argument('--test_datasets', choices=['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP'], default=None)
+    parser.add_argument('--test_datasets', choices=['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'CFP_FP', 'AgeDB_30', 'Market1501', 'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP'], default=None)
     parser.add_argument(
         "--batchsize",
         help="the batchsize of testing",
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     if args.test_datasets == None:
-        test_datasets = ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501',
+        test_datasets = ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'CFP_FP', 'AgeDB_30', 'Market1501',
          'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']
     else:
         test_datasets = [args.test_datasets]
