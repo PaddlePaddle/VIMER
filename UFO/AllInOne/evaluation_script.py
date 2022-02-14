@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # 
-# The main evaluation script for 
+# The main evaluation script
 # 
 import logging
 import time
@@ -21,8 +21,8 @@ import random
 import datetime
 from collections import OrderedDict
 from collections.abc import Mapping
+import argparse
 
-import torch
 import paddle 
 import paddle.distributed as dist
 import numpy as np
@@ -43,6 +43,7 @@ from evaluation.testing import print_csv_format
 from evaluation.evaluator import inference_on_dataset
 
 _root = os.getenv("FASTREID_DATASETS", "datasets")
+logger = logging.getLogger(__name__)
 
 def _inference_on_dataset(model, data_loader, evaluator, flip_test=False):
     """
@@ -298,368 +299,406 @@ class Dict(object):
                 setattr(self, key, value)
 
 if __name__ == '__main__':
-    # constructing dataloaders and datasets
-    dataloaders = [
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="CALFW",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
+    parser = argparse.ArgumentParser(description='AllInOne')
+    parser.add_argument('--test_datasets', choices=['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP'], default=None)
+    parser.add_argument(
+        "--batchsize",
+        help="the batchsize of testing",
+        type=int,
+        default=8, 
+    )
+    parser.add_argument(
+        "--model_path",
+        help="the init_model",
+        type=str,
+        default=None, 
+    )
+    args = parser.parse_args()
+    if args.test_datasets == None:
+        test_datasets = ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501',
+         'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']
+    else:
+        test_datasets = [args.test_datasets]
+    
+    # constructing dataloaders, datasets and evaluators
+    dataloaders = []
+    evaluators_dict = []
+    for test_dataset in test_datasets:
+        if test_dataset == 'CALFW':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="CALFW",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'CPLFW':
+            dataloaders.append(LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="CPLFW",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'LFW':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="LFW",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'CFP_FF':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="CFPFF",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'CFP_FP':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="CFPFP",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'AgeDB_30':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task1=LazyCall(build_face_test_loader_lazy)(
+                            test_set=LazyCall(build_face_test_set)(
+                                dataset_name="AgeDB30",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=8,
+                        ),
+                    )
+                )
+            )
+            evaluators_dict.append(OrderedDict(FaceEvaluatorSingleTask=Dict()))
+        elif test_dataset == 'Market1501':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task3=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="Market1501",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
                 ),
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="CPLFW",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
-                ),
+            evaluators_dict.append(
+                OrderedDict(ReidEvaluatorSingleTask=Dict(
+                    AQE=Dict(enabled=False), metric='cosine', 
+                    rerank=Dict(enabled=False), 
+                    ROC=Dict(enabled=False)) 
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="LFW",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
-                ),
+        elif test_dataset == 'MSMT17':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task3=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="MSMT17",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="CFP_FF",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
-                ),
+            evaluators_dict.append(
+                OrderedDict(ReidEvaluatorSingleTask=Dict(
+                    AQE=Dict(enabled=False), metric='cosine', 
+                    rerank=Dict(enabled=False), 
+                    ROC=Dict(enabled=False)) 
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="CFP_FP",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
-                ),
+        elif test_dataset == 'VeRi':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task3=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="VeRi",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task1=LazyCall(build_face_test_loader_lazy)(
-                    test_set=LazyCall(build_face_test_set)(
-                        dataset_name="AgeDB_30",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=8,
-                ),
+            evaluators_dict.append(
+                OrderedDict(ReidEvaluatorSingleTask=Dict(
+                    AQE=Dict(enabled=False), metric='cosine', 
+                    rerank=Dict(enabled=False), 
+                    ROC=Dict(enabled=False)) 
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="Market1501",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
+        elif test_dataset == 'LargeVehicleID':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task3=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="LargeVehicleID",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="DukeMTMC",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
+            evaluators_dict.append(
+                OrderedDict(ReidEvaluatorSingleTask=Dict(
+                    AQE=Dict(enabled=False), metric='cosine', 
+                    rerank=Dict(enabled=False), 
+                    ROC=Dict(enabled=False)) 
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="MSMT17",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
+        elif test_dataset == 'LargeVeRiWild':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task3=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="LargeVeRiWild",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
+                )
             )
-        ),               
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="VeRi",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
+            evaluators_dict.append(
+                OrderedDict(ReidEvaluatorSingleTask=Dict(
+                    AQE=Dict(enabled=False), metric='cosine', 
+                    rerank=Dict(enabled=False), 
+                    ROC=Dict(enabled=False)) 
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="LargeVehicleID",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
+        elif test_dataset == 'SOP':
+            dataloaders.append(
+                LazyCall(MultiTaskDataLoader)(
+                    cfg=dict(sample_mode='batch',
+                            sample_prob=[]),
+                    task_loaders=LazyCall(OrderedDict)(
+                        task4=LazyCall(build_reid_test_loader_lazy)(
+                            test_set=LazyCall(build_test_set)(
+                                dataset_name="SOP",
+                                transforms=LazyCall(build_transforms_lazy)(
+                                    is_train=False,
+                                    size_test=[384, 384],
+                                    mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                    std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+                                )
+                            ),
+                            test_batch_size=args.batchsize,
+                            num_workers=0,
+                        ),
+                    )
+                )
             )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task3=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="LargeVeRiWild",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
-            )
-        ),
-        LazyCall(MultiTaskDataLoader)(
-            cfg=dict(sample_mode='batch',
-                    sample_prob=[]),
-            task_loaders=LazyCall(OrderedDict)(
-                task4=LazyCall(build_reid_test_loader_lazy)(
-                    test_set=LazyCall(build_test_set)(
-                        dataset_name="SOP",
-                        transforms=LazyCall(build_transforms_lazy)(
-                            is_train=False,
-                            size_test=[384, 384],
-                            mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                            std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-                        )
-                    ),
-                    test_batch_size=8,
-                    num_workers=0,
-                ),
-            )
-        ),
-    ]
-    # face_test_set = build_face_test_set(
-    #                     dataset_name="CALFW",
-    #                     transforms=LazyCall(build_transforms_lazy)(
-    #                         is_train=False,
-    #                         size_test=[256, 256],
-    #                         mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-    #                         std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-    #                     )
-    # )
-    # for data in face_test_set:
-    #     break
-    # face_data_loader = build_face_test_loader_lazy(face_test_set, 128, 4)
-    # for data in face_data_loader:
-    #     break
-
-
-
-    # constructing evaluators
-    evaluators_dict = [
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(FaceEvaluatorSingleTask=Dict()),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(ReidEvaluatorSingleTask=Dict(
-            AQE=Dict(enabled=False), metric='cosine', rerank=Dict(enabled=False), ROC=Dict(enabled=False),) 
-            ),
-        OrderedDict(RetriEvaluatorSingleTask=Dict(recalls=[1, 10, 100, 1000]))
-    ]
+            evaluators_dict.append(OrderedDict(RetriEvaluatorSingleTask=Dict(recalls=[1, 10, 100, 1000])))
+        else:
+            logger.info(' {} test_dataset is not implemented'.format(test_dataset))
+            exit(0) 
 
     # constructing models
     model = LazyCall(MultiTaskBatchFuse)(
-    backbone=LazyCall(build_vit_backbone_lazy)(
-        pretrain=False,
-        pretrain_path='',
-        input_size=[384, 384],
-        depth='large',
-        sie_xishu=3.0,
-        stride_size=16,
-        drop_ratio=0.0,
-        drop_path_ratio=0.1,
-        attn_drop_rate=0.0,
-        use_checkpointing=False,
-    ),
-    heads=LazyCall(OrderedDict)(
-        task1=LazyCall(EmbeddingHead)(
-            feat_dim=1024,
-            norm_type='BN',
-            with_bnneck=True,
-            pool_type="Identity",
-            neck_feat="before",
-            cls_type="CosSoftmax",
-            scale=50,
-            margin=0.3,
-            num_classes=0,
+        backbone=LazyCall(build_vit_backbone_lazy)(
+            pretrain=False,
+            pretrain_path='',
+            input_size=[384, 384],
+            depth='large',
+            sie_xishu=3.0,
+            stride_size=16,
+            drop_ratio=0.0,
+            drop_path_ratio=0.1,
+            attn_drop_rate=0.0,
+            use_checkpointing=False,
         ),
-        task2=LazyCall(EmbeddingHead)(
-            feat_dim=1024,
-            norm_type='BN',
-            with_bnneck=True,
-            pool_type="Identity",
-            neck_feat="before",
-            cls_type="CosSoftmax",
-            scale=30,
-            margin=0.2,
-            num_classes=0,
+        heads=LazyCall(OrderedDict)(
+            task1=LazyCall(EmbeddingHead)(
+                feat_dim=1024,
+                norm_type='BN',
+                with_bnneck=True,
+                pool_type="Identity",
+                neck_feat="before",
+                cls_type="CosSoftmax",
+                scale=50,
+                margin=0.3,
+                num_classes=0,
+            ),
+            task2=LazyCall(EmbeddingHead)(
+                feat_dim=1024,
+                norm_type='BN',
+                with_bnneck=True,
+                pool_type="Identity",
+                neck_feat="before",
+                cls_type="CosSoftmax",
+                scale=30,
+                margin=0.2,
+                num_classes=0,
+            ),
+            task3=LazyCall(EmbeddingHead)(
+                feat_dim=1024,
+                norm_type='BN',
+                with_bnneck=True,
+                pool_type="Identity",
+                neck_feat="before",
+                cls_type="CosSoftmax",
+                scale=20,
+                margin=0.2,
+                num_classes=0,
+            ),
+            task4=LazyCall(EmbeddingHead)(
+                feat_dim=1024,
+                norm_type='BN',
+                with_bnneck=True,
+                pool_type="Identity",
+                neck_feat="before",
+                cls_type="CosSoftmax",
+                scale=30,
+                margin=0.2,
+                num_classes=0,
+            ),
         ),
-        task3=LazyCall(EmbeddingHead)(
-            feat_dim=1024,
-            norm_type='BN',
-            with_bnneck=True,
-            pool_type="Identity",
-            neck_feat="before",
-            cls_type="CosSoftmax",
-            scale=20,
-            margin=0.2,
-            num_classes=0,
-        ),
-        task4=LazyCall(EmbeddingHead)(
-            feat_dim=1024,
-            norm_type='BN',
-            with_bnneck=True,
-            pool_type="Identity",
-            neck_feat="before",
-            cls_type="CosSoftmax",
-            scale=30,
-            margin=0.2,
-            num_classes=0,
-        ),
-    ),
-    pixel_mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
-    pixel_std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+        pixel_mean=[0.5 * 255, 0.5 * 255, 0.5 * 255],
+        pixel_std=[0.5 * 255, 0.5 * 255, 0.5 * 255],
     )
 
     #load init model
-    state_dict= paddle.load('allinone_vitlarge.pdmodel')
+    state_dict= paddle.load(args.model_path)
     load_state_dict = {}
     for key, value in model.state_dict().items():
         if key not in state_dict:
@@ -673,9 +712,6 @@ if __name__ == '__main__':
     # run evaluation for each dataset
     rets = {}
     for idx, (dataloader, evaluator_dict) in enumerate(zip(dataloaders, evaluators_dict)):
-        # evaluator_cfg.num_query = list(dataloader.task_loaders.values())[0].dataset.num_query
-        # evaluator_cfg.labels = list(dataloader.task_loaders.values())[0].dataset.labels
-        # evaluator = instantiate(evaluator_cfg)
         num_query = list(dataloader.task_loaders.values())[0].dataset.num_query
         labels = list(dataloader.task_loaders.values())[0].dataset.labels
         evaluator_type = list(evaluator_dict.keys())[0]
