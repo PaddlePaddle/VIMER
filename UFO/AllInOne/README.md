@@ -12,6 +12,7 @@ English | [简体中文](README_ch.md)
   * [HeterogeneousBatchVsisomorphismBatch](#HeterogeneousBatchVsisomorphismBatch)
   * [TaskOverfitting](#TaskOverfitting)
 - [ComparedWithSOTA](#ComparedWithSOTA)
+- [Demo](#Demo)
 
 ## Introduction
 The starting point of UFO's technical vision is the unification of vision, that is, a model can cover all mainstream visual tasks. Starting from vertical applications, we selected four tasks of Face, Person, Vehicle, and Products as the first step to unify the visual model. The goal of AllInOne is to achieve SOTA results for one model over four tasks.
@@ -93,10 +94,59 @@ The phenomenon. To this end, we have explored many different methods, the most e
 
 ## ComparedWithSOTA
 
-UFO does not use any rerank strategy or external data.
+|        Model     |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | DukeMTMC    | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
+| :----------------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|-------------|------:|
+|  SOTA w/o rerank |  96.20 | 93.37  | 99.85 |  99.89 |  98.99 |   98.35  | 96.3/91.5   | 92.1/83.7   | 86.2/69.4   | 97.0/87.1   | 80.3/86.4   | 92.5/77.3   | 85.9 |
+|  UFO (ViT-Large) |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 92.55/86.19 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
 
-|                  Model                     |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | DukeMTMC    | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
-| :------------------------------------------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|-------------|------:|
-| previous SOTA (w/o rerank & external data) |  96.20 | 93.37  | 99.85 |  99.89 |  98.99 |   98.35  | 96.3/91.5   | 92.1/83.7   | 86.2/69.4   | 97.0/87.1   | 80.3/86.4   | 92.5/77.3   | 85.9  |
-|           UFO (ViT-Large)                  |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 92.55/86.19 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
 
+## Demo
+提供了测试代码和AllInOne模型(allinone_vitlarge.pdmodel）用来
+复现在人脸、人体、车辆、商品四个任务上13个测试数据集的精度，目前仅支持单卡测试。
+Test code and AllInOne model (allinone_vitlarge.pdmodel) are provided for
+Reproduce the accuracy of 13 test datasets on four tasks of face, person, vehicle, and products. For now, only single-GPU testing is supported.
+
+### Environment
+Please use python3.7，cuda11.0 and cudnn8.0.
+```bash
+pip install -U pip==22.0.3
+pip install -r requirements.txt
+pip install faiss-gpu --no-cache
+pip install paddlepaddle-gpu==2.2.2.post110 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
+```
+
+### Dataset
+
+[Test set](https://aistudio.baidu.com/aistudio/datasetdetail/128138)
+```bash
+cd /path/to/data
+# 18 GB
+tar -xf test_datasets.tar
+```
+### Starting to test
+```bash
+cd /path/to/AllInOne
+```
+
+Download the allinone_vitlarge.pdmodel model.
+[pretrained UFO model](https://aistudio.baidu.com/aistudio/datasetdetail/128025)
+```
+
+Configure environment variables.
+```bash
+export CUDA_VISIBLE_DEVICES=0
+export PYTHONPATH=/path/to/AllInOne
+export FASTREID_DATASETS=/path/to/data/test_datasets
+```
+Test all datasets.
+```bash
+python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel
+```
+Test single dataset. Supported list is as follows ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 
+ 'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']
+Take CALFW as an example.
+```bash
+python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel --test_datasets CALFW
+```
+
+We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid . 
