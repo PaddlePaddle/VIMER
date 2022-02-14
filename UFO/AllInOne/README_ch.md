@@ -119,7 +119,7 @@ pip install paddlepaddle-gpu==2.2.2.post110 -f https://www.paddlepaddle.org.cn/w
 cd /path/to/data
 # 18 GB
 
-[测试数据集地址](https://aistudio.baidu.com/aistudio/datasetdetail/128138)
+[测试数据集地址]https://aistudio.baidu.com/aistudio/datasetdetail/128138
 tar -xf test_datasets.tar
 ```
 
@@ -131,7 +131,7 @@ cd /path/to/AllInOne
 然后下载allinone_vitlarge.pdmodel模型
 ```
 
-[模型地址](https://aistudio.baidu.com/aistudio/datasetdetail/128025/)
+[模型地址]https://aistudio.baidu.com/aistudio/datasetdetail/128025/
 
 配置环境变量
 ```bash
