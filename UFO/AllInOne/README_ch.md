@@ -140,7 +140,7 @@ export FASTREID_DATASETS=/path/to/data/test_datasets
 ```bash
 python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel
 ```
-也可以仅计算在单个数据集上的测试精度，可选的数据集名称为其中['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 
+也可以仅计算在单个数据集上的测试精度，可选的数据集名称为其中['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'CFP_FP', 'AgeDB_30', 'Market1501', 
  'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']一项，以人脸数据集CALFW为例
 ```bash
 python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel --test_datasets CALFW
