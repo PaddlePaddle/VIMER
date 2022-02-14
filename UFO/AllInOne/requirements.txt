@@ -1,0 +1,8 @@
+hydra-core
+fvcore
+omegaconf
+sacred
+bcolz
+cloudpickle
+Cython
+timm
