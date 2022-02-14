@@ -100,10 +100,11 @@ UFO没有使用任何rerank策略以及外部数据。
 |           UFO (ViT-Large)                  |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 92.55/86.19 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
 
 ## Demo
-提供了在人脸、人体、车辆、商品四个任务的AllInOne_vitlarge.pth模型，以及相应的测试代码
+提供了测试代码和AllInOne模型(allinone_vitlarge.pdmodel）用来
+复现在人脸、人体、车辆、商品四个任务上13个测试数据集的精度，目前仅支持单卡测试。
 
 ### 环境配置
-运行环境为python3.7， cuda11.0，cudnn8.0。使用pip的安装依赖包，如下：
+运行环境为python3.7，cuda11.0和cudnn8.0，测试机器为A100。使用pip的安装依赖包，如下：
 ```bash
 pip install -U pip==22.0.3
 pip install -r requirements.txt
@@ -115,26 +116,34 @@ pip install paddlepaddle-gpu==2.2.2.post110 -f https://www.paddlepaddle.org.cn/w
 
 ```bash
 cd /path/to/data
-# 143 GB
-wget http://yq01-sys-hic-k8s-standard-p40-0235.yq01.baidu.com:8849/datasets.tar
-tar xf datasets.tar
+# 18 GB
+[测试数据集地址](https://aistudio.baidu.com/aistudio/datasetdetail/128138)
+tar -xf test_datasets.tar
 ```
 
 ### 开始测试
 ```bash
 cd /path/to/AllInOne
 ```
-首先解压auxiliary_code.tar文件
-```bash
-tar -xf auxiliary_code.tar
-```
+
 然后下载allinone_vitlarge.pdmodel模型
+```
 [模型地址](https://aistudio.baidu.com/aistudio/datasetdetail/128025/)
 
-配置环境变量，并且运行
+配置环境变量
 ```bash
 export CUDA_VISIBLE_DEVICES=0
 export PYTHONPATH=/path/to/AllInOne
-export FASTREID_DATASETS=/path/to/data/datasets
-python tools/ufo_train_supernet.py  evaluation_script.py 
+export FASTREID_DATASETS=/path/to/data/test_datasets
 ```
+并且运行测试脚本，计算在13个数据集上的测试精度
+```bash
+python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel
+```
+也可以仅计算在单个数据集上的测试精度，可选的数据集名称为其中['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 
+ 'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']一项，以人脸数据集CALFW为例
+```bash
+python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel --test_datasets CALFW
+```
+
+致谢：部分数据集构建和测评代码参考了https://github.com/facebookresearch/detectron2 和 https://github.com/JDAI-CV/fast-reid，表示感谢！
