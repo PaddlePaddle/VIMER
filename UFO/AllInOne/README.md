@@ -140,7 +140,7 @@ Test all datasets.
 ```bash
 python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel
 ```
-Test single dataset. Supported list is as follows ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'AgeDB_30', 'Market1501', 
+Test single dataset. Supported list is as follows ['CALFW', 'CPLFW', 'LFW', 'CFP_FF', 'CFP_FP', 'AgeDB_30', 'Market1501', 
  'MSMT17', 'VeRi', 'LargeVehicleID', 'LargeVeRiWild', 'SOP']
 Take CALFW as an example.
 ```bash
