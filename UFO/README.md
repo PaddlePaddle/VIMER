@@ -145,3 +145,5 @@ UFO还专门设计了针对多任务超网络的训练方案。首先针对超�
 ![图6:基于超网络的智慧城市灵活部署方案](./img/fig6.png)
 
 【1】GP-NAS: Gaussian Process based Neural Architecture Search [论文地址](https://openaccess.thecvf.com/content_CVPR_2020/papers/Li_GP-NAS_Gaussian_Process_Based_Neural_Architecture_Search_CVPR_2020_paper.pdf)
+
+如遇到问题请联系xiteng01@baidu.com
