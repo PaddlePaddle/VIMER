@@ -13,6 +13,7 @@ English | [简体中文](README_ch.md)
   * [TaskOverfitting](#TaskOverfitting)
 - [ComparedWithSOTA](#ComparedWithSOTA)
 - [Demo](#Demo)
+- [Aistudio_Demo](#Aistudio_Demo)
 
 ## Introduction
 The starting point of UFO's technical vision is the unification of vision, that is, a model can cover all mainstream visual tasks. Starting from vertical applications, we selected four tasks of Face, Person, Vehicle, and Products as the first step to unify the visual model. The goal of AllInOne is to achieve SOTA results for one model over four tasks.
@@ -147,4 +148,12 @@ Take CALFW as an example.
 python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel --test_datasets CALFW
 ```
 
-We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid . 
+## Aistudio_Demo
+
+[Aistudio Demo](https://aistudio.baidu.com/aistudio/projectdetail/3488098)
+
+We also provide a demo in Baidu's Aistudio platform, where the environment data is configured and can be run in one step!
+
+We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
+
+If you have any question, please contact xiteng01@baidu.com
