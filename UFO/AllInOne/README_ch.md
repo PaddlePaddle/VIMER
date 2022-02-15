@@ -109,7 +109,7 @@ UFO没有使用任何rerank策略以及外部数据。
 ```bash
 pip install -U pip==22.0.3
 pip install -r requirements.txt
-pip install faiss-gpu --no-cache
+pip install faiss-gpu==1.7.2 --no-cache
 pip install paddlepaddle-gpu==2.2.2.post110 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
 ```
 
