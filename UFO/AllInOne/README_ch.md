@@ -13,6 +13,7 @@
   * [任务过拟合问题](#任务过拟合问题)
 - [UFO与单任务SOTA结果对比](#UFO与单任务SOTA结果对比)
 - [Demo](#Demo)
+- [Aistudio_Demo](#Aistudio_Demo)
 
 ## 任务介绍
 UFO 这个技术设想的出发点是视觉的大一统，即一个模型能够覆盖所有主流的视觉任务。我们从垂类应用出发，选择了人脸、人体、车辆、商品四个任务作为视觉模型大一统的第一步。AllInOne的目标是，一个模型超过四个任务的 SOTA 结果。
@@ -147,4 +148,14 @@ python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmode
 python  evaluation_script.py --batchsize 8 --model_path allinone_vitlarge.pdmodel --test_datasets CALFW
 ```
 
+
+## Aistudio_Demo
+
+[Aistudio Demo](https://aistudio.baidu.com/aistudio/projectdetail/3488098)
+
+我们还在百度的一站式开发平台Aistudio中提供了环境数据都配置好，可以一件运行的Demo, 欢迎大家尝试！
+
 致谢：部分数据集构建和测评代码参考了https://github.com/facebookresearch/detectron2 和 https://github.com/JDAI-CV/fast-reid , 表示感谢！
+
+如遇到问题请联系xiteng01@baidu.com
+
