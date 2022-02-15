@@ -7,7 +7,7 @@
   * [统一各任务配置](#统一各任务的配置)
   * [多任务异构数据采样策略和DropPath正则技术](#多任务异构数据采样策略和DropPath正则技术)
   * [单模型刷新10项公开数据集SOTA结果](#单模型刷新10项公开数据集SOTA结果)
-- [One for All](#OneforAll:)
+- [One for All (即将发布敬请期待)](#OneforAll:)
   * [OneforAll架构](#OneForAll架构图1)
   * [超网络设计与训练方案](#超网络设计与训练方案)
   * [OneforAll架构](#OneForAll架构图2)
@@ -19,8 +19,9 @@
 百度提出统一特征表示优化技术（UFO：Unified Feature Optimization），在充分利用大数据和大模型的同时，兼顾大模型落地成本及部署效率。UFO技术方案的主要内容包括：
   * All in one：设计视觉表示多任务协同训练方案，免去了下游任务fine-tuning的过程，实现单模型在智慧城市多个核心任务效果全面领先
   * One for all：首创针对视觉多任务的超网络与训练方案，支持各类任务、各类硬件的灵活部署，解决大模型推理性能差的问题。
-![图1:UFO整体架构](./img/fig1.png)
+
 ### UFO整体架构
+![图1:UFO整体架构](./img/fig1.png)
 
 ## AllinOne: 功能更强大、更通用的视觉模型	
 
@@ -100,8 +101,8 @@
  
 基于多任务协同训练方案得到的城市视觉 All in One UFO模型，和之前的单任务SOTA 结果相比，在 4 个任务的10个测试集上都达到了新的SOTA，同时相比使用同样模型结构的单任务结果，在多数任务上UFO也表现的更好，证明了多任务之间信息借鉴机制的有效性。
 
-![图2:10项公开数据集SOTA结果](./img/fig2.png)
 ### 10项公开数据集SOTA结果
+![图2:10项公开数据集SOTA结果](./img/fig2.png)
 
 在上图中，灰色表示表示城市视觉 All in One UFO模型的结果，橙色表示和UFO模型使用相同模型结构的单任务结果，蓝色表示之前同样数据集上最优的单任务结果。以上所有结果都不使用预训练数据，同时无重排序策略。
 
@@ -113,8 +114,8 @@
 
 针对大模型的开发和部署问题，UFO给出了One for All的解决方案，通过引入超网络的概念，超网络由众多稀疏的子网络构成，每个子网络是超网络中的一条路径，将不同参数量、不同任务功能和不同精度的模型训练过程变为训练一个超网络模型。训练完成的One for All UFO超网络大模型即可针对不同的任务和设备低成本生成相应的可即插即用的小模型，实现One for all tasks 和 One for all chips的能力
 
-![图3:OneForAll架构图](./img/fig3.png)
 ### OneForAll架构图1
+![图3:OneForAll架构图](./img/fig3.png)
 
 ## 超网络设计与训练方案
 
@@ -122,8 +123,8 @@ UFO基于Vision Transformer结构设计了多任务多路径超网络。超网�
 
 UFO还专门设计了针对多任务超网络的训练方案。首先针对超网络中的FFN超网模块，每个任务的每个block中会自动学习共享FFN(FFN-shared)和该任务专属FFN(FFN-taskX)的加权系数，所有任务都会更新共享FFN的参数，特定任务只会更新专属的FFN参数。在FFN超网训中，对于每个block, 每个子网络都有三种不同的路径选择，即选择共享FFN，选择专属FFN或者选择加权的FFN。对于所有的FFN，都可以选择不同的放缩系数。因此FFN超网络中共有中共有（T*3*ratio）**L种不同的FFN路径，其中T为task的数量，L为网络的层数, ration为放缩系数的数量。而对于self-attention超网，每个子网络可以选择不同的Head数量以及block的重复次数。
 
-![图4:OneForAll架构图](./img/fig4.png)
 ### OneForAll架构图2
+![图4:OneForAll架构图](./img/fig4.png)
 
 ### OneForAllTasks
 
@@ -133,14 +134,14 @@ UFO还专门设计了针对多任务超网络的训练方案。首先针对超�
 
 针对不同平台存储容量和算力不同，从训练好的UFO超网络模型中选择不同大小和计算量的子网络进行部署。由于超网络中子网络的数据众多，每个子网逐一测试精度和延时并不现实，因此在UFO中，使用了GP-NAS【1】中的基于高斯过程的超参数超参估计技术，只需采样超网络中少了子网络进行评估，即可准确预测出其他网络的精度和速度。
 
-![图5:OneForAll架构图](./img/fig5.png)
 ### 基于高斯过程的模型精度速度预测器
+![图5:OneForAll架构图](./img/fig5.png)
 
 ### 单超网络支撑智慧城市多任务灵活部署
 
 基于上述方案，使用公开数据训练的One for All UFO超网络模型可以在智慧城市人脸、人体、车辆和物品4类任务的6个公开测试集上精度达到SOTA，同时从UFO超网络中抽取的子网络，在参数量压缩20%~30%的情况下，同样可以超过之前SOTA的结果。
 
-![图6:基于超网络的智慧城市灵活部署方案](./img/fig6.png)
 ### 基于超网络的智慧城市灵活部署方案
+![图6:基于超网络的智慧城市灵活部署方案](./img/fig6.png)
 
 【1】GP-NAS: Gaussian Process based Neural Architecture Search [论文地址](https://openaccess.thecvf.com/content_CVPR_2020/papers/Li_GP-NAS_Gaussian_Process_Based_Neural_Architecture_Search_CVPR_2020_paper.pdf)
