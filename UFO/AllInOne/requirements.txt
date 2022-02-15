@@ -1,11 +1,3 @@
-hydra-core==1.1.1
-fvcore==0.1.5.post20220119
-omegaconf==2.1.1
-sacred==0.8.2
-bcolz==1.2.1
-cloudpickle==2.0.0
-Cython==0.29.27
-timm==0.3.2
 iopath==0.1.9
 tabulate==0.8.9
 termcolor==1.1.0
