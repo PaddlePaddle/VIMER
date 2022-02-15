@@ -1,7 +1,7 @@
 # UFO
 统一特征表示预训练模型
 
-## AllInFor
+## AllInOne
 同一个模型在多个任务同时SOTA
 
 ## OneForAll
