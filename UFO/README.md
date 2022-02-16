@@ -1,7 +1,6 @@
 # UFO
 
 - [ALL in One](#AllinOne:)
-  * [UFO整体架构](#UFO整体架构)
   * [单模型覆盖智慧城市4大任务](#单模型覆盖智慧城市4大任务)
   * [任务设置与数据](#任务设置与数据)
   * [统一各任务配置](#统一各任务的配置)
@@ -9,7 +8,6 @@
   * [单模型刷新10项公开数据集SOTA结果](#单模型刷新10项公开数据集SOTA结果)
 - [One for All (即将发布敬请期待)](#OneforAll:)
   * [超网络设计与训练方案](#超网络设计与训练方案)
-  * [One for All架构](#OneForAll架构图2)
   * [One For All Tasks](#OneForAllTasks)
   * [One For All Chips](#OneForAllChips)
   * [基于高斯过程的模型精度速度预测器](#基于高斯过程的模型精度速度预测器)
@@ -119,7 +117,7 @@
 
 UFO基于Vision Transformer结构设计了多任务多路径超网络。超网络分为多路径FFN超网和与可伸缩attention超网两部分。与谷歌Switch Transformer不同的是，UFO的超网不同的路径除可选择不同FFN单元，同时Attention模块支持根据不同任务弹性伸缩，实现网络的搜索空间扩展，为硬件部署提供更多可选的子网络，并提升精度。
 
-UFO还专门设计了针对多任务超网络的训练方案。首先针对超网络中的FFN超网模块，每个任务的每个block中会自动学习共享FFN(FFN-shared)和该任务专属FFN(FFN-taskX)的加权系数，所有任务都会更新共享FFN的参数，特定任务只会更新专属的FFN参数。在FFN超网训中，对于每个block, 每个子网络都有三种不同的路径选择，即选择共享FFN，选择专属FFN或者选择加权的FFN。对于所有的FFN，都可以选择不同的放缩系数。因此FFN超网络中共有中共有（T * ratio）**L种不同的FFN路径，其中T为task的数量，L为网络的层数, ratio为放缩系数的数量。而对于self-attention超网，每个子网络可以选择不同的Head数量以及block的重复次数。
+UFO还专门设计了针对多任务超网络的训练方案。首先针对超网络中的FFN超网模块，每个任务的每个block中会自动学习共享FFN(FFN-shared)和该任务专属FFN(FFN-taskX)的加权系数，所有任务都会更新共享FFN的参数，特定任务只会更新专属的FFN参数。在FFN超网训中，对于每个block, 每个子网络都有三种不同的路径选择，即选择共享FFN，选择专属FFN或者选择加权的FFN。对于所有的FFN，都可以选择不同的放缩系数。因此FFN超网络中共有中共有（T * ratio）^L种不同的FFN路径，其中T为task的数量，L为网络的层数, ratio为放缩系数的数量。而对于self-attention超网，每个子网络可以选择不同的Head数量以及block的重复次数。
 G
 ### One For All架构图2
 ![图4:OneForAll架构图](./img/fig4.png)
