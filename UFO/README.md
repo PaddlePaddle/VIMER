@@ -8,7 +8,7 @@
   * [多任务数据采样策略和DropPath正则技术](#多任务数据采样策略和DropPath正则技术)
   * [单模型刷新10项公开数据集SOTA结果](#单模型刷新10项公开数据集SOTA结果)
 - [One for All (即将发布敬请期待)](#OneforAll:)
-  * [One for All架构](#OneForAll架构图1)
+  * [One for All架构](#One For All架构图1)
   * [超网络设计与训练方案](#超网络设计与训练方案)
   * [One for All架构](#OneForAll架构图2)
   * [One For All Tasks](#OneForAllTasks)
@@ -113,7 +113,7 @@
 
 针对大模型的开发和部署问题，UFO给出了One for All的解决方案，通过引入超网络的概念，超网络由众多稀疏的子网络构成，每个子网络是超网络中的一条路径，将不同参数量、不同任务功能和不同精度的模型训练过程变为训练一个超网络模型。训练完成的One for All UFO超网络大模型即可针对不同的任务和设备低成本生成相应的可即插即用的小模型，实现One for All Tasks 和 One for All Chips的能力
 
-### OneForAll架构图1
+### One For All架构图1
 ![图3:OneForAll架构图](./img/fig3.png)
 
 ## 超网络设计与训练方案
