@@ -10,7 +10,6 @@
   * [超网络设计与训练方案](#超网络设计与训练方案)
   * [One For All Tasks](#OneForAllTasks)
   * [One For All Chips](#OneForAllChips)
-  * [基于高斯过程的模型精度速度预测器](#基于高斯过程的模型精度速度预测器)
 
 百度提出统一特征表示优化技术（UFO：Unified Feature Optimization），在充分利用大数据和大模型的同时，兼顾大模型落地成本及部署效率。UFO技术方案的主要内容包括：
   * All in One：设计视觉表示多任务协同训练方案，免去了下游任务fine-tuning的过程，实现单模型在智慧城市多个核心任务效果全面领先
