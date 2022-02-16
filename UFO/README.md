@@ -8,7 +8,6 @@
   * [多任务数据采样策略和DropPath正则技术](#多任务数据采样策略和DropPath正则技术)
   * [单模型刷新10项公开数据集SOTA结果](#单模型刷新10项公开数据集SOTA结果)
 - [One for All (即将发布敬请期待)](#OneforAll:)
-  * [One for All架构](#One For All架构图1)
   * [超网络设计与训练方案](#超网络设计与训练方案)
   * [One for All架构](#OneForAll架构图2)
   * [One For All Tasks](#OneForAllTasks)
@@ -122,7 +121,7 @@ UFO基于Vision Transformer结构设计了多任务多路径超网络。超网�
 
 UFO还专门设计了针对多任务超网络的训练方案。首先针对超网络中的FFN超网模块，每个任务的每个block中会自动学习共享FFN(FFN-shared)和该任务专属FFN(FFN-taskX)的加权系数，所有任务都会更新共享FFN的参数，特定任务只会更新专属的FFN参数。在FFN超网训中，对于每个block, 每个子网络都有三种不同的路径选择，即选择共享FFN，选择专属FFN或者选择加权的FFN。对于所有的FFN，都可以选择不同的放缩系数。因此FFN超网络中共有中共有（T * ratio）**L种不同的FFN路径，其中T为task的数量，L为网络的层数, ratio为放缩系数的数量。而对于self-attention超网，每个子网络可以选择不同的Head数量以及block的重复次数。
 G
-### OneForAll架构图2
+### One For All架构图2
 ![图4:OneForAll架构图](./img/fig4.png)
 
 ### OneForAllTasks
