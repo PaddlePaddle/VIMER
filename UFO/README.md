@@ -1,6 +1,6 @@
 # UFO
 
-- [ALL in one](#AllinOne:)
+- [ALL in One](#AllinOne:)
   * [UFO整体架构](#UFO整体架构)
   * [单模型覆盖智慧城市4大任务](#单模型覆盖智慧城市4大任务)
   * [任务设置与数据](#任务设置与数据)
@@ -8,11 +8,11 @@
   * [多任务数据采样策略和DropPath正则技术](#多任务数据采样策略和DropPath正则技术)
   * [单模型刷新10项公开数据集SOTA结果](#单模型刷新10项公开数据集SOTA结果)
 - [One for All (即将发布敬请期待)](#OneforAll:)
-  * [OneforAll架构](#OneForAll架构图1)
+  * [One for All架构](#OneForAll架构图1)
   * [超网络设计与训练方案](#超网络设计与训练方案)
-  * [OneforAll架构](#OneForAll架构图2)
-  * [OneForAllTasks](#OneForAllTasks)
-  * [OneForAllChips](#OneForAllChips)
+  * [One for All架构](#OneForAll架构图2)
+  * [One For All Tasks](#OneForAllTasks)
+  * [One For All Chips](#OneForAllChips)
   * [基于高斯过程的模型精度速度预测器](#基于高斯过程的模型精度速度预测器)
 
 百度提出统一特征表示优化技术（UFO：Unified Feature Optimization），在充分利用大数据和大模型的同时，兼顾大模型落地成本及部署效率。UFO技术方案的主要内容包括：
