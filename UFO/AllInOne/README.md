@@ -25,7 +25,6 @@ We used the public datasets of Face, Person, Vehicle, Products as follows:
 | :-----------------------------| :----------------------------: | :----------------------------: | :----------------------------: |
 | Face                          |           MS1M-V3              |           5,179,510            |           93,431               |
 | Person                        |           Market1501-Train     |           12,936               |           751                  |
-| Person                        |           DukeMTMC-Train       |           16,522               |           702                  |
 | Person                        |           MSMT17-Train         |           30,248               |           1,041                |
 | Vehicle                       |           Veri-776-Train       |           37,778               |           576                  |
 | Vehicle                       |           VehicleID-Train      |           113,346              |           13,164               |
@@ -44,7 +43,6 @@ We used the public datasets of Face, Person, Vehicle, Products as follows:
 | Face                          |           CALFW                |           12,000               |           -                    |
 | Face                          |           AGEDB-30             |           12,000               |           -                    |
 | Person                        |           Market1501-Test      |           19,281               |           750                  |
-| Person                        |           DukeMTMC-Test        |           19,889               |           702                  |
 | Person                        |           MSMT17-Test          |           93,820               |           3,060                |
 | Vehicle                       |           Veri-776-Test        |           13,257               |           200                  |
 | Vehicle                       |           VehicleID-Test       |           19,777               |           2,400                |
@@ -88,17 +86,17 @@ The problem with isomorphic Batch composition is that when the common operation 
 Among our four tasks, Person and Products have the smallest training sets with only about 60,000 images, while Face and Vehicle have about 5 million and 400,000 images respectively. Therefore, in the multi-task training process, Person and Products are rapidly over-fitted, while Face and Vehicle are under-fitted.
 The phenomenon. To this end, we have explored many different methods, the most effective of which is to use the Drop Path regularization method. As shown in the table, after increasing the drop path rate from 0.1 to 0.2, the Person and Products tasks have a large improvement, while other tasks have the same or better performance.
 
-|        Model     | DropPath |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | DukeMTMC    | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
-| :----------------|----------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|-------------|------:|
-|  UFO (ViT-Large) | 0.1      |  96.18 | 94.22  | 99.83 |  99.90 |  99.09 |   98.17  | 96.17/91.67 | 92.01/84.63 | 86.21/68.94 | 97.62/88.66 | 85.35/90.09 | 93.31/77.98 | 87.11 |
-|  UFO (ViT-Large) | 0.2      |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 92.55/86.19 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
+|        Model     | DropPath |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
+| :----------------|----------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|------:|
+|  UFO (ViT-Large) | 0.1      |  96.18 | 94.22  | 99.83 |  99.90 |  99.09 |   98.17  | 96.17/91.67 | 86.21/68.94 | 97.62/88.66 | 85.35/90.09 | 93.31/77.98 | 87.11 |
+|  UFO (ViT-Large) | 0.2      |  95.92 | 94.30  | 99.82 |  99.90 |  99.11 |   98.03  | 96.28/92.75 | 88.10/72.17 | 97.74/89.25 | 87.62/91.32 | 93.62/78.91 | 89.23 |
 
 ## ComparedWithSOTA
 
-|                  Model                     |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | DukeMTMC    | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
-| :------------------------------------------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|-------------|------:|
-| previous SOTA (w/o rerank & external data) |  96.20 | 93.37  | 99.85 |  99.89 |  98.99 |   98.35  | 96.3/91.5   | 92.1/83.7   | 86.2/69.4   | 97.0/87.1   | 80.3/86.4   | 92.5/77.3   | 85.9  |
-|           UFO (ViT-Large)                  |  95.92 | 94.30  | 99.82 |  99.90 |  99.10 |   97.95  | 96.40/92.60 | 92.86/86.07 | 88.07/72.17 | 98.21/89.27 | 86.13/90.70 | 93.53/78.92 | 89.05 |
+|                  Model                     |  CALFW | CPLFW  |  LFW  | CFP-FF | CFP-FP | AGEDB-30 | Market1501  | MSMT17      |   Veri776   |  VehicleID  |  VeriWild   |  SOP  |
+| :------------------------------------------|--------| :------|-------|--------|--------|---------:|:------------|-------------|-------------|-------------|-------------|------:|
+| previous SOTA (w/o rerank & external data) |  96.20 | 93.37  | 99.85 |  99.89 |  98.99 |   98.35  | 96.3/91.5   | 86.2/69.4   | 97.0/87.1   | 80.3/86.4   | 92.5/77.3   | 85.9  |
+|           UFO (ViT-Large)                  |  95.92 | 94.30  | 99.82 |  99.90 |  99.10 |   97.95  | 96.40/92.60 | 88.07/72.17 | 98.21/89.27 | 86.13/90.70 | 93.53/78.92 | 89.05 |
 
 
 ## Demo
