@@ -2,8 +2,8 @@
 
 - [整体概述](#整体概述)
 - [原理介绍](#原理介绍)
-  * [All In One:功能更强大更通用的视觉模型](#AllInOne:功能更强大更通用的视觉模型)
-  * [One For All:灵活可伸缩的弹性部署方案](#OneForAll:灵活可伸缩的弹性部署方案)
+  * [All In One:功能更强大更通用的视觉模型](#AllInOne功能更强大更通用的视觉模型)
+  * [One For All:灵活可伸缩的弹性部署方案](#OneForAll灵活可伸缩的弹性部署方案)
   * [超网络设计与训练方案](#超网络设计与训练方案)
   * [One For All Tasks](#OneForAllTasks)
   * [One For All Chips](#OneForAllChips)
@@ -29,7 +29,7 @@
 
 ## 原理介绍
 
-### AllInOne:功能更强大更通用的视觉模型
+### AllInOne功能更强大更通用的视觉模型
 
 之前主流的视觉模型生产流程，通常采用单任务  “train from scratch” 方案。每个任务都从零开始训练，各个任务之间也无法相互借鉴。由于单任务数据不足带来偏置问题，实际效果过分依赖任务数据分布，场景泛化效果往往不佳。近两年蓬勃发展的大数据预训练技术，通过使用大量数据学到更多的通用知识，然后迁移到下游任务当中，本质上是不同任务之间相互借鉴了各自学到的知识。基于海量数据获得的预训练模型具有较好的知识完备性，在下游任务中基于少量数据 fine-tuning 依然可以获得较好的效果。不过基于预训练+下游任务 fine-tuning 的模型生产流程，需要针对各个任务分别训练模型，存在较大的研发资源消耗。
 
@@ -39,7 +39,7 @@
 
 ![图2:AllInone](./img/UFO_v2_2.png)
 
-### OneForAll:灵活可伸缩的弹性部署方案
+### OneForAll灵活可伸缩的弹性部署方案
 
 受算力和存储的限制，大模型无法直接部署在边缘设备上。一个针对云端设备开发的模型要部署到边缘设备或端设备时往往要进行模型压缩，或完全重新设计，而预训练大模型的压缩本身需要耗费大量的资源。
 
@@ -120,7 +120,7 @@ VIMER-UFO 2.0 大模型可被广泛应用于智慧城市、无人驾驶、工业
 为了更好的支持在移动和边缘设备上进行部署，VIMER-UFO 2.0 还支持抽取子网络模型进行模型蒸馏，结合百度研发的异构蒸馏技术，将 Transformer 结构中的知识迁移到 CNN 中，模型参数量从亿级别进一步压缩到兆级别的规模，整体实现 1000+ 倍的压缩。
 
 
-|    Datasets          |SOTA with Student Param |    Teacher Params   |    Teacher Acc      | Student backbone | Student Params | Student Acc|
+|    Datasets       |SOTA with Student's Params |    Teacher Params   |    Teacher Acc      | Student backbone | Student Params | Student Acc|
 |:---------------------|:----------------------:|:-------------------:|:-------------------:|:----------------:|:--------------:|:----------:|
 |      CALFW           |          96.2          |         6B          |        96.2         |     ResNet50     |      25M       |    96.1    |
 |      CALFW           |          95.15         |         6B          |        96.2         |     MobileNetV3  |      5M        |    95.38   |
