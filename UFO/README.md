@@ -119,6 +119,24 @@ VIMER-UFO 2.0 大模型可被广泛应用于智慧城市、无人驾驶、工业
 
 为了更好的支持在移动和边缘设备上进行部署，VIMER-UFO 2.0 还支持抽取子网络模型进行模型蒸馏，结合百度研发的异构蒸馏技术，将 Transformer 结构中的知识迁移到 CNN 中，模型参数量从亿级别进一步压缩到兆级别的规模，整体实现 1000+ 倍的压缩。
 
+
+|    Datasets          |SOTA with Student Param |    Teacher Params   |    Teacher Acc      | Student backbone | Student Params | Student Acc|
+|:---------------------|:----------------------:|:-------------------:|:-------------------:|:----------------:|:--------------:|:----------:|
+|      CALFW           |          96.2          |         6B          |        96.2         |     ResNet50     |      25M       |    96.1    |
+|      CALFW           |          95.15         |         6B          |        96.2         |     MobileNetV3  |      5M        |    95.38   |
+|      CPLFW           |          93.37         |         6B          |        95.22        |     ResNet50     |      25M       |    93.77   |
+|      CPLFW           |          88.55         |         6B          |        95.22        |     MobileNetV3  |      5M        |    91.63   |
+|      LFW             |          99.85         |         6B          |        99.85        |     ResNet50     |      25M       |    99.85   |
+|      LFW             |          99.85         |         6B          |        99.85        |     MobileNetV3  |      5M        |    99.67   |
+|      AGEDB-30        |          98.35         |         6B          |        98.27        |     ResNet50     |      25M       |    97.92   |
+|      AGEDB-30        |          98.15         |         6B          |        98.27        |     MobileNetV3  |      5M        |    95.55   |
+|      CFP-FF          |          99.89         |         6B          |        99.89        |     ResNet50     |      25M       |    99.86   |
+|      CFP-FF          |          -             |         6B          |        99.89        |     MobileNetV3  |      5M        |    99.46   |
+|      CFP-FP          |          98.99         |         6B          |        99.3         |     ResNet50     |      25M       |    99.04   |
+|      CFP-FP          |          98.5          |         6B          |        99.3         |     MobileNetV3  |      5M        |    96.49   |
+|      ImageNet        |  74.5 (Deit-Tiny 蒸馏) |         6B          |        87.45        |     ViT-Tiny     |      5M        |    74.74   |
+
+
 ## 使用方案
 
 1. VIMER-UFO 2.0 相关的模型、训练代码和评测脚本均已开源，了解详细信息可访问：https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
