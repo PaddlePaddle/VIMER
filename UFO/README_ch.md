@@ -130,8 +130,6 @@ VIMER-UFO 2.0 大模型可被广泛应用于智慧城市、无人驾驶、工业
 |      CPLFW           |          88.55         |         600M          |        95.22        |     MobileNetV3  |      5M        |    91.63   |
 |      LFW             |          99.85         |         600M          |        99.85        |     ResNet50     |      25M       |    99.85   |
 |      LFW             |          99.85         |         600M          |        99.85        |     MobileNetV3  |      5M        |    99.67   |
-|      AGEDB-30        |          98.35         |         600M          |        98.27        |     ResNet50     |      25M       |    97.92   |
-|      AGEDB-30        |          98.15         |         600M          |        98.27        |     MobileNetV3  |      5M        |    95.55   |
 |      CFP-FF          |          99.89         |         600M          |        99.89        |     ResNet50     |      25M       |    99.86   |
 |      CFP-FF          |          -             |         600M          |        99.89        |     MobileNetV3  |      5M        |    99.46   |
 |      CFP-FP          |          98.99         |         600M          |        99.3         |     ResNet50     |      25M       |    99.04   |
