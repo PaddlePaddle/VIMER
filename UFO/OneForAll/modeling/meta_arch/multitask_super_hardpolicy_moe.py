@@ -259,7 +259,7 @@ class MultiTaskBatchFuse(nn.Layer):
         elif isinstance(batched_inputs, paddle.Tensor):
             images = batched_inputs
         else:
-            raise TypeError("batched_inputs must be dict or torch.Tensor, but get {}".format(type(batched_inputs)))
+            raise TypeError("batched_inputs must be dict or Tensor, but get {}".format(type(batched_inputs)))
 
         # images.sub_(self.pixel_mean).div_(self.pixel_std)
         return images

@@ -83,10 +83,6 @@ class CommonMetricSacredWriter(EventWriter):
         if eta is not None:
             self._run.log_scalar('eta', eta, iteration)
 
-        # if torch.cuda.is_available():
-        #     max_mem_mb = torch.cuda.max_memory_allocated() / 1024.0 / 1024.0
-        # else:
-        #     max_mem_mb = None
         max_mem_mb = None
         if eta is not None:
             self._run.log_scalar('max_mem_mb', max_mem_mb, iteration)
