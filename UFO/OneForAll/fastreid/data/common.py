@@ -3,12 +3,9 @@
 @author:  liaoxingyu
 @contact: sherlockliao01@gmail.com
 """
-
-# from torch.utils.data import Dataset
 from paddle.io import Dataset
 
 from .data_utils import read_image
-
 
 class CommDataset(Dataset):
     """Image Person ReID Dataset"""
