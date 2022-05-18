@@ -13,8 +13,6 @@ import os.path
 import sys
 sys.path.append('.')
 
-import torch
-import torch.distributed as dist
 import paddle
 paddle.seed(42)
 from utils.events import CommonMetricSacredWriter

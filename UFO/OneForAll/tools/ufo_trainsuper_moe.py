@@ -16,8 +16,6 @@ import sys
 sys.path.append('.')
 
 from tools.monitor import Monitor
-import torch
-import torch.distributed as dist
 import paddle
 paddle.seed(42)
 
