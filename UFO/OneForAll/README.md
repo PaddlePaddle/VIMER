@@ -27,7 +27,7 @@ In response to the problems faced by pre-training large models, Baidu proposed a
   * All in One:17 billion parameters, the largest CV model in the industry, covering 20+ CV basic tasks such as face, human body, vehicle, commodity, food fine-grained classification, and 28 public test set effects for a single model SOTA.
   * One for All：The first supernetwork and training scheme for visual multitasking, supports flexible deployment of various tasks and various hardware, and solves the problem of large model parameters and poor inference performance.
 
-![图1:UFO整体架构](./img/UFO_v2_1.png)
+![图1:UFO整体架构](../img/UFO_v2_1.png)
 
 ## Methodology
 
@@ -42,7 +42,7 @@ In response to the development and deployment of large models, UFO provides a On
 A hypernetwork model. The trained One for All UFO super network large model can generate corresponding plug-and-play small models for different tasks and equipment at low cost, realizing the ability of One for All Tasks and One for All Chips
 
 
-![图2:AllInone](./img/UFO_v2_2.png)
+![图2:AllInone](../img/UFO_v2_2.png)
 
 ### OneForAll
 
@@ -77,13 +77,13 @@ Because the routing parameters are discrete and non-steerable, they are optimize
 The optimal sub-network model for the same task. In business applications, it is only necessary to extract the corresponding task subnets according to the effects of different subnetworks on specific tasks, and then deploy them directly without repeated training.
 
 
-![图3:One For All Tasks](./img/UFO_v2_3.png)
+![图3:One For All Tasks](../img/UFO_v2_3.png)
 
 ### OneForAllChips
 
 After the task supernet training is completed, the chip specific supernet is trained for the sub-network extracted from each task. After the above training, the chip specific supernet for each task is obtained. In business applications, sub-networks of different depths and widths can be extracted for deployment according to the different storage capacities and computing power of different platforms, parameters and computational complexity of the step-by-step compression model. Due to the large amount of number of the sub-networks in the super network, it is not realistic to test the accuracy and delay of each sub-network one by one. Therefore, in VIMER-UFO 2.0, the Gaussian process-based hyperparameter hyperparameter estimation technology in GP-NAS is used. It is necessary to sample less sub-networks in the super-network for evaluation, and the accuracy and speed of other networks can be accurately predicted.
 
-![图4:One For All Chips](./img/UFO_v2_4.png)
+![图4:One For All Chips](../img/UFO_v2_4.png)
 
 ## Results
 
@@ -107,7 +107,7 @@ VIMER-UFO 2.0 has a set of parameters for a single model, and achieved SOTA resu
 
 The VIMER-UFO 2.0 foundation model can be widely used in various multi-task AI systems such as smart cities, unmanned driving, and industrial production. At the same time, VIMER-UFO 2.0 supports a variety of application modes, taking into account both efficiency and effect.
 
-![图5:应用场景与方案](./img/UFO_v2_5.png)
+![图5:应用场景与方案](../img/UFO_v2_5.png)
 
 ### Direct-deployment
 
@@ -160,5 +160,7 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 
 1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
 2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
+
+We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
 
 If you have any question, please contact xiteng01@baidu.com
