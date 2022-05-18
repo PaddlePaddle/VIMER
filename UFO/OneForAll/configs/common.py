@@ -1,26 +1,11 @@
 """configs/common.py
 """
-import torch
 from detectron2.config import LazyCall as L
 # from ufo.solver.build import get_default_optimizer_params, maybe_add_gradient_clipping
 from solver.build import build_lr_optimizer_lazy
 from solver.build import build_lr_scheduler_lazy
 
-
-# optimizer = L(L(maybe_add_gradient_clipping)(optimizer=torch.optim.SGD,
-#                                              grad_clip_enabled=True))(
-#     params=L(get_default_optimizer_params)(
-#         base_lr=0.03,
-#         weight_decay=0.0001,
-#         weight_decay_norm=0.0001,
-#         contiguous=True,
-#         bias_lr_factor=2.0,
-#         momentum=0.9,
-#     ),
-# )
-
 optimizer = L(build_lr_optimizer_lazy)(
-    optimizer=torch.optim.SGD,
     base_lr=0.03,
     weight_decay=0.0001,
     weight_decay_norm=0.0001,
