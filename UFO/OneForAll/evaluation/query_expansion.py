@@ -7,8 +7,6 @@
 # https://github.com/PyRetri/PyRetri/blob/master/pyretri/index/re_ranker/re_ranker_impl/query_expansion.py
 
 import numpy as np
-# import torch
-# import torch.nn.functional as F
 import paddle
 import paddle.nn.functional as F
 
