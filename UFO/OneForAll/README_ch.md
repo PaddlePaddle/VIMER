@@ -142,4 +142,6 @@ VIMER-UFO 2.0 大模型可被广泛应用于智慧城市、无人驾驶、工业
 1. VIMER-UFO 2.0 相关的模型、训练代码和评测脚本均已开源，了解详细信息可访问：https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
 2. VIMER-UFO 2.0 大模型近期也将开放在百度零门槛 AI 开发平台 EasyDL 中，敬请期待。
 
+致谢：部分数据集构建和测评代码参考了https://github.com/facebookresearch/detectron2 和 https://github.com/JDAI-CV/fast-reid , 表示感谢！
+
 如遇到问题请联系xiteng01@baidu.com

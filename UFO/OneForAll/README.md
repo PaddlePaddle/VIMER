@@ -161,4 +161,6 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
 2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
 
+We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
+
 If you have any question, please contact xiteng01@baidu.com
