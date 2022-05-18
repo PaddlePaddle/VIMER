@@ -107,25 +107,14 @@ class AttentionSuper(nn.Layer):
         B, N, C = x.shape
         qkv = self.qkv(x).reshape((B, N, 3, self.sample_num_heads, -1)).transpose((2, 0, 3, 1, 4))
         # print(qkv.shape)
-        q, k, v = qkv[0], qkv[1], qkv[2]   # make torchscript happy (cannot use tensor as tuple)
+        q, k, v = qkv[0], qkv[1], qkv[2]   #  (cannot use tensor as tuple)
 
         attn = (q.matmul(k.transpose((0, 1, 3, 2)))) * self.sample_scale
-        # if self.relative_position:
-        #     r_p_k = self.rel_pos_embed_k(N, N)
-        #     attn = attn + (q.permute(2, 0, 1, 3).reshape(N, self.sample_num_heads * B, -1) @ r_p_k.transpose(2, 1)) \
-        #         .transpose(1, 0).reshape(B, self.sample_num_heads, N, N) * self.sample_scale
 
         attn = nn.functional.softmax(attn, axis=-1)
         attn = self.attn_drop(attn)
 
         x = (attn.matmul(v)).transpose((0, 2, 1, 3)).reshape((B, N, -1))
-        # if self.relative_position:
-        #     r_p_v = self.rel_pos_embed_v(N, N)
-        #     attn_1 = attn.permute(2, 0, 1, 3).reshape(N, B * self.sample_num_heads, -1)
-        #     # The size of attention is (B, num_heads, N, N), reshape it to (N, B*num_heads, N) and do batch matmul with
-        #     # the relative position embedding of V (N, N, head_dim) get shape like (N, B*num_heads, head_dim). We reshape it to the
-        #     # same size as x (B, num_heads, N, hidden_dim)
-        #     x = x + (attn_1 @ r_p_v).transpose(1, 0).reshape(B, self.sample_num_heads, N, -1).transpose(2,1).reshape(B, N, -1)
 
         if self.fc_scale:
             x = x * (self.super_embed_dim / self.sample_qk_embed_dim)

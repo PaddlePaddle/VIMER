@@ -3,7 +3,6 @@
 @author:  liaoxingyu
 @contact: sherlockliao01@gmail.com
 """
-# import torch
 import numpy as np
 from PIL import Image, ImageOps
 import threading
