@@ -215,7 +215,7 @@ class Checkpointer(object):
         Returns:
             dict: with keys "model" and optionally others that are saved by
                 the checkpointer dict["model"] must be a dict which maps strings
-                to torch.Tensor or numpy arrays.
+                to Tensor or numpy arrays.
         """
         return paddle.load(f)
 
@@ -278,7 +278,7 @@ class Checkpointer(object):
 
     def _convert_ndarray_to_tensor(self, state_dict):
         """
-        In-place convert all numpy arrays in the state_dict to torch tensor.
+        In-place convert all numpy arrays in the state_dict to tensor.
 
         Args:
             state_dict (dict): a state-dict to be loaded to the model.
@@ -298,69 +298,6 @@ class Checkpointer(object):
                 )
             if not isinstance(v, paddle.Tensor):
                 state_dict[k] = paddle.to_tensor(v)
-
-
-# class PeriodicCheckpointer:
-#     """
-#     Save checkpoints periodically. When `.step(iteration)` is called, it will
-#     execute `checkpointer.save` on the given checkpointer, if iteration is a
-#     multiple of period or if `max_iter` is reached.
-#     """
-
-#     def __init__(self, checkpointer: Any, period: int, max_epoch: int = None):
-#         """
-#         Args:
-#             checkpointer (Any): the checkpointer object used to save
-#             checkpoints.
-#             period (int): the period to save checkpoint.
-#             max_epoch (int): maximum number of epochs. When it is reached,
-#                 a checkpoint named "model_final" will be saved.
-#         """
-#         self.checkpointer = checkpointer
-#         self.period = int(period)
-#         self.max_epoch = max_epoch
-#         self.best_metric = -1
-
-#     def step(self, epoch: int, **kwargs: Any):
-#         """
-#         Perform the appropriate action at the given iteration.
-
-#         Args:
-#             epoch (int): the current epoch, ranged in [0, max_epoch-1].
-#             kwargs (Any): extra data to save, same as in
-#                 :meth:`Checkpointer.save`.
-#         """
-#         epoch = int(epoch)
-#         additional_state = {"epoch": epoch}
-#         additional_state.update(kwargs)
-#         if (epoch + 1) % self.period == 0 and epoch < self.max_epoch - 1:
-#             if additional_state["metric"] > self.best_metric:
-#                 self.checkpointer.save(
-#                     "model_best", **additional_state
-#                 )
-#                 self.best_metric = additional_state["metric"]
-#             # Put it behind best model save to make last checkpoint valid
-#             self.checkpointer.save(
-#                 "model_{:04d}".format(epoch), **additional_state
-#             )
-#         if epoch >= self.max_epoch - 1:
-#             if additional_state["metric"] > self.best_metric:
-#                 self.checkpointer.save(
-#                     "model_best", **additional_state
-#                 )
-#             self.checkpointer.save("model_final", **additional_state)
-
-#     def save(self, name: str, **kwargs: Any):
-#         """
-#         Same argument as :meth:`Checkpointer.save`.
-#         Use this method to manually save checkpoints outside the schedule.
-
-#         Args:
-#             name (str): file name.
-#             kwargs (Any): extra data to save, same as in
-#                 :meth:`Checkpointer.save`.
-#         """
-#         self.checkpointer.save(name, **kwargs)
 
 
 def _filter_reused_missing_keys(model, keys):
