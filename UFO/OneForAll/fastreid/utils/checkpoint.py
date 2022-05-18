@@ -234,7 +234,6 @@ class Checkpointer(object):
         # remove the "module" prefix before performing the matching.
         _strip_prefix_if_present(checkpoint_state_dict, "_layers.")
 
-        # work around https://github.com/pytorch/pytorch/issues/24139
         model_state_dict = self.model.state_dict()
         incorrect_shapes = []
         for k in list(checkpoint_state_dict.keys()):
@@ -284,7 +283,7 @@ class Checkpointer(object):
             state_dict (dict): a state-dict to be loaded to the model.
         """
         # model could be an OrderedDict with _metadata attribute
-        # (as returned by Pytorch's state_dict()). We should preserve these
+        # (as returned by state_dict()). We should preserve these
         # properties.
         for k in list(state_dict.keys()):
             v = state_dict[k]
