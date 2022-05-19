@@ -70,11 +70,11 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 
 ### 下载推理模型
 
-	| 下载链接 |
-	| :----    |
-	| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-	| [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
-	| [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| 下载链接 |
+| :----   |
+| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
+| [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
