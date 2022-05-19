@@ -12,7 +12,7 @@
 VIMER-StrucTexT 2.0 首次创新性地提出“单模态图像输入、多模态知识学习”预训练框架，仅通过单一文档图像的输入，就能让模型充分捕获语义和结构信息。经过大规模文档图像数据充分学习后的预训练模型，显著提高文档理解全景应用任务效果，囊括文档图像分类、文档版式分析、表格结构解析、文档 OCR、端到端信息抽取等，是首个 OCR 全任务基础预训练模型。VIMER-StrucTexT 2.0 同时解决了训练数据匮乏和传统 OCR + NLP 链路过长导致的模型表达能力不足、优化效率偏低等问题，能够广泛应用于各行各业行文档、卡证、票据等图像文字识别和信息理解。
 
 ![architecture](doc/architecture.png)
-<p align="center"> **StrucTexT 2.0预训练框架** </p>
+<p align="center"> StrucTexT 2.0预训练框架 </p>
 
 ## 预训练任务
 VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict 机制。预训练流程包括四个环节：  
@@ -40,13 +40,14 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 
 ## 公开基准效果
 
-	| 任务类型 |  测试集合 | 评价方式 | V2.0 |
-	|  ----  | ---- |   ----  | ----  |   :----:  | 
-	|  文档图像分类  | RVL-CDIP |  Accuray | **93.3** | 
-	|  文档版式分析  | PubLayNet  |   F1-score  |  **95.4** | 
-	| 表格结构解析   | PubTabNet  | TEDs | **97.1** | 
-	|  文档 OCR      | FUNSD  | 1-NED | **87.9** | 
-	|  端到端信息抽取 | FUNSD | 1-NED | - |  **65.1** | 
+| 任务类型 |  测试集合 | 评价方式 | V2.0 |
+|  ----  | ---- |   ----  | ----  |   :----:  | 
+|  文档图像分类  | RVL-CDIP |  Accuray | **93.3** | 
+|  文档版式分析  | PubLayNet  |   F1-score  |  **95.4** | 
+| 表格结构解析   | PubTabNet  | TEDs | **97.1** | 
+|  文档 OCR      | FUNSD  | 1-NED | **87.9** | 
+|  端到端信息抽取 | FUNSD | 1-NED |  **65.1** |
+
 ## 快速体验
 ### 安装Paddle环境
 本代码库基于PaddlePaddle 2.2.0+，你可参阅[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境准备，或者使用pip进行安装：
