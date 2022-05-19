@@ -25,7 +25,7 @@ Furthermore, multimodal linked data in real scenes is not limited to simple imag
 <div align="center">
     <img src="./doc/fig1.png" width="800">
 </div>
-<p align="center"> Principle introduction </p>
+<p align="center">Figure1. Principle introduction </p>
 In response to the above problems, Baidu proposed a multi-source information unified modeling product image and text representation pre-training model VIMER-UMS for the commodity search scenario, which aims to unify the visual modal, graphic multi-modal search representation tasks, and overcome multi-source information. The problem of incomplete modal information in the scene, while improving the effect of visual and multi-modal search tasks.
 
 ## Unified product visual and image-text representation
@@ -33,14 +33,14 @@ Based on the end-to-end Transformer training method, VIMER-UMS provides a unifie
 <div align="center">
     <img src="./doc/fig2.png" width="500">
 </div>
-<p align="center"> VIMER-UMS </p>
+<p align="center">Figure2. VIMER-UMS </p>
 
 ## Extensive coverage of product search tasks
 For practical business applications, based on the VIMER-UMS commodity graphic representation pre-training model, a small amount of labeled or unlabeled data is used to efficiently achieve downstream commodity visual retrieval, fine-grained identification, and multi-modal search capabilities.
 <div align="center">
     <img src="./doc/fig3.png" width="600">
 </div>
-<p align="center"> Product search tasks </p>
+<p align="center">Figure3. Product search tasks </p>
 
 ## Model performance
 Based on the VIMER-UMS commodity graphic representation pre-training model, it realizes the SOTA effect of multiple commodity downstream visual retrieval and cross-modal retrieval tasks, and supports direct deployment and pre-training fine-tuning applications.
