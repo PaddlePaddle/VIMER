@@ -17,6 +17,8 @@ English | [简体中文](README_ch.md)
   * [Fast expansion to new tasks](#Fast-expansion-to-new-tasks)
   * [Downstream tasks distillation](#Downstream-tasks-distillation)
 - [Instructions](#Instructions)
+  * [Environment](#Environment)
+  * [Distributed-training](#Distributed-training)
 
 
 ## Introduction
@@ -158,8 +160,33 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 
 ## Instructions
 
-1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
-2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
+Demo is based on 48 A100 cards.
+
+### Environment
+Please use python3.7 and cuda11.0 
+
+```bash
+pip install -U pip==22.0.3
+pip install -r requirements.txt.train
+pip install faiss-gpu==1.7.2 --no-cache
+pip install paddlepaddle-gpu==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
+pip install paddlepaddle-gpu==0.0.0.post110 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
+```
+
+```
+Configure environment variables.
+```bash
+export CUDA_VISIBLE_DEVICES=0,2,3,4,5,6,7
+export PYTHONPATH=/path/to/AllInOne
+export FASTREID_DATASETS=/path/to/data/train_datasets
+export UFO_config=configs/MS1MV3_PersonAll_VeriAll_SOP_Decathlon_Intern/vithuge_lr2e-1_iter6w_dpr0.2_moeplusbalance_tasklr_dataaug.py
+```
+
+### Distributed-training
+
+```bash
+mpirun -npernode 1 --bind-to none python -m paddle.distributed.launch  --gpus "0,1,2,3,4,5,6,7" tools/ufo_trainsuper_moe.py  --config-file $UFO_config
+```
 
 We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
 
