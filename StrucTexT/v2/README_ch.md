@@ -12,8 +12,7 @@
 VIMER-StrucTexT 2.0 首次创新性地提出“单模态图像输入、多模态知识学习”预训练框架，仅通过单一文档图像的输入，就能让模型充分捕获语义和结构信息。经过大规模文档图像数据充分学习后的预训练模型，显著提高文档理解全景应用任务效果，囊括文档图像分类、文档版式分析、表格结构解析、文档 OCR、端到端信息抽取等，是首个 OCR 全任务基础预训练模型。VIMER-StrucTexT 2.0 同时解决了训练数据匮乏和传统 OCR + NLP 链路过长导致的模型表达能力不足、优化效率偏低等问题，能够广泛应用于各行各业行文档、卡证、票据等图像文字识别和信息理解。
 
 ![architecture](doc/architecture.png)
-
-<center>**StrucTexT 2.0预训练框架**</center>
+<p align="center"> **StrucTexT 2.0预训练框架** </p>
 
 ## 预训练任务
 VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict 机制。预训练流程包括四个环节：  
@@ -34,7 +33,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 * **文档 OCR**：对文档图像中出现的文字进行高准确检测和识别；
 * **端到端信息抽取**：完整的文档理解服务需要完成用户定义的关键字段文字信息提取，既要完成字段的准确分类，也要完成对应文字内容的识别。
 
-###数据集
+### 数据集
 * [RVL-CDIP](https://docs.google.com/u/0/uc?export=download&confirm=9NG1&id=0Bz1dfcnrpXM-MUt4cHNzUEFXcmc) 是一个用于图像分类的数据集，它是由扫描的文档图像组成，共分为16类，如信函、表单、电子邮件、简历、备忘录等。该数据集图像分为320000张训练集、40000个验证集和40000个测试集，并且它的图像的特点是低质量、噪声和低分辨率，通常为100 dpi。
 * [PubLayNet](https://github.com/ibm-aur-nlp/PubLayNet) 是一个用于文档图像版面分析的大型数据集，其布局用多边形边框分割标注，它包含超过36万个文档图像，其中对典型的文档布局元素进行了注释，包括文本、标题、列表、表格和图形。
 * [FUNSD](https://guillaumejaume.github.io/FUNSD/) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
@@ -69,11 +68,12 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 `pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple`
 
 ### 下载推理模型
-| 下载链接 |
-| ----    |
-| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
-| [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+
+	| 下载链接 |
+	| :----    |
+	| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+	| [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
+	| [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
@@ -119,7 +119,7 @@ python -u ./tools/eval.py \
 2. 政务办公文档还原应用，对办公场景的各类文档进行结构化识别，如企业年报、论文、行业报告等，方便对文档类图片进行结构化分析，版式分析和表格结构化解析等能力最大错误率下降达 50%。
 3. 帮助智慧金融、健康依赖、物流快递、智慧交通等行业进一步提升信息录入效率达 40%。
 
-![products](doc/products.png )
+![products](doc/products.png)
 
 ## 产品体验渠道
 VIMER-StrucTexT 2.0 近期也将陆续升级百度 AI 开放平台相关 [OCR 产品矩阵](https://ai.baidu.com/tech/ocr)，以及百度零门槛 AI 开放平台产品 [EasyDL-OCR](https://ai.baidu.com/easydl/ocr)，敬请期待。
