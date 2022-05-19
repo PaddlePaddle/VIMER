@@ -29,7 +29,7 @@ from .east_postprocess import EASTPostProcess
 def build_postprocess(config, global_config=None):
     """ build_postprocess """
     support_dict = [
-        'DBPostProcess', 'MAEPostProcess',
+        'DBPostProcess',
         'EASTPostProcess'
     ]
 

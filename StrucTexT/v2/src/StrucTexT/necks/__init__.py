@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(__dir__, '../..')))
 
 __all__ = ['build_neck']
 
-support_dict = ['DB_FPN', 'EAST_FPN', 'TexTGrid']
+support_dict = ['DB_FPN', 'EAST_FPN']
 
 def build_neck(module_name, config):
     """ build_neck """

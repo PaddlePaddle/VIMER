@@ -1,12 +1,12 @@
 # StrucTexT v2.0文档图像理解基础模型
 ## 目录
-* 模型简介
-* 预训练任务
-* 应用任务
-* 公开基准效果
-* 快速体验
-* 典型应用场景
-* 产品体验渠道
+* [模型简介](#模型简介)
+* [预训练任务](#预训练任务)
+* [应用任务](#应用任务)
+* [公开基准效果](#公开基准效果)
+* [快速体验](#快速体验)
+* [典型应用场景](#典型应用场景)
+* [产品体验渠道](#产品体验渠道)
 
 ## 模型简介
 VIMER-StrucTexT 2.0 首次创新性地提出“单模态图像输入、多模态知识学习”预训练框架，仅通过单一文档图像的输入，就能让模型充分捕获语义和结构信息。经过大规模文档图像数据充分学习后的预训练模型，显著提高文档理解全景应用任务效果，囊括文档图像分类、文档版式分析、表格结构解析、文档 OCR、端到端信息抽取等，是首个 OCR 全任务基础预训练模型。VIMER-StrucTexT 2.0 同时解决了训练数据匮乏和传统 OCR + NLP 链路过长导致的模型表达能力不足、优化效率偏低等问题，能够广泛应用于各行各业行文档、卡证、票据等图像文字识别和信息理解。
@@ -70,11 +70,11 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 
 ### 下载推理模型
 
-| 下载链接 |
-| :----   |
-| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
-| [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| 下游任务 finetune | 下载链接 | 
+| :---- |:---- |
+| MLP Classification| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| Cascade RCNN Detection | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
+| DB Detection + Attention-OCR | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
@@ -93,12 +93,13 @@ python -u ./tools/eval.py \
    * PublayNet版式分析检测
 
 ```python
-# 1. 进入目录：./src/tasks/layout_analysis/PaddleDetection/
-# 1. 下载并解压PublayNet数据集到 ./data/publaynet/
+# 1. 进入目录：./src/tasks/layout_analysis/
+# 2. 下载并解压PublayNet数据集到 ./data/publaynet/
 # 3. 下载模型：StrucTexT_v2_layout_analysis_base.pdparams
 # 4. 运行下述脚本启动版式分析检测任务评测
+sh set_env.sh
 python -u ./tools/eval.py \
-	-c ../../../configs/layout_analysis/cascade_rcnn/cascade_rcnn_v2.yml \
+	-c configs/layout_analysis/cascade_rcnn/cascade_rcnn_v2.yml \
 	-o weights=StrucTexT_v2_layout_analysis_base.pdparams
 ```
    * FUNSD数据集端到端OCR
