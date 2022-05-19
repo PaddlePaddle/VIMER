@@ -35,6 +35,13 @@ Lexicon_Table_95 = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ','
     'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', ' ']
 
 
+TEXT_CLASSES = {
+    "question": 0,
+    "answer": 1,
+    "header": 2,
+    "other": 3
+}
+
 class LabelConverter(object):
     """convert between text and lexicon index"""
     def __init__(self, seq_len=50, lexicon=None, recg_loss='CE'):
@@ -122,7 +129,7 @@ def _bbox2poly(bbox):
     return poly
 
 
-def _parse_ann_info_data(anno_path):
+def _parse_ann_info_funsd(anno_path):
     """load annos from anno_path
     Input:
         anno_path: absolute path of annoataion file <Str>
@@ -130,8 +137,6 @@ def _parse_ann_info_data(anno_path):
         res: (poly, transcript, text_class, ignore_tag) <Tuple>
     """
     res = []
-    with gzip.open(label_file, 'rb') as f:
-            example = json.loads(f.read().decode('utf-8'))
     with codecs.open(anno_path, 'r', 'utf-8') as fp:    # fix some ascii bug
         data = json.load(fp)
 
@@ -175,7 +180,7 @@ def _parse_ann_info_funsd_line(anno_path):
         box = list(map(float, box))
         poly = self._bbox2poly(box)
 
-        if transcript in ['*', '###'] or len(transcript) == 0:
+        if len(transcript) == 0:
             # ignore_tag = True
             transcript = ""
         else:
@@ -194,37 +199,28 @@ def _parse_ann_info_funsd_line(anno_path):
         return None
     return res
 
+
 class Dataset(BaseDataset):
-    """ END2END IE DATASET """
+    """TextSpotting Dataset
+    Input: 
+        config: train_config['dataset']  <Dict>
+        feed_names: the training/testing fields <List>
+    """
     def __init__(self, config, feed_names, train_mode=True):
-        """__init__"""
         self.config = config
-        self.tokenizer = ErnieTokenizer.init(
-                config['dict_path'], **config['dict_params'])
-        vocab = self.tokenizer.vocab
-        pad_token = vocab[config['dict_params'].get('pad_token')]
 
         batch_size = config['batch_size']
         data_path = config['data_path']
-        dict_params = config['dict_params']
-        self.max_seqlen = config['max_seqlen']
+        image_path = config['image_path']
+
+        assert os.path.isdir(image_path)
 
         if os.path.isdir(data_path):
-            image_path = config['image_path']
-            labels = glob(os.path.join(data_path, '*.*'))
+            labels = os.listdir(data_path)
             label_list = [[label_path, image_path] for label_path in labels]
             label_list = [label_list]
-        elif os.path.isfile(data_path):
-            with open(data_path, 'r', 'utf-8') as f:
-                data_list = list(filter(lambda x: len(x) == 2,
-                    [x.strip().split('\t') for x in f.readlines()]))
-                label_list = []
-                for data_path, image_path in data_list:
-                    labels = glob(os.path.join(data_path, '*.*'))
-                    sub_data = [[label_path, image_path] for label_path in labels]
-                    label_list.append(sub_data)
         else:
-            raise ValueError('error in load data_path: ', data_path)
+            raise ValueError('error in load data_path for funsd: ', subdata_label_path)
 
         self.transform = build_transform(config['transform'])
         super(Dataset, self).__init__(
@@ -244,52 +240,48 @@ class Dataset(BaseDataset):
     def _convert_examples(self, examples):
         """convert example to field
         """
-        def _flatten_2d_list(c):
-            return [i for item in c for i in item]
-
         config = self.config
         data = {'batch_size': len(examples)}
 
-        sentence = np.ones((batch_size, max_seqlen), dtype='int32') * pad_token
-        sentence_mask = np.zeros((batch_size, max_seqlen), dtype='int32')
+        for i, example in enumerate(examples):
+            anno_path = example['boxes_and_texts_file']
+	    anno = _parse_ann_info_funsd(anno_path)
+	    anno_line = _parse_ann_info_funsd(anno_line)
+            if anno is None or anno_line is None:
+                return None
+            example_line = deepcopy(example)
 
-        for idx, example in enumerate(examples):
-            example = examples[idx]
-            cls = example['cls']
-            line_bb = example['line_bboxes']
-            token_bb = example['token_bboxes']
-            tokens = example['tokens']
+            # sort the box based on the position
+            anno = _sort_box_with_list(anno)
+            anno_line = _sort_box_with_list(anno_line)
 
+            polys = []
+            texts = []
+            classes = []
+            ignore_tags = []
 
-            #### word parse ####
-            words = _flatten_2d_list(tokens)
-            word_bbs = _flatten_2d_list(token_bb)
-            word_cls = _flatten_2d_list([[c] * len(line) for c, line in zip(cls, tokens)])
-            polys, texts, classes, ignore_tags = [], [], [], []
-            for box, word, c in zip(word_bbs, words, word_cls)
-                ignore_tag = False
-                classes.append(c)
-                polys.append(_bbox2poly(box))
-                #text = ''.join([w.replace('##', '') for w in word])
-                #texts.append(label_converter.encode(text, ignore_tag))
-                texts.append(self.tokenizer.convert_tokens_to_ids(word[0]))
+            for poly, text, text_class, ignore_tag in anno:
+                polys.append(poly)
+                texts.append(self.label_converter.encode(text, ignore_tag))
                 ignore_tags.append(ignore_tag)
+                classes.append(text_class)
+
             label_word = {}
             label_word['polys'] = np.array(polys, dtype=np.float32).reshape(-1, 4, 2)
             label_word['texts'] = np.array(texts, dtype=np.int64)
             label_word['classes'] = np.array(classes, dtype=np.int64)
             label_word['ignore_tags'] = np.array(ignore_tags, dtype=np.bool)
 
-            #### line parse ####
-            polys, texts, classes, ignore_tags = [], [], [], []
-            for box, line, c in zip(line_bb, tokens, cls):
-                ignore_tag = False
-                classes.append(c)
-                polys.append(_bbox2poly(box))
-                text = = [''.join(w.replace('##', '').upper() for w in line]
-                text = ' '.join(text)
-                texts.append(label_converter.encode(text, ignore_tag))
-                ignore_tags.append(ignore_tag)
+            polys_line = []
+            texts_line = []
+            classes_line = []
+            ignore_tags_line = []
+
+            for poly, text, text_class, ignore_tag in anno_line:
+                polys_line.append(poly)
+                texts_line.append(self.label_converter.encode(text, ignore_tag))
+                ignore_tags_line.append(ignore_tag)
+                classes_line.append(text_class)
 
             label_line = {}
             label_line['polys'] = np.array(polys_line, dtype=np.float32).reshape(-1, 4, 2)
@@ -298,9 +290,8 @@ class Dataset(BaseDataset):
             label_line['ignore_tags'] = np.array(ignore_tags_line, dtype=np.bool)
 
             example['labels'] = [label_word, label_line] #位置不允许调换
-
-            #### preprocess ####
             transform_out = self.transform(example)
+
             if transform_out is None:
                 return None
             if 'labels' in transform_out.keys():
@@ -322,27 +313,22 @@ class Dataset(BaseDataset):
                 if key not in data.keys():
                     data[key] = []
                 data[key].append(val)
-
         return data
 
     def _read_data(self, example):
+        """load image from image path and return image with data path
+        Input:
+            example: ['X51005268200.txt', '../text_spotting_data/sroie/train/image/'] <List>
+        Output:
+            example: readed image and label path <Dict>
+        """
+
         data_path, image_path = example
-        if not os.path.exists(data_path):
-            logging.warning('Dataset... The file (%s) is not existed!', data_path)
-            return None
-        try:
-            with gzip.open(data_path, 'rb') as f:
-                example = json.loads(f.read().decode('utf-8'))
-        except:
-            return None
-        if len(example['line_bboxes']) < 1:
-            logging.debug('Dataset... The number of line_bboxes is zero')
-            return None
-        if 'image_name' not in example.keys():
-            logging.debug('Dataset... Not find image_name')
-            return None
-        image_path = os.path.join(image_path, example['image_name'])
-        if not os.path.exists(image_path.encode('utf-8')):
+
+        image_path = os.path.join(image_path, data_path.replace('.json', '.png'))
+        data_path = os.path.join(self.config['subsets']['funsd']['data_path'], data_path)
+    
+        if not os.path.exists(image_path):
             logging.warning('Dataset... The file (%s) is not existed!', image_path)
             return None
         try:
@@ -353,5 +339,7 @@ class Dataset(BaseDataset):
         if image is None:
             logging.debug('Dataset... Error in load image for %s', image_path)
             return None
-        example['image'] = image
+
+        example = {'image': image, 'boxes_and_texts_file': data_path}
+
         return example
