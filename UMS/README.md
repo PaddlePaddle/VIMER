@@ -140,29 +140,33 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 1. download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
 2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
 3. run shell script for peformance evaluation on Product1M dataset
+```
 sh eval_scripts/run_eval_ums_base_product1m.sh ums_product1m.pdparams
-
+```
 
 #### Evaluation on SOP
 
 1. download and extract the [SOP](https://cvgl.stanford.edu/projects/lifted_struct/) dataset at current directory <./Stanford_Online_Products>
 2. download infer modal ums_sop.pdparams
 3. run shell script for peformance evaluation on SOP dataset
+```
 sh eval_scripts/run_eval_ums_base_sop.sh
-
+```
 
 #### Evaluation on InShop
 
 1. download and extract the [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) dataset at current directory <./inshop_dataset>
 2. download infer modal ums_inshop.pdparams
 3. run shell script for peformance evaluation on InShop datasets
+```
 sh eval_scripts/run_eval_ums_base_inshop.sh
-
+```
 
 #### Evaluation on COCO-CTC
 
 1. download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
 2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
 3. run shell script for peformance evaluation on COCO-CTC datasets
+```
 sh eval_scripts/run_eval_ums_base_inshop.sh ums_ctc.pdparams
-
+```
