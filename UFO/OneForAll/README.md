@@ -24,7 +24,7 @@ pip install paddlepaddle-gpu==0.0.0.post110 -f https://www.paddlepaddle.org.cn/w
 ```
 Configure environment variables.
 ```bash
-export CUDA_VISIBLE_DEVICES=0,2,3,4,5,6,7
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export PYTHONPATH=/path/to/AllInOne
 export FASTREID_DATASETS=/path/to/data/train_datasets
 export UFO_config=configs/MS1MV3_PersonAll_VeriAll_SOP_Decathlon_Intern/vithuge_lr2e-1_iter6w_dpr0.2_moeplusbalance_tasklr_dataaug.py
