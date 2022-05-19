@@ -135,6 +135,8 @@ Fast expansion results：
 |      aircraft        |          94.90         |         70.84       |        95.02        |
 |      cifar10         |          99.40         |         99.32       |        99.40        |
 |      gtsrb           |          99.7          |         99.83       |        99.90        |
+|      Cityscape       |          84.3          |         -           |        84.36        |
+|      PASCAL VOC      |          89.3          |         -           |        89.14        |
 
 
 ### Downstream-tasks-distillation
