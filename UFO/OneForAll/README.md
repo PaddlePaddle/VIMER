@@ -19,6 +19,7 @@ English | [简体中文](README_ch.md)
 - [Instructions](#Instructions)
   * [Environment](#Environment)
   * [Distributed-training](#Distributed-training)
+  * [Download the 17B pretrained model](#Download-17B-pretrained-model)
 
 
 ## Introduction
@@ -186,6 +187,10 @@ export UFO_config=configs/MS1MV3_PersonAll_VeriAll_SOP_Decathlon_Intern/vithuge_
 ```bash
 mpirun -npernode 1 --bind-to none python -m paddle.distributed.launch  --gpus "0,1,2,3,4,5,6,7" tools/ufo_trainsuper_moe.py  --config-file $UFO_config
 ```
+
+### Download-17B-pretrained-model
+
+Please send your request to vimer-ufo@baidu.com . The request may include your name and orgnization. We will notify you by email as soon as possible.
 
 We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
 

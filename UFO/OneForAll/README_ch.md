@@ -19,6 +19,7 @@
 - [使用方案](#使用方案)
   * [环境配置](#环境配置)
   * [多机训练](#多机训练)
+  * [170亿参数预训练模型下载](#170亿参数预训练模型下载)
 
 
 ## 整体概述
@@ -168,6 +169,10 @@ export UFO_config=configs/MS1MV3_PersonAll_VeriAll_SOP_Decathlon_Intern/vithuge_
 ```bash
 mpirun -npernode 1 --bind-to none python -m paddle.distributed.launch  --gpus "0,1,2,3,4,5,6,7" tools/ufo_trainsuper_moe.py  --config-file $UFO_config
 ```
+
+### 170亿参数预训练模型下载
+
+如果需要下载170亿参数的预训练模型，请发送邮件到 vimer-ufo@baidu.com . 申请邮件需要包含你的名字和组织（学校/公司）. 我们会尽快答复.
 
 致谢：部分数据集构建和测评代码参考了https://github.com/facebookresearch/detectron2 和 https://github.com/JDAI-CV/fast-reid , 表示感谢！
 
