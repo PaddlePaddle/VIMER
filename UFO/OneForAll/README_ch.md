@@ -151,7 +151,6 @@ Demo为6机（48卡）80G A100的训练方法
 pip install -U pip==22.0.3
 pip install -r requirements.txt.train
 pip install faiss-gpu==1.7.2 --no-cache
-pip install paddlepaddle-gpu==0.0.0 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
 pip install paddlepaddle-gpu==0.0.0.post110 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
 ```
 
