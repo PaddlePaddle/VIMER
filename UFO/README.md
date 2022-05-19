@@ -17,6 +17,7 @@ English | [简体中文](README_ch.md)
   * [Fast expansion to new tasks](#Fast-expansion-to-new-tasks)
   * [Downstream tasks distillation](#Downstream-tasks-distillation)
 - [Instructions](#Instructions)
+- [Download the 17B pretrained model](#Download-17B-pretrained-model)
 
 
 ## Introduction
@@ -160,5 +161,10 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 
 1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
 2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
+
+
+### Download-17B-pretrained-model
+
+Please send your request to vimer-ufo@baidu.com . The request may include your name and orgnization. We will notify you by email as soon as possible.
 
 If you have any question, please contact xiteng01@baidu.com
