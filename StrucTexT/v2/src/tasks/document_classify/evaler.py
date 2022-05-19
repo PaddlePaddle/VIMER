@@ -1,0 +1,77 @@
+""" evaler.py """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import os
+import sys
+import time
+import logging
+import numpy as np
+import paddle as P
+import cv2
+
+
+class Evaler:
+    """
+    Evaler class
+    """
+
+    def __init__(self, config, model, data_loader, eval_classes):
+        '''
+        :param config:
+        :param model:
+        :param data_loader:
+        :param eval_classes:
+        '''
+        self.config = config
+        self.model = model
+        self.valid_data_loader = data_loader
+        self.eval_classes = eval_classes
+        self.len_step = len(self.data_loader)
+
+        self.init_model = config['init_model']
+        self.config = config['eval']
+
+    @P.no_grad()
+    def run(self):
+        '''
+        print evaluation results
+        '''
+        self._resume_model()
+        self.model.eval()
+        for eval_class in self.eval_classes.values():
+            eval_class.reset()
+
+        total_time = 0.0
+        total_frame = 0.0
+        t = trange(self.len_step)
+        for step_idx in t:
+            t.set_description('deal with %i' % step_idx)
+            input_data = next(self.valid_data_loader):
+            start = time.time()
+            feed_names = self.valid_config['feed_names']
+            output = self.model(*input_data, feed_names=feed_names)
+            total_time += time.time() - start
+            label = output['label']
+            logit = output['logit']
+
+            ####### Eval ##########
+            for key, val in self.eval_classes.items():
+                val.update(logit.numpy(), label.numpy())
+            #########################
+            total_frame += input_data[0].shape[0]
+        metrics = 'fps : {}'.format(total_frame / total_time)
+        for key, val in self.eval_classes.items():
+            metrics += '\n{}:\n'.format(key) + str(val.get_metric())
+        print('[Eval Validation] {}'.format(val_dict))
+
+    def _resume_model(self):
+        '''
+        Resume from saved model
+        :return:
+        '''
+        para_path = self.init_model
+        if os.path.exists(para_path):
+            para_dict = P.load(para_path)
+            self.model.set_dict(para_dict)
+            logging.info('Load init model from %s', para_path)

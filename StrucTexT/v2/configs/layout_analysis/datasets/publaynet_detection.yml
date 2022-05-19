@@ -1,0 +1,20 @@
+metric: COCO
+num_classes: 5
+
+TrainDataset:
+  !COCODataSet
+    image_dir: images
+    anno_path: train.json
+    dataset_dir: ./data/publaynet/
+    data_fields: ['image', 'gt_bbox', 'gt_class', 'is_crowd']
+                                                                                                                                
+EvalDataset:
+  !COCODataSet
+    image_dir: images
+    anno_path: val.json
+    dataset_dir: ./data/publaynet/
+
+TestDataset:
+  !ImageFolder
+    anno_path: val.json
+    dataset_dir: ./data/publaynet/

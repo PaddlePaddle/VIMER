@@ -1,0 +1,3 @@
+[submodule "StrucTexT/v2/src/tasks/layout_analysis/PaddleDetection"]
+	path = StrucTexT/v2/src/tasks/layout_analysis/PaddleDetection
+	url = https://github.com/PaddlePaddle/PaddleDetection
