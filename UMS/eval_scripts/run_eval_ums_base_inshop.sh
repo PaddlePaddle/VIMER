@@ -1,0 +1,11 @@
+ python3 eval_ums.py \
+  --model_type 'DRL' \
+  --bs 384 \
+  --infrequent_eval 1 \
+  --n_epochs 1 \
+  --arch vit-deit-base \
+  --gpu '0' \
+  --dataset 'inshop_dataset' \
+  --infer_model './ums_inshop.pdparams' \
+  --embed_dim 768 \
+  --eval 

@@ -1,0 +1,5 @@
+numpy
+Pillow
+glob
+matplotlib
+faiss-cpu

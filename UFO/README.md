@@ -17,6 +17,7 @@ English | [简体中文](README_ch.md)
   * [Fast expansion to new tasks](#Fast-expansion-to-new-tasks)
   * [Downstream tasks distillation](#Downstream-tasks-distillation)
 - [Instructions](#Instructions)
+- [Download the 17B pretrained model](#Download-17B-pretrained-model)
 
 
 ## Introduction
@@ -113,12 +114,17 @@ The VIMER-UFO 2.0 foundation model can be widely used in various multi-task AI s
 
 
 For AI systems with multi-task processing requirements, the VIMER-UFO 2.0 large model has the ability to process multiple tasks, such as simultaneous detection and recognition of targets such as faces, human bodies, and vehicles. At the same time, thanks to the Task-MoE sparse structure used by the VIMER-UFO 2.0 model, at runtime, according to different tasks, the optimal region for activation is automatically selected, and each task only activates part of the parameters of the model, which significantly reduces the amount of computation, and the inference efficiency is close to the mainstream single-task small model. This is similar to the brain of the human face. After millions of years of evolution, the human brain has formed a structure of partitions. Different regions are responsible for specific functions and at the same time interact with each other.
-collaboration as a whole.
 
 
 ### Sub-network-extraction
 
-For AI services that only require a single or individual processing power, some parameters can be directly extracted from the VIMER-UFO 2.0 large model according to the task requirements, and a model for a specific task can be deployed, which can greatly reduce the number of parameters of the model, such as VIMER-UFO The 2.0 large model has a scale of 17 billion parameters, while the single-task model extracted > contains only 600 million parameters. The amount of chip-level model parameters extracted based on the single-task model can be further reduced to 100 million, with a compression ratio of 100+ times. And different tasks can be freely combined, which greatly improves the development and deployment efficiency of AI services.
+For AI services that only require a single or individual processing power, some parameters can be directly extracted from the VIMER-UFO 2.0 large model according to the task requirements, and a model for a specific task can be deployed, which can greatly reduce the number of parameters of the model, such as VIMER-UFO The 2.0 large model has a scale of 17 billion parameters, while the single-task model extracted > contains only 600 million parameters. The amount of chip-level model parameters extracted based on the single-task model can be further reduced to around 100 million, with a compression ratio of 100+ times. And different tasks can be freely combined, which greatly improves the development and deployment efficiency of AI services.
+
+|    Datasets          |         SOTA           |        600M Model   |Extracted 110M Model |
+|:---------------------|:----------------------:|:-------------------:|:-------------------:|
+|      Daimlerpedcls   |          99.9          |         100         |        99.98        |
+|      flowers         |          99.76         |         99.76       |        98.28        |
+|      dmlab           |          77.0          |         80.93       |        74.0         |
 
 ### Fast-expansion-to-new-tasks
 
@@ -134,6 +140,8 @@ Fast expansion results：
 |      aircraft        |          94.90         |         70.84       |        95.02        |
 |      cifar10         |          99.40         |         99.32       |        99.40        |
 |      gtsrb           |          99.7          |         99.83       |        99.90        |
+|      Cityscape       |          84.3          |         -           |        84.36        |
+|      PASCAL VOC      |          89.3          |         -           |        89.14        |
 
 
 ### Downstream-tasks-distillation
@@ -160,5 +168,10 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 
 1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
 2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
+
+
+### Download-17B-pretrained-model
+
+Please send your request to vimer-ufo@baidu.com . The request may include your name and orgnization. We will notify you by email as soon as possible.
 
 If you have any question, please contact xiteng01@baidu.com
