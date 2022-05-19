@@ -14,6 +14,7 @@
   * [安装PaddleNlp](#安装PaddleNlp)
   * [下载推理模型](#下载推理模型)
   * [使用预训练模型推理](#使用预训练模型推理)
+- [引用](#引用)
 
 ## 模型说明
 基于海量的互联网商品图文信息，百度提出多源信息统一建模的商品图文表征预训练模型 **VIMER-UMS** (**Vi**sion Foundation **M**odels for **E**nhanced **R**epresentation - **U**nified **M**ulti-**S**ource Pre-training for Product)，是行业首个统一视觉与多源图文表征的商品多模态预训练模型。
@@ -36,7 +37,7 @@
 ## 统一商品视觉与图文表征
 VIMER-UMS 基于端到端Transformer训练方式，通过视觉编码、文本编码、融合编码、搜索查询编码，提供多源商品信息的统一表达结构。由于现有主流多模态预训练方法依靠语言作为弱监督关联信号，视觉表征能力存在退化现象。为了解决该问题，VIMER-UMS 通过建立视觉与多源图文对比多任务预训练，实现视觉特征、图文特征的统一增强表征。
 <div align="center">
-    <img src="./doc/fig2.png" width="600">
+    <img src="./doc/fig2.png" width="500">
 </div>
 <p align="center"> 图2. VIMER-UMS商品图文表征预训练 </p>
 
@@ -68,12 +69,12 @@ VIMER-UMS 基于端到端Transformer训练方式，通过视觉编码、文本�
   * 数据集
      * [Product1M](https://github.com/zhanxlin/Product1M)多模态商品数据集包含 1,182,083 个训练样本（一对商品图与标题文本描述）、2,673 个测试样本以及 40,033 个商品底库样本作为搜索评测数据。
   * 商品多模态检索Product1M下游任务微调结果：采用 mAP@R指标（mean Average Precision）对搜索排序效果进行评估。
-      | 模型    | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
-      | :------ | :--------: | :--------: | :---------: | :---------: |
-      | CLIP    | 70.25      | 69.28      | 67.3        | ~40         |
-      | UNITER  | 74.69      | 71.02      | 70.93       | ~900        |
-      | CAPTURE | 79.36      | 74.79      | 74.63       | ~900        |
-      | UMS     | **83.27**  | **78.69**  | **76.01**   | **~40**     |
+      | 模型                                        | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
+      | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
+      | [CLIP](https://arxiv.org/abs/2103.00020)    | 70.25      | 69.28      | 67.3        | ~40         |
+      | [UNITER](https://arxiv.org/abs/1909.11740)  | 74.69      | 71.02      | 70.93       | ~900        |
+      | [CAPTURE](https://arxiv.org/abs/2107.14572) | 79.36      | 74.79      | 74.63       | ~900        |
+      | UMS                                         | **83.27**  | **78.69**  | **76.01**   | **~40**     |
 
 ### 图文跨模态检索任务
    * 数据集
@@ -173,4 +174,15 @@ sh eval_scripts/run_eval_ums_base_inshop.sh
 3. 运行shell脚本进行COCO_CTC图文检索端到端评测
 ```
 sh eval_scripts/run_eval_ums_base_ctc.sh ums_ctc.pdparams 
+```
+
+## 引用
+相关文献请引用：
+```
+@article{cheng2022vista,
+  title={ViSTA: Vision and Scene Text Aggregation for Cross-Modal Retrieval},
+  author={Cheng, Mengjun and Sun, Yipeng and Wang, Longchao and Zhu, Xiongwei and Yao, Kun and Chen, Jie and Song, Guoli and Han, Junyu and Liu, Jingtuo and Ding, Errui and others},
+  journal={arXiv preprint arXiv:2203.16778},
+  year={2022}
+}
 ```

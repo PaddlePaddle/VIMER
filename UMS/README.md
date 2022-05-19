@@ -14,6 +14,7 @@ English | [简体中文](README_ch.md)
   * [Install PaddleNlp](#install-paddlenlp)
   * [Download inference models](#download-inference-models)
   * [Infer fine-tuned models](#infer-fine-tuned-models)
+- [Citation](#citation)
 
 ## Model description
 Based on the massive amount of Internet product graphic information, Baidu proposed a multi-source information unified modeling product graphic representation pre-training model VIMER-UMS (Unified Multi-Source Pre-training for Product), which is the first unified visual single-modality and Commodity multimodal pre-training model for multi-source image and text modal representation in the industry. Aiming at the problem of incomplete modal information in the multi-modal modeling of graphics and text, by constructing a multi-task learning framework for comparing visual features with multi-source graphics and text, the pre-training of unified graphic and text representations is realized, and the visual single-modal and multi-modal recognition of commodities is also covered. And retrieval tasks, significantly optimize the visual retrieval of goods, advertising recognition, multi-modal commodity search and recommendation experience, effectively improve the effect of offline retail commodity recognition, and solve the pain point of small sample customization optimization.
@@ -30,7 +31,7 @@ In response to the above problems, Baidu proposed a multi-source information uni
 ## Unified product visual and image-text representation
 Based on the end-to-end Transformer training method, VIMER-UMS provides a unified expression structure for multi-source commodity information through visual coding, text coding, fusion coding, and search query coding. Since the existing mainstream multimodal pre-training methods rely on language as Weakly supervised correlation signals, and the visual representation ability is degraded. In order to solve this problem, VIMER-UMS achieves unified enhanced representation of visual features and graphic features by establishing multi-task pre-training for visual and multi-source graphic and text comparison.
 <div align="center">
-    <img src="./doc/fig2.png" width="600">
+    <img src="./doc/fig2.png" width="500">
 </div>
 <p align="center"> VIMER-UMS </p>
 
@@ -62,12 +63,12 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
     * [Product1M](https://github.com/zhanxlin/Product1M):The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions), 2,673 test samples, and 40,033 products base library samples are used as search evaluation data.
   * performance: The multimodal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
 
-      | Model   | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
-      | :------ | :--------: | :--------: | :---------: | :---------: |
-      | CLIP    | 70.25      | 69.28      | 67.3        | ~40         |
-      | UNITER  | 74.69      | 71.02      | 70.93       | ~900        |
-      | CAPTURE | 79.36      | 74.79      | 74.63       | ~900        |
-      | UMS     | **83.27**  | **78.69**  | **76.01**   | **~40**     |
+      | Model                                       | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
+      | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
+      | [CLIP](https://arxiv.org/abs/2103.00020)    | 70.25      | 69.28      | 67.3        | ~40         |
+      | [UNITER](https://arxiv.org/abs/1909.11740)  | 74.69      | 71.02      | 70.93       | ~900        |
+      | [CAPTURE](https://arxiv.org/abs/2107.14572) | 79.36      | 74.79      | 74.63       | ~900        |
+      | UMS                                         | **83.27**  | **78.69**  | **76.01**   | **~40**     |
 ### Image-text cross-modal retrieval task
   * datasets
      * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K test set.
@@ -169,4 +170,16 @@ sh eval_scripts/run_eval_ums_base_inshop.sh
 3. run shell script for peformance evaluation on COCO-CTC datasets
 ```
 sh eval_scripts/run_eval_ums_base_inshop.sh ums_ctc.pdparams
+```
+
+## Citation
+You can cite the related paper as below:
+
+```
+@article{cheng2022vista,
+  title={ViSTA: Vision and Scene Text Aggregation for Cross-Modal Retrieval},
+  author={Cheng, Mengjun and Sun, Yipeng and Wang, Longchao and Zhu, Xiongwei and Yao, Kun and Chen, Jie and Song, Guoli and Han, Junyu and Liu, Jingtuo and Ding, Errui and others},
+  journal={arXiv preprint arXiv:2203.16778},
+  year={2022}
+}
 ```
