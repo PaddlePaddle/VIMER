@@ -39,11 +39,12 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 * [FUNSD](https://guillaumejaume.github.io/FUNSD/) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
 
 ## 公开基准效果
+
 | 任务类型 |  测试集合 | 评价方式 | V2.0 |
-|  ----  | ---- |   ----  | ----  |   :----:  |
-| 文档图像分类  | RVL-CDIP |  Accuray | 93.3 |
-| 文档版式分析  | PubLayNet  |   F1-score  |  95.4 |
-| 表格结构解析  | PubTabNet  | TEDs | 97.1 |
+|  ----  | ---- | ----  |   :----:  |
+| 文档图像分类   | RVL-CDIP |  Accuray | 93.3 |
+| 文档版式分析   | PubLayNet  |   F1-score  |  95.4 |
+| 表格结构解析   | PubTabNet  | TEDs | 97.1 |
 | 文档 OCR     | FUNSD  | 1-NED | 87.9 |
 | 端到端信息抽取 | FUNSD | 1-NED |  65.1 |
 
