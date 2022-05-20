@@ -61,7 +61,7 @@ ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文
 ## 快速体验
 
 ### 安装PaddlePaddle
-本代码库基于`PaddlePaddle develop`, 可参考[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境配置，或者使用pip进行安装，根据CUDA版本不同，可自行选择对应适配版本的PaddlePaddle代码库:
+本代码库基于`PaddlePaddle develop`版, 可参考[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境配置，或者使用pip进行安装，根据CUDA版本不同，可自行选择对应适配版本的PaddlePaddle代码库:
 
 ```bash
 # We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:

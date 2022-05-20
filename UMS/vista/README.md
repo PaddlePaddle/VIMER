@@ -61,7 +61,7 @@ To achieve a strong feature representation for better retrieval accuracy,we adop
 ## Quick experience
 
 ### Install PaddlePaddle
-This code base needs to be executed on the `PaddlePaddle develop`. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip, depending on the CUDA version, you can choose the PaddlePaddle code base corresponding to the adapted version:
+This code base needs to be executed on the `PaddlePaddle develop` version. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip, depending on the CUDA version, you can choose the PaddlePaddle code base corresponding to the adapted version:
 
 ```bash
 # We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
