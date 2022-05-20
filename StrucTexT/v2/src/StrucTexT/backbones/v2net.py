@@ -210,7 +210,7 @@ class ResNet(nn.Layer):
     def __init__(self, **kwargs):
         in_channels = 3
         layers = kwargs.get('layer', 50)
-        super(V2Net, self).__init__()
+        super(ResNet, self).__init__()
 
         supported_layers = [18, 34, 50, 101, 152, 200]
         assert layers in supported_layers, \
@@ -388,8 +388,8 @@ class V2Net(nn.Layer):
                 "hidden_act": "gelu",
                 "hidden_dropout_prob": 0.1,
                 "hidden_size": self.out_channels,
-                "num_attention_heads": 12,
-                "num_hidden_layers": 8
+                "num_attention_heads": 8,
+                "num_hidden_layers": 12
         }
         self.transformer = ErnieEncoderStack(cfg)
         self.positional_encoding = PositionalEncoding(

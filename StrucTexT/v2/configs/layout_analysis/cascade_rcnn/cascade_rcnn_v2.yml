@@ -6,16 +6,9 @@ _BASE_: [
   '_base_/cascade_fpn_reader.yml',
 ]
 
-ResNet:
-  layers: 101
-  in_channels: [256, 512, 1024, 2048]
-  out_channels: 768
-  variant: d
-  norm_type: bn
-  freeze_at: 0
-  return_idx: [0,1,2,3]
-  num_stages: 4
-  lr_mult_list: [0.05, 0.05, 0.1, 0.15]
+V2Net:
+  layers: 50
+  out_channels: 128
 
 epoch: 8
 LearningRate:

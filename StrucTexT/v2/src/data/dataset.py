@@ -131,7 +131,5 @@ class BaseDataset(paddle.io.Dataset):
         input_data = []
         for name in self.feed_names:
             feature = features[name]
-            if self.collect_batch and feature.shape[0] == 1:
-                feature = feature[0]
             input_data.append(feature)
         return input_data

@@ -503,6 +503,7 @@ class DBTextSpottingEncode(object):
             for i, (poly, text, tag, text_class) in enumerate(data_list):
                 if valid_cnt < self.max_bbox_num:
                     if tag == True:
+                        continue
                     bboxes_4pts_padded_list[valid_cnt, :] = poly.reshape(-1)
                     texts_padded_list[valid_cnt, :] = text
                     classes_padded_list[valid_cnt] = text_class

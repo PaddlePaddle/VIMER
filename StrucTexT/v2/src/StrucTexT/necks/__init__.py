@@ -1,9 +1,9 @@
 """ build_neck """
 import os
 import sys
+
 from .db_fpn import FPN as DB_FPN
 from .east_fpn import FPN as EAST_FPN
-from .text_grid import TexTGrid
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '..')))

@@ -1,0 +1,10 @@
+tqdm
+opencv-python>=4.2.0
+PyYAML
+shapely
+scipy
+pycocotools
+setuptools>=42.0.0
+lap
+sklearn
+imgaug

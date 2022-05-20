@@ -14,7 +14,7 @@ import numpy as np
 import paddle as P
 
 LOG_FORMAT = '%(asctime)s - %(levelname)s: %(message)s' # [%(filename)s:%(lineno)d]'
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format=LOG_FORMAT,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -43,7 +43,7 @@ args = parser.parse_args()
 print_arguments(args)
 config = json.loads(open(args.config_file).read())
 
-ALL_MODULES = ['classify', 'end2end_ocr']
+ALL_MODULES = ['document_classify', 'end2end_ocr']
 if args.task_type not in ALL_MODULES:
     raise ValueError('Not valid task_type %s in %s' % (args.task_type, str(ALL_MODULES)))
 
@@ -64,7 +64,7 @@ def eval(config):
     assert weights_path.endswith('.pdparams') and \
             os.path.isfile(weights_path), \
             'the weights_path %s is not existed!' % weights_path
-    assert os.path.isdir(label_path), 'the label_dir %s is not existed!' % label_path
+    assert os.path.exists(label_path), 'the label_dir %s is not existed!' % label_path
     assert os.path.isdir(image_path), 'the image_dir %s is not existed!' % image_path
 
     config['init_model'] = weights_path

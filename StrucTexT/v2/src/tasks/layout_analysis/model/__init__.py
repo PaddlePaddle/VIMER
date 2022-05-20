@@ -31,7 +31,7 @@ from . import hardnet
 from . import esnet
 from . import cspresnet
 from . import csp_darknet
-from . impoort v2net
+from . import v2net
 
 from .vgg import *
 from .resnet import *

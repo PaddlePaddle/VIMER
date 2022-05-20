@@ -10,6 +10,7 @@ import numpy as np
 import paddle as P
 import cv2
 
+from tqdm import trange
 
 class Evaler:
     """
@@ -45,9 +46,10 @@ class Evaler:
         total_time = 0.0
         total_frame = 0.0
         t = trange(self.len_step)
+        loader = self.valid_data_loader()
         for step_idx in t:
             t.set_description('deal with %i' % step_idx)
-            input_data = next(self.valid_data_loader):
+            input_data = next(loader)
             start = time.time()
             feed_names = self.config['feed_names']
             output = self.model(*input_data, feed_names=feed_names, is_train=False)

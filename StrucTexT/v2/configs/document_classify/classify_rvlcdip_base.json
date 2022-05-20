@@ -7,7 +7,7 @@
         "task_module":{
             "num_labels":16
         }
-    }
+    },
     "metric":[
         {
             "name":"rvlcdip_acc",
@@ -43,7 +43,7 @@
                     "order":"hwc"}
                 },
                 {"DetResizeForTest":{
-                    "image_pad_shape":[1024, 1024]}
+                    "image_pad_shape":[960, 960]}
                 },
                 {"ToCHWImage":{}}
             ]

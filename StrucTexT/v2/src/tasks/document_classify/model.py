@@ -9,7 +9,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../../..')))
 
 from src.StrucTexT.arch.base_model import Encoder
-from src.StrucTexT.backbones.resnet_vd import ConvBNLayer
+from src.StrucTexT.backbones.base.layers import ConvBNLayer
 
 class Model(Encoder):
     """ task for entity labeling"""
@@ -56,5 +56,4 @@ class Model(Encoder):
         enc_final = self.conv2(self.conv1(enc_final))
         enc_final = enc_final.flatten(1)
         logit = self.label_classifier(enc_final)
-        loss = self.loss(logit, label, label_smooth=0.1)
         return {'logit': logit, 'label': label}
