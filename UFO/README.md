@@ -90,7 +90,7 @@ After the task supernet training is completed, the chip specific supernet is tra
 
 ### 170B-Prams-28SOTA
 
-VIMER-UFO 2.0 has a set of parameters for a single model, and achieved SOTA results on 28 mainstream CV public datasets without downstream finetuning. At the same time, although the number of parameters of the VIMER-UFO 2.0 large model has reached 17 billion, thanks to the sparse structure of Task-MoE, only some parameters need to be activated during inference of each task, the calculation amount is equivalent to the scale of the 600 million parameter model, and the speedup ratio is close to 30 times.
+VIMER-UFO 2.0 has a set of parameters for a single model, and achieved SOTA results on 28 mainstream CV public datasets without downstream finetuning. At the same time, although the number of parameters of the VIMER-UFO 2.0 large model has reached 17 billion, thanks to the sparse structure of Task-MoE, only some parameters need to be activated during inference of each task, the calculation amount is equivalent to the scale of the 600 million parameter model, and the speedup ratio is close to 30 times. Note: The SOTA results comes from [paperwithcode](https://paperswithcode.com/) without rerank strategy or external data. For tasks that do not corresponding results in paperwithcode, we search from papers. Due to the large number of tasks, if there are any omissions, I hope you will point out.
 
 |Tasks|General|Airplane|Pattern recognition|German traffic signs|Font Recognition|action|flower|medical image|medical image|facial expression|Pet|food|food|scene|mushroom|Canine|Distance|
 |:----:|:----:|:----:|:------:|:------------:|:------:|:----:|:---:|:------:|:------:|:----------:|:----:|:----:|:----:|:------:|-------:|:------:|:------:|
@@ -122,9 +122,10 @@ For AI services that only require a single or individual processing power, some 
 
 |    Datasets          |         SOTA           |        600M Model   |Extracted 110M Model |
 |:---------------------|:----------------------:|:-------------------:|:-------------------:|
-|      Daimlerpedcls   |          99.9          |         100         |        99.98        |
-|      flowers         |          99.76         |         99.76       |        98.28        |
-|      dmlab           |          77.0          |         80.93       |        74.0         |
+|      Daimlerpedcls   |          99.98         |         100         |        99.98        |
+|      flowers         |          99.76         |         99.76       |        99.26        |
+|      dmlab           |          77.0          |         80.93       |        74.91        |
+|      gtsrb           |          99.71         |         99.89       |        98.7        |
 
 ### Fast-expansion-to-new-tasks
 
@@ -140,7 +141,7 @@ Fast expansion results：
 |      aircraft        |          94.90         |         70.84       |        95.02        |
 |      cifar10         |          99.40         |         99.32       |        99.40        |
 |      gtsrb           |          99.7          |         99.83       |        99.90        |
-|      Cityscape       |          84.3          |         -           |        84.36        |
+|      Cityscape       |          84.3  (without Extra Training Data)        |         -           |        84.36        |
 |      PASCAL VOC      |          89.3          |         -           |        89.14        |
 
 
