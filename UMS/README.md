@@ -6,14 +6,14 @@ English | [简体中文](README_ch.md)
 - [Extensive coverage of product search tasks](#extensive-coverage-of-product-search-tasks)
 - [Model performance](#model-performance)
   * [Product visual retrieval task](#product-visual-retrieval-task)
-  * [Product cross-modal retrieval task](#product-cross-modal-retrieval_task)
-  * [Image-text cross-modal retrieval task](#image-text-cross-modal-retrieval_task)
+  * [Product multi-modal retrieval task](#product-multi-modal-retrieval-task)
+  * [Image-text cross-modal retrieval task](#image-text-cross-modal-retrieval-task)
 - [Application scenarios](#application-scenarios)
 - [Quick experience](#quick-experience)
   * [Install PaddlePaddle](#install-paddlepaddle)
   * [Install PaddleNlp](#install-paddlenlp)
   * [Download inference models](#download-inference-models)
-  * [Infer fine-tuned models](#infer-fine-tuned-models)
+  * [Downstream task model inference](#downstream-task-model-inference)
 - [Citation](#citation)
 
 ## Model description
@@ -58,10 +58,10 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
      | ViT_base      | Rank Loss                                   | 87.1       | 93.6           | ~18             |
      | UMS           | Rank Loss                                   | **88.5**   | **94.7**       | ~18             |
 
-### Product cross-modal retrieval task
+### Product multi-modal retrieval task
   * dataset
     * [Product1M](https://github.com/zhanxlin/Product1M):The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions), 2,673 test samples, and 40,033 products base library samples are used as search evaluation data.
-  * performance: The multimodal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
+  * performance: The multi-modal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
 
       | Model                                       | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
       | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
@@ -94,11 +94,11 @@ VIMER-UMS image-text representation pre-training will be integrated into Baidu's
 ## Quick experience
 
 ### Install PaddlePaddle
-This code base needs to be executed on the `PaddlePaddle develop`. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip:
+This code base needs to be executed on the `PaddlePaddle develop`. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip, depending on the CUDA version, you can choose the PaddlePaddle code base corresponding to the adapted version:
 
 ```bash
 # We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
-python -m pip install paddlepaddle-gpu==0.0.0.postxxx -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
+python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
 ```
 ### Install PaddleNlp
 The installation command of PaddleNlp can find from this (https://github.com/PaddlePaddle/PaddleNLP) or use pip:
@@ -129,12 +129,12 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 ### Download inference models
 | Model link                                              | Params(M) |
 | :------------------------------------------------- | :-----------|
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS for Product1M image-text retrieval   </a>| 751 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS for Product1M multi-modal retrieval   </a>| 751 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147519" target="_blank">UMS for SOP image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147520" target="_blank">UMS for InShop image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147541" target="_blank">UMS for COCO_CTC image-text retrieval   </a>| 749 |
 
-### Infer fine-tuned models
+### Downstream Task Model Inference
   
 #### Evaluation on Product1M
 
