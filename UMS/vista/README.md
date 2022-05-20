@@ -15,7 +15,7 @@ English | [简体中文](README_ch.md)
 
 ## Architecture
 <div align="center">
-    <img src="./doc/overview-v2_s.png" width="1000">
+    <img src="./doc/overview-v2_s.png" width="900">
 </div>
 <p align="center"> Model Architecture of ViSTA </p>
 

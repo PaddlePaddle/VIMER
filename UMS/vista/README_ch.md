@@ -16,7 +16,7 @@
 
 ## 结构
 <div align="center">
-    <img src="./doc/overview-v2_s.png" width="1000">
+    <img src="./doc/overview-v2_s.png" width="900">
 </div>
 <p align="center"> ViSTA模型结构 </p>
 
@@ -48,7 +48,7 @@ ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文
         | [SCAN](https://arxiv.org/abs/1803.08024)    | 36.3/63.7/75.2                              | 26.6/53.6/65.3                              |
         | [VSRN](https://arxiv.org/abs/1909.02701)    | 38.2/67.4/79.1                              | 26.6/54.2/66.2                              |
         | [STARNet](https://arxiv.org/abs/2012.04329) | 44.1/74.8/82.7                              | 31.5/60.8/72.4                              |
-        | ViSTA-S                                     | **52.5/77.9/87.2**                          | **36.7/66.2/77.8**                          |
+        | ViSTA-S                                     | **52.6/77.9/87.2**                          | **36.7/66.2/77.8**                          |
      * ViSTA模型在CTC_5K数据集上图搜文与文搜图评测效果如下。
  
         | 模型                                        | CTC-5K<br>图搜文<br>R@1/R@5/R@10            | CTC-5K<br>文搜图<br>R@1/R@5/R@10           |           
