@@ -10,7 +10,7 @@ English | [简体中文](README_ch.md)
   * [Install PaddleNlp](#install-paddlenlp)
   * [Download inference models](#download-inference-models)
   * [Infer fine-tuned models](#infer-fine-tuned-models)
-  * [Visulization of cross-modal retrieval results](#visualization-of-retrieval-results)
+  * [Visulization of cross-modal retrieval results](#visualization-of-cross-modal-retrieval-results)
 - [Citation](#citation)
 
 ## Architecture

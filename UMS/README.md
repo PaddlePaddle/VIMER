@@ -134,7 +134,7 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147520" target="_blank">UMS for InShop image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147541" target="_blank">UMS for COCO_CTC image-text retrieval   </a>| 749 |
 
-### Downstream Task Model Inference
+### Downstream task model inference
   
 #### Evaluation on Product1M
 
