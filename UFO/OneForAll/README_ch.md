@@ -6,6 +6,8 @@
   * [环境配置](#环境配置)
   * [多机训练](#多机训练)
   * [170亿参数预训练模型下载](#170亿参数预训练模型下载)
+  * [从170亿大模型中抽取特定任务相关路径/模型](#从170亿大模型中抽取特定任务相关路径)
+  * [性能评测](#性能评测)
 
 ## 使用方案
 
@@ -40,6 +42,19 @@ mpirun -npernode 1 --bind-to none python -m paddle.distributed.launch  --gpus "0
 ### 170亿参数预训练模型下载
 
 如果需要下载170亿参数的预训练模型，请发送邮件到 vimer-ufo@baidu.com . 申请邮件需要包含你的名字和组织（学校/公司）. 我们会尽快答复.
+
+### 从170亿大模型中抽取特定任务相关模型
+Take ImageNet as an example
+```bash
+python tools/extract_task_specific_model.py --paddel_model_path UFO_2.0_17B_release.pdmodel --task_name task6
+```
+
+### 性能评测
+Take ImageNet as an example
+```bash
+export UFO_config=configs/evaluation_configs/vithuge_imagenet_eval.py
+python -m paddle.distributed.launch  --gpus "0,1,2,3,4,5,6,7" tools/ufo_train.py --config-file $UFO_config --eval-only
+```
 
 致谢：部分数据集构建和测评代码参考了https://github.com/facebookresearch/detectron2 和 https://github.com/JDAI-CV/fast-reid , 表示感谢！
 
