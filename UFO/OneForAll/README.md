@@ -6,6 +6,8 @@ English | [简体中文](README_ch.md)
   * [Environment](#Environment)
   * [Distributed-training](#Distributed-training)
   * [Download the 17B pretrained model](#Download-17B-pretrained-model)
+  * [Extract task specific model from 17B pretrained model](#Extract-task-specific-model-from-17B-pretrained-model)
+  * [Evaluation](#Evaluation)
 
 ## Instructions
 
@@ -39,6 +41,19 @@ mpirun -npernode 1 --bind-to none python -m paddle.distributed.launch  --gpus "0
 ### Download-17B-pretrained-model
 
 Please send your request to vimer-ufo@baidu.com . The request may include your name and orgnization. We will notify you by email as soon as possible.
+
+### Extract-task-specific-model-from-17B-pretrained-model
+Take ImageNet as an example
+```bash
+python tools/extract_task_specific_model.py --paddel_model_path UFO_2.0_17B_release.pdmodel --task_name task6
+```
+
+### Evaluation
+Take ImageNet as an example
+```bash
+export UFO_config=configs/evaluation_configs/vithuge_imagenet_eval.py
+python -m paddle.distributed.launch  --gpus "0,1,2,3,4,5,6,7" tools/ufo_train.py --config-file $UFO_config --eval-only
+```
 
 We thank for https://github.com/facebookresearch/detectron2 and https://github.com/JDAI-CV/fast-reid .
 
