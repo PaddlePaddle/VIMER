@@ -34,29 +34,22 @@ ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文
 - **ViSTA双塔图文预训练模型:** 我们基于[Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html)训练ViSTA双塔图文预训练模型。
 
 ## 跨模态检索
-我们以VIT-S(vit_small_patch16_224)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
+我们以VIT-S(vit_small)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
 ### 场景文本感知跨模态检索
    * 数据集
      * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset):包含31000张来自Flick的图像，每张图像基于人工标注提供5个场景描述的文本的数据集。
      * [TextCaps](https://textvqa.org/textcaps/dataset/):包含28000张图像与145000个图像文本描述数据集。
-     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):CTC训练数据集包含5683张图像和28415个图像文本描述,CTC-1K和CTC-5K用于图搜文和文搜图任务评测。
+     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):CTC训练数据集包含5683张图像和28415个图像文本描述，CTC-1K和CTC-5K用于图搜文和文搜图任务评测。
    * 效果:
-     * ViSTA模型在CTC-1K数据集上图搜文与文搜图评测效果如下。
+     * ViSTA模型在CTC-1K数据集和CTC-5K数据集上图搜文与文搜图评测效果如下。
  
-        | 模型                                        | CTC-1K<br>图搜文<br>R@1/R@5/R@10            | CTC-1K<br>文搜图<br>R@1/R@5/R@10           |           
-        | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: |
-        | [SCAN](https://arxiv.org/abs/1803.08024)    | 36.3/63.7/75.2                              | 26.6/53.6/65.3                              |
-        | [VSRN](https://arxiv.org/abs/1909.02701)    | 38.2/67.4/79.1                              | 26.6/54.2/66.2                              |
-        | [STARNet](https://arxiv.org/abs/2012.04329) | 44.1/74.8/82.7                              | 31.5/60.8/72.4                              |
-        | ViSTA-S                                     | **52.6/77.9/87.2**                          | **36.7/66.2/77.8**                          |
-     * ViSTA模型在CTC_5K数据集上图搜文与文搜图评测效果如下。
+        | 模型                                        | CTC-1K<br>图搜文<br>R@1/R@5/R@10            | CTC-1K<br>文搜图<br>R@1/R@5/R@10           | CTC-5K<br>图搜文<br>R@1/R@5/R@10            | CTC-5K<br>文搜图<br>R@1/R@5/R@10           |           
+        | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: |
+        | [SCAN](https://arxiv.org/abs/1803.08024)    | 36.3/63.7/75.2                              | 26.6/53.6/65.3                              | 22.8/45.6/54.3                              | 12.3/28.6/39.9                              |
+        | [VSRN](https://arxiv.org/abs/1909.02701)    | 38.2/67.4/79.1                              | 26.6/54.2/66.2                              | 23.7/47.6/59.1                              | 14.9/34.7/45.5                              |
+        | [STARNet](https://arxiv.org/abs/2012.04329) | 44.1/74.8/82.7                              | 31.5/60.8/72.4                              | 26.4/51.1/63.9                              | 17.1/37.4/48.3                              |
+        | [ViSTA-S](https://arxiv.org/abs/2203.16778)    | **52.6/77.9/87.2**                          | **36.7/66.2/77.8**                          | **31.8/56.6/67.8**                          | **20.0/42.9/54.4**                          |
  
-        | 模型                                        | CTC-5K<br>图搜文<br>R@1/R@5/R@10            | CTC-5K<br>文搜图<br>R@1/R@5/R@10           |           
-        | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: |
-        | [SCAN](https://arxiv.org/abs/1803.08024)    | 22.8/45.6/54.3                              | 12.3/28.6/39.9                              |
-        | [VSRN](https://arxiv.org/abs/1909.02701)    | 23.7/47.6/59.1                              | 14.9/34.7/45.5                              |
-        | [STARNet](https://arxiv.org/abs/2012.04329) | 26.4/51.1/63.9                              | 17.1/37.4/48.3                              |
-        | ViSTA-S                                     | **31.8/56.6/67.8**                          | **20.0/42.9/54.4**                          |
 
 ## 快速体验
 
@@ -104,9 +97,9 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 2. 下载模型：[configs](https://aistudio.baidu.com/aistudio/datasetdetail/147517)、vista.pdparams
 3. 运行shell脚本进行端到端评测
 
-CTC_1K：sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams
+CTC_1K：```sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams```
 
-CTC_5K：sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams
+CTC_5K：```sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams```
 
 
 ### 检索结果可视化
