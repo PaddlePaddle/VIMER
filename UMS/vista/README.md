@@ -103,9 +103,9 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147517), vista.pdparams
 3. run shell script for peformance evaluation
 
-CTC-1K：sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams
+CTC-1K：```sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams```
 
-CTC-5K：sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams
+CTC-5K：```sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams```
 
 
 ### Visualization of cross-modal retrieval results
