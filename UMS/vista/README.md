@@ -39,7 +39,7 @@ To achieve a strong feature representation for better retrieval accuracy,we adop
    * datasets 
      * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset) Contains 31,000 images collected from Flickr, together with 5 reference sentences provided by human annotators.
      * [TextCaps](https://textvqa.org/textcaps/dataset/) Contains 145k captions for 28k images.
-     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/) Train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K and CTC-5K test set.
+     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/) Train set contains 28415 captions describing 5683 images, We conduct cross-modal retrieval task on CTC-1K and CTC-5K test set.
    * performance
      * image-to-text and text-to-image retrieval results on CTC-1K test set and CTC-5K test set.
 
