@@ -32,7 +32,7 @@ ViSTA is a full transformer architecture to effectively aggregate vision and sce
 We pretrained our ViSTA dual-encoder visual-language model on [Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html) dataset.
 
 ## Cross-modal retrieval
-To achieve a strong feature representation for better retrieval accuracy, we adopt VIT-S(ViT-small) as image encoder, BERT-mini as scene text and text encoder. We fine-tuned our ViSTA-S model on Flickr30K, TextCaption(TC) and COCO-Text Captioned(CTC) train set. Then we evaluated our model on COCO-Text Captioned(CTC) dataset for the cross-modal retrieval task.
+To achieve a strong feature representation for better retrieval accuracy, we adopt ViT-S(ViT-small) as image encoder, BERT-mini as scene text and text encoder. We fine-tuned our ViSTA-S model on Flickr30K, TextCaption(TC) and COCO-Text Captioned(CTC) train set. Then we evaluated our model on COCO-Text Captioned(CTC) dataset for the cross-modal retrieval task.
 
 ## Scene text aware cross-modal retrieval
    * Datasets 

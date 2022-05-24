@@ -33,7 +33,7 @@ ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文
 我们基于[Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html)训练ViSTA双塔图文预训练模型。
 
 ## 跨模态检索
-我们以VIT-S(ViT-small)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
+我们以ViT-S(ViT-small)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
 ### 场景文本感知跨模态检索
    * 数据集
      * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset):包含31000张来自Flickr的图像，每张图像基于人工标注提供5个场景描述的文本的数据集。
