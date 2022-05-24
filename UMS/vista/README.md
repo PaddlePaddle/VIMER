@@ -26,20 +26,20 @@ For basic design concept of the architecture, please see our paper:
 >Accepted by CVPR 2022
 > 
 
-ViSTA is a full transformer architecture to effectively aggregate vision and scene text, which is applicable in both scene text aware and scene text free retrival scenarios. Visual appearance is considered to be the most important cue to understand images for cross-modal retrieval, while sometimes the scene text appearing in images can provide valuable information to understand the visual semantics. Most cross-modal retrieval approaches ignore the usage of scene text information, and directly adding this information may lead to performance degradation in scene text free scenarios. To tackle the modality missing problem of scene text, we propose a fusion token based transformer aggregation approach to exchange the relevant information among visual and scene text features. To further strengthen the visual modality, we develop dual contrastive learning losses to embed both image-text pairs and fusion-text pairs into a common cross-modal space. The proposed cross-modal retrieval framework can remarkably surpass existing methods for the scene text aware retrieval task and achieve better performance than state-of-the-art approaches on scene text free retrieval benchmarks as well. 
+ViSTA is a full transformer architecture to effectively aggregate vision and scene text, which is applicable in both scene text aware and scene text free retrieval scenarios. Visual appearance is considered to be the most important cue to understand images for cross-modal retrieval, while sometimes the scene text appearing in images can provide valuable information to understand the visual semantics. Most cross-modal retrieval approaches ignore the usage of scene text information, and directly adding this information may lead to performance degradation in scene text free scenarios. To tackle the modality missing problem of scene text, we propose a fusion token based transformer aggregation approach to exchange the relevant information among visual and scene text features. To further strengthen the visual modality, we develop dual contrastive learning losses to embed both image-text pairs and fusion-text pairs into a common cross-modal space. The proposed cross-modal retrieval framework can remarkably surpass existing methods for the scene text aware retrieval task and achieve better performance than state-of-the-art approaches on scene text free retrieval benchmarks as well. 
 
 ## Pre-trained tasks
-- **ViSTA dual-encoder visual-language modeling:** We pretrained our ViSTA dual-encoder visual-language model on [Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html) dataset.
+We pretrained our ViSTA dual-encoder visual-language model on [Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html) dataset.
 
 ## Cross-modal retrieval
-To achieve a strong feature representation for better retrieval accuracy,we adopt VIT-S(vit_small) as image encoder, BERT-mini as scene text and text query encoder.We fine-tuned our ViSTA-S model on Flickr30K, TextCaption(TC) and COCO-Text Captioned(CTC) train set, then the cross-modal retrieval task is evaluated on COCO-Text Captioned(CTC) dataset.
+To achieve a strong feature representation for better retrieval accuracy, we adopt VIT-S(ViT-small) as image encoder, BERT-mini as scene text and text encoder. We fine-tuned our ViSTA-S model on Flickr30K, TextCaption(TC) and COCO-Text Captioned(CTC) train set. Then we evaluated our model on COCO-Text Captioned(CTC) dataset for the cross-modal retrieval task.
 
 ## Scene text aware cross-modal retrieval
-   * datasets 
+   * Datasets 
      * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset) Contains 31,000 images collected from Flickr, together with 5 reference sentences provided by human annotators.
      * [TextCaps](https://textvqa.org/textcaps/dataset/) Contains 145k captions for 28k images.
      * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/) Train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K and CTC-5K test set.
-   * performance
+   * Performance
      * image-to-text and text-to-image retrieval results on CTC-1K test set and CTC-5K test set.
 
         | Model                                      | CTC-1K<br>Image-to-text<br>R@1/R@5/R@10 | CTC-1K<br>Text-to-image<br>R@1/R@5/R@10 | CTC-5K<br>Image-to-text<br>R@1/R@5/R@10 | CTC-5K<br>Text-to-image<br>R@1/R@5/R@10 |          
@@ -62,9 +62,9 @@ Check [INSTALL.md](./doc/INSTALL.md) for installation instructions.
 ### Infer fine-tuned models
   
 #### Evaluation on CTC-1K and CTC-5K
-1. download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
-2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147517), vista.pdparams
-3. run shell script for peformance evaluation
+1. Download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
+2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147517), vista.pdparams
+3. Run shell script for peformance evaluation
 
 CTC-1K：```sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams```
 
@@ -72,15 +72,15 @@ CTC-5K：```sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pd
 
 
 ### Visualization of cross-modal retrieval results
-image-to-text and text-to-image retrieval visualization results(compared with scene text free results)
+Image-to-text and text-to-image retrieval visualization results(compared with scene text free results)
 
-- image-to-text results
+- Image-to-text results
 
 <div align="center">
     <img src="./doc/img2text_demo_s.png" width="800">
 </div>
 
-- text-to-image results
+- Text-to-image results
 
 <div align="center">
     <img src="./doc/text2image-demo_s.png" width="800">

@@ -45,10 +45,10 @@ For practical business applications, based on the VIMER-UMS commodity graphic re
 Based on the VIMER-UMS commodity graphic representation pre-training model, it realizes the SOTA effect of multiple commodity downstream visual retrieval and cross-modal retrieval tasks, and supports direct deployment and pre-training fine-tuning applications.
 
 ### Product visual retrieval task
-  * dataset
+  * Dataset
     * [SOP](https://cvgl.stanford.edu/projects/lifted_struct/):This dataset has 22,634 classes with 120,053 product images. The first 11,318 classes (59,551 images) are split for training and the other 11,316 (60,502 images) classes are used for testing.
     * [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html):The dataset contains 22,634 items and a total of 120,053 annotated images for evaluating the visual retrieval effect of items. There are 59,551 training images and 11,318 product categories, and 60,502 test images and 11,316 product categories.
-  * performance: SOP, InShop visual retrieval tasks, and downstream task fine-tuning effects are evaluated based on Recall@1, and single-card GPU prediction supports fast identification applications.
+  * Performance: SOP, InShop visual retrieval tasks, and downstream task fine-tuning effects are evaluated based on Recall@1, and single-card GPU prediction supports fast identification applications.
 
      | Model         | Downstream fine-tuning method               | SOP        | InShop         | Time/ms         |
      | :------------ | :-----------------------------------------: | :-------:  | :------------: | :-------------: |
@@ -58,9 +58,9 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
      | UMS           | Rank Loss                                   | **88.5**   | **94.7**       | ~18             |
 
 ### Product multi-modal retrieval task
-  * dataset
+  * Dataset
     * [Product1M](https://github.com/zhanxlin/Product1M):The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions), 2,673 test samples, and 40,033 products base library samples are used as search evaluation data.
-  * performance: The multi-modal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
+  * Performance: The multi-modal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
 
       | Model                                       | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
       | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
@@ -69,10 +69,10 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
       | [CAPTURE](https://arxiv.org/abs/2107.14572) | 79.36      | 74.79      | 74.63       | ~900        |
       | UMS                                         | **83.27**  | **78.69**  | **76.01**   | **~40**     |
 ### Image-text cross-modal retrieval task
-  * datasets
+  * Datasets
      * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K test set.
 
-  * performance
+  * Performance
      * image-to-text and text-to-image retrieval results on CTC-1K test set.
         | Model                                        | CTC-1K<br>Image-to-text<br>R@1/R@5/R@10            | CTC-1K<br>Text-to-image<br>R@1/R@5/R@10           |           
         | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: |
@@ -107,36 +107,36 @@ Check [INSTALL.md](./doc/INSTALL.md) for installation instructions.
   
 #### Evaluation on Product1M
 
-1. download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
-2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
-3. run shell script for peformance evaluation on Product1M dataset
+1. Download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
+2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
+3. Run shell script for peformance evaluation on Product1M dataset
 ```
 sh eval_scripts/run_eval_ums_base_product1m.sh ums_product1m.pdparams
 ```
 
 #### Evaluation on SOP
 
-1. download and extract the [SOP](https://cvgl.stanford.edu/projects/lifted_struct/) dataset at current directory <./Stanford_Online_Products>
-2. download infer modal ums_sop.pdparams
-3. run shell script for peformance evaluation on SOP dataset
+1. Download and extract the [SOP](https://cvgl.stanford.edu/projects/lifted_struct/) dataset at current directory <./Stanford_Online_Products>
+2. Download infer modal ums_sop.pdparams
+3. Run shell script for peformance evaluation on SOP dataset
 ```
 sh eval_scripts/run_eval_ums_base_sop.sh
 ```
 
 #### Evaluation on InShop
 
-1. download and extract the [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) dataset at current directory <./inshop_dataset>
-2. download infer modal ums_inshop.pdparams
-3. run shell script for peformance evaluation on InShop datasets
+1. Download and extract the [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) dataset at current directory <./inshop_dataset>
+2. Download infer modal ums_inshop.pdparams
+3. Run shell script for peformance evaluation on InShop datasets
 ```
 sh eval_scripts/run_eval_ums_base_inshop.sh
 ```
 
 #### Evaluation on COCO-CTC
 
-1. download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
-2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
-3. run shell script for peformance evaluation on COCO-CTC datasets
+1. Download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
+2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
+3. Run shell script for peformance evaluation on COCO-CTC datasets
 ```
 sh eval_scripts/run_eval_ums_base_inshop.sh ums_ctc.pdparams
 ```

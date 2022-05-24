@@ -27,16 +27,16 @@
 论文已被CVPR 2022会议接受
 >
 
-ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文本缺失场景的全transformer图文跨模态检索模型。在图文跨模态检索场景中，视觉表征对理解图像起到最重要的作用，图像中包含的场景文本信息有时对于理解视觉语义信息有重要意义。在现有图文跨模态检索模型中，往往会忽视图像数据中包含的场景文本信息，若考虑加入场景文本信息辅助提升跨模态检索效果，场景文本缺失情况下可能会出现效果退化的问题。为了有效处理场景文本中模态缺失问题，ViSTA提出了一种基于fusion token的transformer融合方案,通过fusion token进行视觉与场景文本特征的相关信息交互。为进一步提升视觉语义表征能力，我们设计了一种双对比学习方案，将图像-文本对与融合-文本对嵌入到同跨模态空间中进行学习来提升视觉语义特征。我们所提出的跨模态检索模型在包含场景文本信息场景下显著优于现有模型，同时，在场景文本缺失场景下也能达到由于sota模型的效果。
+ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文本缺失场景的全transformer图文跨模态检索模型。在图文跨模态检索场景中，视觉表征对理解图像起到最重要的作用，图像中包含的场景文本信息有时对于理解视觉语义信息有重要意义。在现有图文跨模态检索模型中，往往会忽视图像数据中包含的场景文本信息，若考虑加入场景文本信息辅助提升跨模态检索效果，场景文本缺失情况下可能会出现效果退化的问题。为了有效处理场景文本中模态缺失问题，ViSTA提出了一种基于fusion token的transformer融合方案，通过fusion token进行视觉与场景文本特征的相关信息交互。为进一步提升视觉语义表征能力，我们设计了一种双对比学习方案，将图像-文本对与融合-文本对嵌入到同跨模态空间中进行学习来提升视觉语义特征。我们所提出的跨模态检索模型在包含场景文本信息场景下显著优于现有模型，同时，在场景文本缺失场景下也能达到SOTA模型的效果。
 
 ## 预训练任务
-- **ViSTA双塔图文预训练模型:** 我们基于[Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html)训练ViSTA双塔图文预训练模型。
+我们基于[Visual Genome (VG)](https://visualgenome.org/api/v0/api_home.html)训练ViSTA双塔图文预训练模型。
 
 ## 跨模态检索
-我们以VIT-S(vit_small)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
+我们以VIT-S(ViT-small)作为视觉编码器，BERT-mini作为场景文本与caption编码器，基于Flickr30K、TextCaption(TC)和COCO-Text Captioned(CTC)训练数据集上微调ViSTA双塔图文预训练模型，以COCO-Text Captioned(CTC)数据集作为跨模态检索任务评测集。
 ### 场景文本感知跨模态检索
    * 数据集
-     * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset):包含31000张来自Flick的图像，每张图像基于人工标注提供5个场景描述的文本的数据集。
+     * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset):包含31000张来自Flickr的图像，每张图像基于人工标注提供5个场景描述的文本的数据集。
      * [TextCaps](https://textvqa.org/textcaps/dataset/):包含28000张图像与145000个图像文本描述数据集。
      * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):CTC训练数据集包含5683张图像和28415个图像文本描述，CTC-1K和CTC-5K用于图搜文和文搜图任务评测。
    * 效果:
