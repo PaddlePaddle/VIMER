@@ -6,8 +6,7 @@ English | [简体中文](README_ch.md)
 - [Cross-modal retrieval](#cross-modal-retrieval)
   * [Scene text aware cross-modal retrieval](#scene-text-aware-cross-modal-retrieval)
 - [Quick experience](#quick-experience)
-  * [Install PaddlePaddle](#install-paddlepaddle)
-  * [Install PaddleNlp](#install-paddlenlp)
+  * [Environment installation](#environment-installation)
   * [Download inference models](#download-inference-models)
   * [Infer fine-tuned models](#infer-fine-tuned-models)
   * [Visulization of cross-modal retrieval results](#visualization-of-cross-modal-retrieval-results)
@@ -39,7 +38,7 @@ To achieve a strong feature representation for better retrieval accuracy,we adop
    * datasets 
      * [Flickr30K](https://www.kaggle.com/hsankesara/flickr-image-dataset) Contains 31,000 images collected from Flickr, together with 5 reference sentences provided by human annotators.
      * [TextCaps](https://textvqa.org/textcaps/dataset/) Contains 145k captions for 28k images.
-     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/) Train set contains 28415 captions describing 5683 images, We conduct cross-modal retrieval task on CTC-1K and CTC-5K test set.
+     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/) Train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K and CTC-5K test set.
    * performance
      * image-to-text and text-to-image retrieval results on CTC-1K test set and CTC-5K test set.
 
@@ -52,36 +51,8 @@ To achieve a strong feature representation for better retrieval accuracy,we adop
 
 ## Quick experience
 
-### Install PaddlePaddle
-This code base needs to be executed on the `PaddlePaddle develop` version. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip, depending on the CUDA version, you can choose the PaddlePaddle code base corresponding to the adapted version:
-
-```bash
-# We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
-python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
-```
-### Install PaddleNlp
-The installation command of PaddleNlp can find from this (https://github.com/PaddlePaddle/PaddleNLP) or use pip:
-
-```bash
-pip install paddlenlp
-```
-
-* Environment requirements
-```bash
-python 3.6+
-numpy
-Pillow
-paddlenlp>=2.2.3
-cuda>=10.1
-cudnn>=7.6.4
-gcc>=8.2
-```
-
-* Install requirements
-ViSTA dependencies are listed in file `requirements.txt`, you can use the following command to install the dependencies.
-```
-pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple
-```
+### Environment installation
+Check [INSTALL.md](./doc/INSTALL.md) for installation instructions.
 
 ### Download inference models
 | Model link                                              | Params(M) |

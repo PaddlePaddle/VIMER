@@ -6,8 +6,7 @@
 - [跨模态检索](#跨模态检索)
   * [场景文本感知跨模态检索](#场景文本感知跨模态检索)
 - [快速体验](#快速体验)
-  * [安装PaddlePaddle](#安装PaddlePaddle)
-  * [安装PaddleNlp](#安装PaddleNlp)
+  * [环境安装](#环境安装)
   * [下载推理模型](#下载推理模型)
   * [使用预训练模型推理](#使用预训练模型推理)
   * [检索结果可视化](#检索结果可视化)
@@ -53,36 +52,8 @@ ViSTA是一个高效融合视觉特征与场景文本特征同时兼容场景文
 
 ## 快速体验
 
-### 安装PaddlePaddle
-本代码库基于`PaddlePaddle develop`版, 可参考[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境配置，或者使用pip进行安装，根据CUDA版本不同，可自行选择对应适配版本的PaddlePaddle代码库:
-
-```bash
-# We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
-python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
-```
-### 安装PaddleNlp
-PaddleNlp代码可参考(https://github.com/PaddlePaddle/PaddleNLP) 或者使用pip进行安装:
-
-```bash
-pip install paddlenlp
-```
-
-* 环境要求
-```bash
-python 3.6+
-numpy
-Pillow
-paddlenlp>=2.2.3
-cuda>=10.1
-cudnn>=7.6.4
-gcc>=8.2
-```
-
-* 安装要求
-ViSTA的依赖库已在`requirements.txt`中列出，你可以使用以下命令行进行依赖库安装：
-```
-pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple
-```
+### 环境安装
+查看[INSTALL_ch.md](./doc/INSTALL_ch.md)获取安装说明。
 
 ### 下载推理模型
 | 下载链接                                              | 参数量(M) |
@@ -97,9 +68,9 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 2. 下载模型：[configs](https://aistudio.baidu.com/aistudio/datasetdetail/147517)、vista.pdparams
 3. 运行shell脚本进行端到端评测
 
-CTC_1K：```sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams```
+CTC_1K：sh eval_scripts/run_eval_ctc_1k_online_scene_text_2D_ocr.sh vista.pdparams
 
-CTC_5K：```sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams```
+CTC_5K：sh eval_scripts/run_eval_ctc_5k_online_scene_text_2D_ocr.sh vista.pdparams
 
 
 ### 检索结果可视化
