@@ -6,14 +6,13 @@ English | [简体中文](README_ch.md)
 - [Extensive coverage of product search tasks](#extensive-coverage-of-product-search-tasks)
 - [Model performance](#model-performance)
   * [Product visual retrieval task](#product-visual-retrieval-task)
-  * [Product cross-modal retrieval task](#product-cross-modal-retrieval_task)
-  * [Image-text cross-modal retrieval task](#image-text-cross-modal-retrieval_task)
+  * [Product multi-modal retrieval task](#product-multi-modal-retrieval-task)
+  * [Image-text cross-modal retrieval task](#image-text-cross-modal-retrieval-task)
 - [Application scenarios](#application-scenarios)
 - [Quick experience](#quick-experience)
-  * [Install PaddlePaddle](#install-paddlepaddle)
-  * [Install PaddleNlp](#install-paddlenlp)
+  * [Environment installation](#environment-installation)
   * [Download inference models](#download-inference-models)
-  * [Infer fine-tuned models](#infer-fine-tuned-models)
+  * [Downstream task model inference](#downstream-task-model-inference)
 - [Citation](#citation)
 
 ## Model description
@@ -46,10 +45,10 @@ For practical business applications, based on the VIMER-UMS commodity graphic re
 Based on the VIMER-UMS commodity graphic representation pre-training model, it realizes the SOTA effect of multiple commodity downstream visual retrieval and cross-modal retrieval tasks, and supports direct deployment and pre-training fine-tuning applications.
 
 ### Product visual retrieval task
-  * dataset
+  * Dataset
     * [SOP](https://cvgl.stanford.edu/projects/lifted_struct/):This dataset has 22,634 classes with 120,053 product images. The first 11,318 classes (59,551 images) are split for training and the other 11,316 (60,502 images) classes are used for testing.
     * [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html):The dataset contains 22,634 items and a total of 120,053 annotated images for evaluating the visual retrieval effect of items. There are 59,551 training images and 11,318 product categories, and 60,502 test images and 11,316 product categories.
-  * performance: SOP, InShop visual retrieval tasks, and downstream task fine-tuning effects are evaluated based on Recall@1, and single-card GPU prediction supports fast identification applications.
+  * Performance: SOP, InShop visual retrieval tasks, and downstream task fine-tuning effects are evaluated based on Recall@1, and single-card GPU prediction supports fast identification applications.
 
      | Model         | Downstream fine-tuning method               | SOP        | InShop         | Time/ms         |
      | :------------ | :-----------------------------------------: | :-------:  | :------------: | :-------------: |
@@ -58,10 +57,10 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
      | ViT_base      | Rank Loss                                   | 87.1       | 93.6           | ~18             |
      | UMS           | Rank Loss                                   | **88.5**   | **94.7**       | ~18             |
 
-### Product cross-modal retrieval task
-  * dataset
+### Product multi-modal retrieval task
+  * Dataset
     * [Product1M](https://github.com/zhanxlin/Product1M):The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions), 2,673 test samples, and 40,033 products base library samples are used as search evaluation data.
-  * performance: The multimodal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
+  * Performance: The multi-modal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
 
       | Model                                       | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
       | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
@@ -70,10 +69,10 @@ Based on the VIMER-UMS commodity graphic representation pre-training model, it r
       | [CAPTURE](https://arxiv.org/abs/2107.14572) | 79.36      | 74.79      | 74.63       | ~900        |
       | UMS                                         | **83.27**  | **78.69**  | **76.01**   | **~40**     |
 ### Image-text cross-modal retrieval task
-  * datasets
+  * Datasets
      * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K test set.
 
-  * performance
+  * Performance
      * image-to-text and text-to-image retrieval results on CTC-1K test set.
         | Model                                        | CTC-1K<br>Image-to-text<br>R@1/R@5/R@10            | CTC-1K<br>Text-to-image<br>R@1/R@5/R@10           |           
         | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: |
@@ -93,81 +92,51 @@ VIMER-UMS image-text representation pre-training will be integrated into Baidu's
 
 ## Quick experience
 
-### Install PaddlePaddle
-This code base needs to be executed on the `PaddlePaddle develop`. You can find how to prepare the environment from this [paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick) or use pip:
-
-```bash
-# We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
-python -m pip install paddlepaddle-gpu==0.0.0.postxxx -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
-```
-### Install PaddleNlp
-The installation command of PaddleNlp can find from this (https://github.com/PaddlePaddle/PaddleNLP) or use pip:
-
-```bash
-pip install paddlenlp
-```
-
-* Environment requirements
-```bash
-python 3.6+
-numpy
-Pillow
-paddlenlp>=2.2.3
-matplotlib
-faiss-cpu
-cuda>=10.1
-cudnn>=7.6.4
-gcc>=8.2
-```
-
-* Install requirements
-ViSTA dependencies are listed in file `requirements.txt`, you can use the following command to install the dependencies.
-```
-pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple
-```
+### Environment installation
+Check [INSTALL.md](./doc/INSTALL.md) for installation instructions.
 
 ### Download inference models
 | Model link                                              | Params(M) |
 | :------------------------------------------------- | :-----------|
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS for Product1M image-text retrieval   </a>| 751 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS for Product1M multi-modal retrieval   </a>| 751 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147519" target="_blank">UMS for SOP image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147520" target="_blank">UMS for InShop image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147541" target="_blank">UMS for COCO_CTC image-text retrieval   </a>| 749 |
 
-### Infer fine-tuned models
+### Downstream task model inference
   
 #### Evaluation on Product1M
 
-1. download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
-2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
-3. run shell script for peformance evaluation on Product1M dataset
+1. Download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
+2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
+3. Run shell script for peformance evaluation on Product1M dataset
 ```
 sh eval_scripts/run_eval_ums_base_product1m.sh ums_product1m.pdparams
 ```
 
 #### Evaluation on SOP
 
-1. download and extract the [SOP](https://cvgl.stanford.edu/projects/lifted_struct/) dataset at current directory <./Stanford_Online_Products>
-2. download infer modal ums_sop.pdparams
-3. run shell script for peformance evaluation on SOP dataset
+1. Download and extract the [SOP](https://cvgl.stanford.edu/projects/lifted_struct/) dataset at current directory <./Stanford_Online_Products>
+2. Download infer modal ums_sop.pdparams
+3. Run shell script for peformance evaluation on SOP dataset
 ```
 sh eval_scripts/run_eval_ums_base_sop.sh
 ```
 
 #### Evaluation on InShop
 
-1. download and extract the [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) dataset at current directory <./inshop_dataset>
-2. download infer modal ums_inshop.pdparams
-3. run shell script for peformance evaluation on InShop datasets
+1. Download and extract the [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html) dataset at current directory <./inshop_dataset>
+2. Download infer modal ums_inshop.pdparams
+3. Run shell script for peformance evaluation on InShop datasets
 ```
 sh eval_scripts/run_eval_ums_base_inshop.sh
 ```
 
 #### Evaluation on COCO-CTC
 
-1. download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
-2. download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
-3. run shell script for peformance evaluation on COCO-CTC datasets
+1. Download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
+2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
+3. Run shell script for peformance evaluation on COCO-CTC datasets
 ```
 sh eval_scripts/run_eval_ums_base_inshop.sh ums_ctc.pdparams
 ```

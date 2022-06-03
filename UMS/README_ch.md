@@ -6,14 +6,13 @@
 - [广泛涵盖商品搜索任务](#广泛涵盖商品搜索任务)
 - [模型效果](#模型效果)
   * [商品视觉检索任务](#商品视觉检索任务)
-  * [商品跨模态检索任务](#商品跨模态检索任务)
+  * [商品多模态检索任务](#商品多模态检索任务)
   * [图文跨模态检索任务](#图文跨模态检索任务)
 - [应用场景](#应用场景)
 - [快速体验](#快速体验)
-  * [安装PaddlePaddle](#安装PaddlePaddle)
-  * [安装PaddleNlp](#安装PaddleNlp)
+  * [环境安装](#环境安装)
   * [下载推理模型](#下载推理模型)
-  * [使用预训练模型推理](#使用预训练模型推理)
+  * [下游任务模型推理](#下游任务模型推理)
 - [引用](#引用)
 
 ## 模型说明
@@ -65,7 +64,7 @@ VIMER-UMS 基于端到端Transformer训练方式，通过视觉编码、文本�
      | ViT_base      | Rank Loss                                    | 87.1           | 93.6           | ~18             |
      | UMS      | Rank Loss                                    | **88.5**       | **94.7**       | ~18             |
 
-### 商品跨模态检索任务
+### 商品多模态检索任务
   * 数据集
      * [Product1M](https://github.com/zhanxlin/Product1M)多模态商品数据集包含 1,182,083 个训练样本（一对商品图与标题文本描述）、2,673 个测试样本以及 40,033 个商品底库样本作为搜索评测数据。
   * 商品多模态检索Product1M下游任务微调结果：采用 mAP@R指标（mean Average Precision）对搜索排序效果进行评估。
@@ -101,48 +100,18 @@ VIMER-UMS 商品图文表征预训练近期将集成至百度零门槛AI开发�
 
 ## 快速体验
 
-### 安装PaddlePaddle
-本代码库基于`PaddlePaddle develop`, 可参考[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境配置，或者使用pip进行安装:
-
-```bash
-# We only support the evaluation on GPU by using PaddlePaddle, the installation command follows:
-python -m pip install paddlepaddle-gpu==0.0.0.postxxx -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
-```
-### 安装PaddleNlp
-PaddleNlp代码可参考(https://github.com/PaddlePaddle/PaddleNLP) 或者使用pip进行安装:
-
-```bash
-pip install paddlenlp
-```
-
-* 环境要求
-```bash
-python 3.6+
-numpy
-Pillow
-paddlenlp>=2.2.3
-matplotlib
-faiss-cpu
-cuda>=10.1
-cudnn>=7.6.4
-gcc>=8.2
-```
-
-* 安装要求
-UMS的依赖库已在`requirements.txt`中列出，你可以使用以下命令行进行依赖库安装：
-```
-pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple
-```
+### 环境安装
+查看[INSTALL_ch.md](./doc/INSTALL_ch.md)获取安装说明。
 
 ### 下载推理模型
 | 下载链接                                              | 参数量(M) |
 | :------------------------------------------------- | :-----------|
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS model for Product1M image-text retrieval   </a>| 751 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS model for Product1M multi-modal retrieval   </a>| 751 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147519" target="_blank">UMS model for SOP image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147520" target="_blank">UMS model for InShop image retrieval   </a>| 327 |
 | <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147541" target="_blank">UMS model for COCO-CTC image-text retrieval   </a>| 749 |
 
-### 使用预训练模型推理
+### 下游任务模型推理
 
 #### Product1M数据集上评测流程
 1. 下载并解压[Product1M](https://github.com/zhanxlin/Product1M)数据集到当前根目录下<./Product1M>
