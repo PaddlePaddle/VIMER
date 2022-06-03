@@ -23,14 +23,15 @@ import copy
 __all__ = ['build_postprocess']
 
 from .db_postprocess import DBPostProcess
-from .mae_postprocess import MAEPostProcess
 from .east_postprocess import EASTPostProcess
+from .table_postprocess import TablePostProcess
 
 def build_postprocess(config, global_config=None):
     """ build_postprocess """
     support_dict = [
         'DBPostProcess',
-        'EASTPostProcess'
+        'EASTPostProcess',
+        'TablePostProcess'
     ]
 
     config = copy.deepcopy(config)

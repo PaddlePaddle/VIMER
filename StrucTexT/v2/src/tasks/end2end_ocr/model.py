@@ -15,11 +15,10 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../../..')))
 
 from StrucTexT.arch.base_model import Encoder
-from tasks.text_spotting_db.recg_head import RecgHead
-from tasks.text_spotting_db.dataset import LabelConverter
-
-from src.postprocess.db_postprocess import DBPostProcess
 from paddle.vision.ops import roi_align
+from .dataset import LabelConverter
+from .recg_head import RecgHead
+from postprocess.db_postprocess import DBPostProcess
 
 class ConvBNLayer(nn.Layer):
     """ConvBNLayer"""
@@ -147,7 +146,6 @@ class Model(Encoder):
         self.binarize = DBHead(in_channels, binarize_name_list)
         self.thresh = DBHead(in_channels, thresh_name_list)
 
-        self.db_loss = DBLoss()
         self.det_loss_weight = self.det_config.get('loss_weight')
 
         self.neck_conv = ConvBNLayer(
@@ -158,8 +156,7 @@ class Model(Encoder):
             padding=0,
             if_act=False,
             act=None,
-            name="neck_conv"
-        )
+            name="neck_conv")
 
         # recg_head
         self.method = self.recg_config.get("method")
@@ -176,8 +173,7 @@ class Model(Encoder):
             seq_len=self.recg_seq_len,
             recg_class_num=self.recg_class_num + 2,
             decoder_layers=self.decoder_layers,
-            return_intermediate_dec=self.return_intermediate_dec
-            )
+            return_intermediate_dec=self.return_intermediate_dec)
 
         self.label_converter = LabelConverter(
             seq_len=self.recg_seq_len,
@@ -263,7 +259,6 @@ class Model(Encoder):
         rois_num = []
         shape_list = [(image[i].shape[1], image[i].shape[2], 1, 1) for i in range(image.shape[0])]
         bbox_out = self.postprocess(results, shape_list)
-
         for b in range(bs):
             pred_res = bbox_out[b]['points']  # [num, 4, 2] nd_array
             pt1 = pred_res[:, 0, :]
@@ -299,7 +294,6 @@ class Model(Encoder):
         results['e2e_preds'] = self.inference(pred_labels)
 
         # for det only
-        pred_labels = {'det_result': bbox_out}
         results['det4classes_preds'] = self.inference(pred_labels)
 
         # prepare eval labels for eval
@@ -308,9 +302,7 @@ class Model(Encoder):
             texts_padded_list = input_data['texts_padded_list']
             masks_padded_list = input_data['masks_padded_list']
             classes_padded_list = input_data['classes_padded_list']
-            texts_label = []
-            bboxes_label = []
-            classes_label = []
+            gt_label = []
             for b in range(bs):
                 bboxes = bboxes_padded_list[b]  # [512, 4]
                 texts = texts_padded_list[b]  # [512, 50]
@@ -321,16 +313,15 @@ class Model(Encoder):
                 bboxes = paddle.index_select(bboxes, bool_idxes)
                 texts = paddle.index_select(texts, bool_idxes)
                 classes = paddle.index_select(text_classes, bool_idxes)
-                bboxes_label.append(bboxes)
-                texts_label.append(texts)
-                classes_label.append(text_classes)
-
-            gt_labels = {'det_label': bboxes_label, 'recg_label': texts_label}
-            results['e2e_gts'] = self.prepare_labels(gt_labels)
-            gt_labels = {'det_label':bboxes_label, 'class_label':classes_label}
-            results['det4classes_gts'] = self.prepare_labels(gt_labels)
-
-            return results
+                for text, bbox, cls in zip(texts, bboxes, classes):
+                    text = self.label_converter.decode(text.numpy()).upper()
+                    bbox = bbox.numpy().astype('int').tolist()
+                    cls = cls.numpy().tolist()[0]
+                    if len(text) > 0:
+                        gt_label.append([bbox, cls, text])
+            results['gt_label'] = gt_label
+            results.update(input_data)
+        return results
 
     def inference(self, raw_results):
         """
@@ -344,7 +335,6 @@ class Model(Encoder):
             res_num = len(raw_results['det_result'][bs_idx]['points'])
             for idx in range(res_num):
                 poly = raw_results['det_result'][bs_idx]['points'][idx]
-                # det_score = raw_results['det_result'][bs_idx]['scores'][idx]
                 if isinstance(poly, paddle.Tensor):
                     poly = poly.tolist()
                 else:
@@ -370,29 +360,3 @@ class Model(Encoder):
         prob = 0.0 if len(word) == 0 else probs[:len(word)].mean().numpy()[0]
 
         return word, prob
-
-    def prepare_labels(self, raw_results):
-        """preapre labels for validation
-        """
-        batch_size = len(raw_results['det_label'])
-        processed_results = []
-
-        for bs_idx in range(batch_size):
-            processed_result = []
-            res_num = len(raw_results['det_label'][bs_idx])
-            for idx in range(res_num):
-                poly = raw_results['det_label'][bs_idx][idx]
-                poly = poly.numpy().astype(np.int32).tolist()
-
-                # for det only
-                if raw_results.__contains__('class_label'):
-                    text_class = raw_results['class_label'][bs_idx][idx]
-                    text_class = text_class.numpy().astype(np.int32).item()
-                    ignore = False
-                    processed_result.append([poly, text_class, ignore])
-                else:
-                    transcript = raw_results['recg_label'][bs_idx][idx]
-                    word = self.label_converter.decode(transcript)
-                    ignore = True if len(word) == 0 else False
-                    processed_result.append([poly, word, ignore])
-            processed_results.append(processed_result)

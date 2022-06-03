@@ -58,6 +58,13 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 * python 3.6+ 
 * opencv-python 4.2.0+
 * tqdm
+* shapely
+* scipy
+* imgaug
+* pyclipper
+* distance
+* apted
+* pycocotools
 * tabulate
 * cuda >= 10.1
 * cudnn >= 7.6
@@ -66,7 +73,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 #### 安装要求
 StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命令行进行依赖库安装：
 
-`pip3 install --upgrade -r requirements.txt`
+`pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simple`
 
 ### 下载推理模型
 
@@ -98,8 +105,6 @@ python -u ./tools/eval.py \
 # 3. 下载模型：StrucTexT_v2_layout_analysis_base.pdparams
 # 4. 运行下述脚本启动版式分析检测任务评测
 sh set_env.sh
-cd PaddleDetection
-pip3 install -r requirements.txt
 python -u ./tools/eval.py \
 	-c configs/layout_analysis/cascade_rcnn/cascade_rcnn_v2.yml \
 	-o weights=StrucTexT_v2_layout_analysis_base.pdparams

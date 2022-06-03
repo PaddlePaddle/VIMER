@@ -40,8 +40,6 @@ class Evaler:
         '''
         self._resume_model()
         self.model.eval()
-        for eval_class in self.eval_classes.values():
-            eval_class.reset()
 
         total_time = 0.0
         total_frame = 0.0
@@ -64,8 +62,9 @@ class Evaler:
             total_frame += input_data[0].shape[0]
         metrics = 'fps : {}'.format(total_frame / total_time)
         for key, val in self.eval_classes.items():
-            metrics += '\n{}:\n'.format(key) + str(val.get_metric())
-        print('[Eval Validation] {}'.format(val_dict))
+            metrics += '\n{}:\n'.format(key) + str(val.accumulate())
+            val.reset()
+        print('[Eval Validation] {}'.format(metrics))
 
     def _resume_model(self):
         '''

@@ -43,7 +43,7 @@ args = parser.parse_args()
 print_arguments(args)
 config = json.loads(open(args.config_file).read())
 
-ALL_MODULES = ['document_classify', 'end2end_ocr']
+ALL_MODULES = ['document_classify', 'end2end_ocr', 'table_recognition']
 if args.task_type not in ALL_MODULES:
     raise ValueError('Not valid task_type %s in %s' % (args.task_type, str(ALL_MODULES)))
 
@@ -87,7 +87,8 @@ def eval(config):
     model = Model(model_config, eval_config['feed_names'])
 
     #metric
-    eval_classes = build_metric(config['metric'])
+    eval_classes = build_metric(config['metric']) \
+            if 'metric' in config.keys() else None
 
     #start
     logging.info('eval start...')

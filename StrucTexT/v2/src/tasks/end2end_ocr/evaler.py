@@ -11,6 +11,7 @@ import paddle as P
 import cv2
 
 from tqdm import trange
+from src.postprocess.ocr_postprocess import OCRPostProcess
 
 class Evaler:
     """
@@ -28,10 +29,11 @@ class Evaler:
         self.model = model
         self.valid_data_loader = data_loader
         self.eval_classes = eval_classes
-        self.len_step = len(self.data_loader)
+        self.len_step = len(self.valid_data_loader)
 
         self.init_model = config['init_model']
         self.config = config['eval']
+        self.postprocess = OCRPostProcess(self.config['results_dir'])
 
     @P.no_grad()
     def run(self):
@@ -40,8 +42,6 @@ class Evaler:
         '''
         self._resume_model()
         self.model.eval()
-        for eval_class in self.eval_classes.values():
-            eval_class.reset()
 
         total_time = 0.0
         total_frame = 0.0
@@ -50,30 +50,22 @@ class Evaler:
         for step_idx in t:
             t.set_description('deal with %i' % step_idx)
             input_data = next(loader)
-            start = time.time()
             feed_names = self.config['feed_names']
-            output = self.model(*input_data, feed_names=feed_names, is_train=False)
+            start = time.time()
+            output = self.model(*input_data, feed_names=feed_names)
             total_time += time.time() - start
-
-            ####### Eval ##########
+            ######### Eval ##########
+            gt_label = output['gt_label']
+            pred_label = self.postprocess(output)
             for key, val in self.eval_classes.items():
-                gts = output[key + '_gts']
-                preds = output[key + '_preds']
-                for pred, gt in zip(preds, gts):
-                    val.update(pred, gt)
+                val.update(pred_label, gt_label)
             #########################
             total_frame += input_data[0].shape[0]
         metrics = 'fps : {}'.format(total_frame / total_time)
         for key, val in self.eval_classes.items():
-            val_result = val.accumulate()
-            if isinstance(val_result, dict):
-                metrics += '{}:\n'.format(key)
-                for sub_key, sub_val in val_result.items():
-                    metrics += '| {}: {} |'.format(sub_key, sub_val) 
-                metrics += '\n'
-            else:
-                metrics += '\n{}:\n{}\n'.format(key, val_result)
-        print('[Eval Validation] {}'.format(val_dict))
+            metrics += '\n{}:\n'.format(key) + str(val.accumulate())
+            val.reset()
+        print('[Eval Validation] {}'.format(metrics))
 
     def _resume_model(self):
         '''

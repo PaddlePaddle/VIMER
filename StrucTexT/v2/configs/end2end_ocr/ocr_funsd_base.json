@@ -1,7 +1,7 @@
 {
     "architecture":{
         "image_module":{
-            "name":"V2FPN",
+            "name":"V2Net",
             "out_channels":128
         },
         "det_module":{
@@ -27,13 +27,12 @@
     },
     "metric":[
         {
-            "name":"e2e",
-            "type":"E2EMetric",
-            "recg_threshold":0,
-            "iou_threshold":0.5
+            "name":"funsd_ned",
+            "type":"OCRMetric"
         }
     ],
     "eval":{
+        "results_dir": "./result",
         "feed_names":[
             "image",
             "bboxes_padded_list",
@@ -41,15 +40,13 @@
             "texts_padded_list",
             "classes_padded_list",
             "masks_padded_list",
-            "bboxes_padded_list_line",
-            "bboxes_4pts_padded_list_line",
-            "texts_padded_list_line",
-            "classes_padded_list_line",
-            "masks_padded_list_line"
+            "ratio",
+            "org_image",
+            "image_name"
         ],
         "loader":{
-            "collect_batch":false,
-            "num_workers":5,
+            "collect_batch":true,
+            "num_workers":0,
             "shuffle":false,
             "drop_last":false,
             "use_shared_memory":false
@@ -59,7 +56,7 @@
             "image_path":"./data/funsd/testing_data/image",
             "batch_size":1,
             "shuffle":false,
-            "max_seq_len":32,
+            "max_seq_len":31,
             "recg_loss":"CE",
             "transform":[
                 {
@@ -70,9 +67,9 @@
                 },
                 {
                     "DBTextSpottingTest":{
-                        "max_side_len":1960,
+                        "max_side_len":1920,
                         "max_bbox_num":512,
-                        "max_seq_len":32
+                        "max_seq_len":31
                     }
                 }
             ]

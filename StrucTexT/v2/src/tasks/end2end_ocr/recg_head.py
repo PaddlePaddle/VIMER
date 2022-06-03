@@ -97,7 +97,7 @@ class TransformerRecg(nn.Layer):
         # batch_size, tgt_len, d_model
         query_embed = query_embed.reshape([-1]).expand([bs, -1]).reshape([bs, query_num, query_dim])
         # [seq_len, embed]
-  
+
         if mask is not None:
             mask = mask.flatten(1)
 
@@ -120,7 +120,7 @@ class TransformerRecg(nn.Layer):
             # hs [1, bs, queries, embed ]
             # return hs.transpose(1, 2).squeeze(0).view(bs, queries, seq_len, embed)
             return hs.squeeze(0)
-           
+
 
 class TransformerEncoderOnly(nn.Layer):
     """transfomer encoder only
@@ -156,10 +156,9 @@ class TransformerEncoderOnly(nn.Layer):
     def forward(self, src, mask, pos_embed):
         """forward
         """
-
         # flatten [l, bs, queries, k, embed] to [k, l * bs * queries, embed]
         #   bs, c, h, w = src.shape
-  
+
         bs, c, h, w = src.shape  # [num, embed_dim, h, w]
 
         src = src.flatten(2).transpose([0, 2, 1])  # [num, h*w, embed_dim]
@@ -175,10 +174,10 @@ class TransformerEncoderOnly(nn.Layer):
 class RecgHead(nn.Layer):
     """ for recog, bs * query * h * w --> bs * query * seq_len * class_num 
     """
-    def __init__(self, 
-        method="decoder", 
-        hidden_channels=256, 
-        seq_len=32, 
+    def __init__(self,
+        method="decoder",
+        hidden_channels=256,
+        seq_len=32,
         recg_class_num=97,
         decoder_layers=2,
         return_intermediate_dec=False):
@@ -201,8 +200,7 @@ class RecgHead(nn.Layer):
                 nhead=8,
                 dim_feedforward=2048,
                 num_encoder_layers=2,
-                normalize_before=False,
-            )
+                normalize_before=False)
         elif method == "decoder":
             self.transformer = TransformerRecg(
                 d_model=hidden_channels,
@@ -212,9 +210,8 @@ class RecgHead(nn.Layer):
                 dim_feedforward=2048,
                 dropout=0.1,
                 activation="relu",
-                normalize_before=False,
-                return_intermediate_dec=self.return_intermediate_dec,
-            )
+                normalize_before=False)
+
             self.query_embed = nn.Embedding(self.seq_len, hidden_channels)
         else:
             raise ValueError("Recg method not implemented!")
@@ -237,7 +234,7 @@ class RecgHead(nn.Layer):
         # not_mask = ~mask
         # pos = self.pe_layer(not_mask)
         # mask = None
-        
+
         # [50, 256]
         num_rois, dim, h, w = x.shape
         # [1,50,256]
@@ -252,9 +249,4 @@ class RecgHead(nn.Layer):
             x = self.transformer(x, mask, self.query_embed.weight, pos)
 
         out = self.recg_proj(x)
-
         return out
-
-
-
-

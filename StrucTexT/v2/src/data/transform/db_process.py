@@ -574,31 +574,19 @@ class DBTextSpottingTest(object):
 
     def __call__(self, data):
         im = data['image']
-        has_multi = 'labels' in data.keys()
-        if has_multi:
-            labels = data['labels']
-            text_polys_list = [l['polys'] for l in labels]
-            texts_list = [l['texts'] for l in labels]
-            text_tags_list = [l['ignore_tags'] for l in labels]
-            classes_list = [l['classes'] for l in labels]
-        else:
-            text_polys_list = [data['polys']]
-            texts_list = [data['texts']]
-            text_tags_list = [data['ignore_tags']]
-            classes_list = [data['classes']]
-        org_data = data
-        org_data['labels'] = []
+        text_polys = data['polys']
+        text_tags = data['ignore_tags']
+        texts = data['texts']
+        classes = data['classes']
 
         h, w, _ = im.shape
 
         # pad and resize image
         im, ratio = self.preprocess(im)
-        new_h, new_w, _ = im.shape
         ratio_h, ratio_w = ratio
-        for i, text_polys, in enumerate(text_polys_list):
-            text_polys[:, :, 0] *= ratio_w
-            text_polys[:, :, 1] *= ratio_h
-            text_polys_list[i] = text_polys
+        text_polys[:, :, 0] *= ratio_w
+        text_polys[:, :, 1] *= ratio_h
+        new_h, new_w, _ = im.shape
 
         # normalize img
         img_mean = [0.485, 0.456, 0.406]
@@ -608,37 +596,31 @@ class DBTextSpottingTest(object):
         im /= img_std
         im = im.transpose((2, 0, 1)).astype(np.float32)
 
-        for text_polys, texts, text_tags, classes in zip(text_polys_list, texts_list, text_tags_list, classes_list):
-            data = {}
-            # [num, 4]
-            bboxes_padded_list = np.zeros((self.max_bbox_num, 4), dtype=np.float32)
-            bboxes_4pts_padded_list = np.zeros((self.max_bbox_num, 8), dtype=np.float32)
-            texts_padded_list = np.zeros((self.max_bbox_num, self.max_seq_len), dtype=np.int64)
-            classes_padded_list = np.zeros((self.max_bbox_num), dtype=np.int64)
-            masks_padded_list = np.zeros((self.max_bbox_num), dtype=np.float32)
+        # [num, 4] 
+        bboxes_padded_list = np.zeros((self.max_bbox_num, 4), dtype=np.float32)
+        bboxes_4pts_padded_list = np.zeros((self.max_bbox_num, 8), dtype=np.float32)
+        texts_padded_list = np.zeros((self.max_bbox_num, self.max_seq_len), dtype=np.int64)
+        classes_padded_list = np.zeros((self.max_bbox_num), dtype=np.int64)
+        masks_padded_list = np.zeros((self.max_bbox_num), dtype=np.float32)
+        
+        valid_cnt = 0
+        # FIXME valid_cnt may be greater than max_bbox_num
+        for i, (poly, text, tag, text_class) in enumerate(zip(text_polys, texts, text_tags, classes)):
+            bboxes_padded_list[valid_cnt, :] = poly[::2].reshape(-1)
+            bboxes_4pts_padded_list[valid_cnt, :] = poly.reshape(-1)
+            texts_padded_list[valid_cnt, :] = text
+            classes_padded_list[valid_cnt] = text_class
+            masks_padded_list[valid_cnt] = 1
+            valid_cnt += 1
 
-            valid_cnt = 0
-            # FIXME valid_cnt may be greater than max_bbox_num
-            for i, (poly, text, tag, text_class) in enumerate(zip(text_polys, texts, text_tags, classes)):
-                bboxes_padded_list[valid_cnt, :] = poly[::2].reshape(-1)
-                bboxes_4pts_padded_list[valid_cnt, :] = poly.reshape(-1)
-                texts_padded_list[valid_cnt, :] = text
-                classes_padded_list[valid_cnt] = text_class
-                masks_padded_list[valid_cnt] = 1
-                valid_cnt += 1
-
-            data['bboxes_padded_list'] = bboxes_padded_list
-            data['bboxes_4pts_padded_list'] = bboxes_4pts_padded_list
-            data['texts_padded_list'] = texts_padded_list
-            data['classes_padded_list'] = classes_padded_list
-            data['masks_padded_list'] = masks_padded_list
-            org_data['labels'].append(data)
-
-        if not has_multi:
-            labels = org_data['labels']
-            del org_data['labels']
-            org_data.update(labels)
-        data = org_data
         data['image'] = im
+        data['ratio'] = np.array(ratio)
+        data['bboxes_padded_list'] = bboxes_padded_list
+        data['bboxes_4pts_padded_list'] = bboxes_4pts_padded_list
+        data['texts_padded_list'] = texts_padded_list
+        data['classes_padded_list'] = classes_padded_list
+        data['masks_padded_list'] = masks_padded_list
 
         return data
+
+

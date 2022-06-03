@@ -5,16 +5,16 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+
 import os
 import sys
 import cv2
 import json
 import copy
-import gzip
+import glob
 import codecs
 import logging
 import numpy as np
-from copy import deepcopy
 
 import paddle
 import paddle.fluid as fluid
@@ -22,7 +22,6 @@ import paddle.fluid as fluid
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../../..')))
 
-from glob import glob
 from src.data import build_transform
 from src.data.dataset import BaseDataset
 
@@ -42,10 +41,11 @@ TEXT_CLASSES = {
     "other": 3
 }
 
+
 class LabelConverter(object):
     """convert between text and lexicon index"""
     def __init__(self, seq_len=50, lexicon=None, recg_loss='CE'):
-        """initialize 
+        """initialize
         Input:
             seq_len: the max-size sequence length
             lexion: the lexion info of recognition task
@@ -53,22 +53,22 @@ class LabelConverter(object):
         if lexicon is None:
             lexicon = Lexicon_Table_95
         self.recg_loss = recg_loss
-        tokens = ['[PAD]', '[STOP]'] 
+        tokens = ['[PAD]', '[STOP]']
         self.idx2char = list(tokens) + list(lexicon)
         self.seq_len = seq_len
-  
+
         self.char2idx = {}
         for i, char in enumerate(self.idx2char):
             self.char2idx[char] = i
-            
+
     def encode(self, text, ignore_tag):
-        """ encode character into index 
-        Input: 
+        """ encode character into index
+        Input:
             text: the transcript of ground truth <String>
             ignore_tag: the flag to ignore the text <Bool>
         Output:
             new_text_idx: the text index of the input text with token index <List>
-        """  
+        """
         if ignore_tag:
             text = ""
         text = text.upper()
@@ -85,8 +85,8 @@ class LabelConverter(object):
         return new_text_idx
 
     def decode(self, text_idx):
-        """ convert text-index into text-label. 
-        Input: 
+        """ convert text-index into text-label.
+        Input:
             text_idx: the text index of predicted text <List>
         Output:
             text: the predicted text <String>
@@ -99,7 +99,7 @@ class LabelConverter(object):
                 if t != 0 and (i == 0 or t != text_idx[i - 1]):
                     new_text_idx.append(t)
             text = ''.join([self.idx2char[idx] for idx in new_text_idx])
-            
+
         if text.find('[STOP]') != -1:
             text = text[:text.find('[STOP]')]
         return text
@@ -125,7 +125,7 @@ def _sort_box_with_list(anno, left_right_first=False):
 
 def _bbox2poly(bbox):
     """ _bbox2poly """
-    poly = [bbox[0], bbox[1], bbox[2], bbox[1], bbox[2], bbox[3], bbox[0], bbox[3]] 
+    poly = [bbox[0], bbox[1], bbox[2], bbox[1], bbox[2], bbox[3], bbox[0], bbox[3]]
     return poly
 
 
@@ -137,8 +137,8 @@ def _parse_ann_info_funsd(anno_path):
         res: (poly, transcript, text_class, ignore_tag) <Tuple>
     """
     res = []
-    with codecs.open(anno_path, 'r', 'utf-8') as fp:    # fix some ascii bug
-        data = json.load(fp)
+    with codecs.open(anno_path, 'r', 'utf-8') as f:
+        data = json.load(f)
 
     ## funsd word level
     for line in data['form']:
@@ -161,48 +161,9 @@ def _parse_ann_info_funsd(anno_path):
     return res
 
 
-def _parse_ann_info_funsd_line(anno_path): 
-    """load annos from anno_path
-    Input:
-        anno_path: absolute path of annoataion file <Str>   
-    Output:
-        res: (poly, transcript, text_class, ignore_tag) <Tuple>
-    """
-    res = []
-
-    with codecs.open(anno_path, 'r', 'utf-8') as fp:    # fix some ascii bug
-        data = json.load(fp)
-
-    # funsd word level
-    for line in data['form']:
-        ignore_tag = False
-        box, transcript, label = line['box'], line['text'], line['label']
-        box = list(map(float, box))
-        poly = self._bbox2poly(box)
-
-        if len(transcript) == 0:
-            # ignore_tag = True
-            transcript = ""
-        else:
-            for char in transcript:
-                if char not in Lexicon_Table_95:
-                    # ignore_tag = True
-                    transcript = ""
-                    break
-        try:
-            text_class = TEXT_CLASSES[label]
-        except:
-            text_class = 3
-        res.append((poly, transcript, text_class, ignore_tag))
-
-    if len(res) == 0:
-        return None
-    return res
-
-
 class Dataset(BaseDataset):
     """TextSpotting Dataset
-    Input: 
+    Input:
         config: train_config['dataset']  <Dict>
         feed_names: the training/testing fields <List>
     """
@@ -216,7 +177,7 @@ class Dataset(BaseDataset):
         assert os.path.isdir(image_path)
 
         if os.path.isdir(data_path):
-            labels = os.listdir(data_path)
+            labels = glob.glob(data_path + '/*.*')
             label_list = [[label_path, image_path] for label_path in labels]
             label_list = [label_list]
         else:
@@ -228,91 +189,50 @@ class Dataset(BaseDataset):
                 feed_names=feed_names,
                 batch_size=batch_size,
                 train_mode=train_mode,
-                collect_batch=False,
+                collect_batch=True,
                 shuffle=True)
 
         self.seq_len = config.get('max_seq_len', 50)
         self.recg_loss = config.get('recg_loss', 'CE')
         self.label_converter = LabelConverter(
-            seq_len=self.seq_len, 
+            seq_len=self.seq_len,
             recg_loss=self.recg_loss)
 
     def _convert_examples(self, examples):
         """convert example to field
         """
         config = self.config
-        data = {'batch_size': len(examples)}
+        example = examples[0]
+        anno_path = example['boxes_and_texts_file']
+        anno = _parse_ann_info_funsd(anno_path)
+        if anno is None:
+            return None
 
-        for i, example in enumerate(examples):
-            anno_path = example['boxes_and_texts_file']
-	    anno = _parse_ann_info_funsd(anno_path)
-	    anno_line = _parse_ann_info_funsd(anno_line)
-            if anno is None or anno_line is None:
-                return None
-            example_line = deepcopy(example)
+        # sort the box based on the position
+        anno = _sort_box_with_list(anno)
+        image = example['image']
+        image_name = example['image_name']
 
-            # sort the box based on the position
-            anno = _sort_box_with_list(anno)
-            anno_line = _sort_box_with_list(anno_line)
+        polys = []
+        texts = []
+        classes = []
+        ignore_tags = []
 
-            polys = []
-            texts = []
-            classes = []
-            ignore_tags = []
+        for poly, text, text_class, ignore_tag in anno:
+            polys.append(poly)
+            texts.append(self.label_converter.encode(text, ignore_tag))
+            ignore_tags.append(ignore_tag)
+            classes.append(text_class)
 
-            for poly, text, text_class, ignore_tag in anno:
-                polys.append(poly)
-                texts.append(self.label_converter.encode(text, ignore_tag))
-                ignore_tags.append(ignore_tag)
-                classes.append(text_class)
+        label_word = {'image': image}
+        label_word['polys'] = np.array(polys, dtype=np.float32).reshape(-1, 4, 2)
+        label_word['texts'] = np.array(texts, dtype=np.int64)
+        label_word['classes'] = np.array(classes, dtype=np.int64)
+        label_word['ignore_tags'] = np.array(ignore_tags, dtype=np.bool)
 
-            label_word = {}
-            label_word['polys'] = np.array(polys, dtype=np.float32).reshape(-1, 4, 2)
-            label_word['texts'] = np.array(texts, dtype=np.int64)
-            label_word['classes'] = np.array(classes, dtype=np.int64)
-            label_word['ignore_tags'] = np.array(ignore_tags, dtype=np.bool)
-
-            polys_line = []
-            texts_line = []
-            classes_line = []
-            ignore_tags_line = []
-
-            for poly, text, text_class, ignore_tag in anno_line:
-                polys_line.append(poly)
-                texts_line.append(self.label_converter.encode(text, ignore_tag))
-                ignore_tags_line.append(ignore_tag)
-                classes_line.append(text_class)
-
-            label_line = {}
-            label_line['polys'] = np.array(polys_line, dtype=np.float32).reshape(-1, 4, 2)
-            label_line['texts'] = np.array(texts_line, dtype=np.int64)
-            label_line['classes'] = np.array(classes_line, dtype=np.int64)
-            label_line['ignore_tags'] = np.array(ignore_tags_line, dtype=np.bool)
-
-            example['labels'] = [label_word, label_line] #位置不允许调换
-            transform_out = self.transform(example)
-
-            if transform_out is None:
-                return None
-            if 'labels' in transform_out.keys():
-                label_word = transform_out['labels'][0]
-                label_line = transform_out['labels'][1]
-                for key, val in label_word.items():
-                    if key not in data.keys():
-                        data[key] = []
-                    data[key].append(val)
-                for key, val in label_line.items():
-                    new_key = key + '_line'
-                    if new_key not in data.keys():
-                        data[new_key] = []
-                    data[new_key].append(val)
-
-            for key, val in transform_out.items():
-                if key == 'labels':
-                    continue
-                if key not in data.keys():
-                    data[key] = []
-                data[key].append(val)
+        data = self.transform(label_word)
+        data['org_image'] = image
+        data['image_name'] = image_name
         return data
 
     def _read_data(self, example):
@@ -324,10 +244,9 @@ class Dataset(BaseDataset):
         """
 
         data_path, image_path = example
+        image_name = os.path.basename(data_path).replace('.json', '.png')
+        image_path = os.path.join(image_path, image_name)
 
-        image_path = os.path.join(image_path, data_path.replace('.json', '.png'))
-        data_path = os.path.join(self.config['subsets']['funsd']['data_path'], data_path)
-    
         if not os.path.exists(image_path):
             logging.warning('Dataset... The file (%s) is not existed!', image_path)
             return None
@@ -340,6 +259,8 @@ class Dataset(BaseDataset):
             logging.debug('Dataset... Error in load image for %s', image_path)
             return None
 
-        example = {'image': image, 'boxes_and_texts_file': data_path}
+        example = {'image': image,
+                   'boxes_and_texts_file': data_path,
+                   'image_name': image_name}
 
         return example

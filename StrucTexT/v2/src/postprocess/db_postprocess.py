@@ -43,7 +43,7 @@ class DBPostProcess(object):
         self.box_thresh = box_thresh
         self.max_candidates = max_candidates
         self.unclip_ratio = unclip_ratio
-        self.min_size = 1
+        self.min_size = 3
         self.score_mode = score_mode
         assert score_mode in [
             "slow", "fast"
@@ -139,10 +139,10 @@ class DBPostProcess(object):
         """
         h, w = bitmap.shape[:2]
         box = _box.copy()
-        xmin = np.clip(np.floor(box[:, 0].min()).astype(np.int32), 0, w - 1)
-        xmax = np.clip(np.ceil(box[:, 0].max()).astype(np.int32), 0, w - 1)
-        ymin = np.clip(np.floor(box[:, 1].min()).astype(np.int32), 0, h - 1)
-        ymax = np.clip(np.ceil(box[:, 1].max()).astype(np.int32), 0, h - 1)
+        xmin = np.clip(np.floor(box[:, 0].min()).astype(np.int), 0, w - 1)
+        xmax = np.clip(np.ceil(box[:, 0].max()).astype(np.int), 0, w - 1)
+        ymin = np.clip(np.floor(box[:, 1].min()).astype(np.int), 0, h - 1)
+        ymax = np.clip(np.ceil(box[:, 1].max()).astype(np.int), 0, h - 1)
 
         mask = np.zeros((ymax - ymin + 1, xmax - xmin + 1), dtype=np.uint8)
         box[:, 0] = box[:, 0] - xmin
@@ -196,30 +196,22 @@ class DBPostProcess(object):
         pred = outs_dict['maps']
         if isinstance(pred, paddle.Tensor):
             pred = pred.numpy()
+        pred = pred[:, 0, :, :]
         segmentation = pred > self.thresh
-        height, width = segmentation.shape[-2:]
 
         boxes_batch = []
         for batch_index in range(pred.shape[0]):
-            query_boxes = []
-            for query_idx in range(pred.shape[1]):
-                src_h, src_w, ratio_h, ratio_w = shape_list[batch_index]
-                if self.dilation_kernel is not None:
-                    mask = cv2.dilate(
-                        np.array(segmentation[batch_index][query_idx]).astype(np.uint8),
-                        self.dilation_kernel)
-                else:
-                    mask = segmentation[batch_index][query_idx]
-                boxes = self.find_poly(mask)
+            src_h, src_w, ratio_h, ratio_w = shape_list[batch_index]
+            if self.dilation_kernel is not None:
+                mask = cv2.dilate(
+                    np.array(segmentation[batch_index]).astype(np.uint8),
+                    self.dilation_kernel)
+            else:
+                mask = segmentation[batch_index]
+            boxes, scores = self.boxes_from_bitmap(pred[batch_index], mask,
+                                                   src_w, src_h)
 
-                query_boxes += boxes
-
-            query_boxes = np.array(query_boxes)
-            if len(query_boxes) > 0:
-                query_boxes[:, :, 0] = np.clip(np.round(query_boxes[:, :, 0] / width * src_w), 0, src_w)
-                query_boxes[:, :, 1] = np.clip(np.round(query_boxes[:, :, 1] / height * src_h), 0, src_h)
-
-            boxes_batch.append({'points': query_boxes})
+            boxes_batch.append({'points': boxes})
         return boxes_batch
 
 

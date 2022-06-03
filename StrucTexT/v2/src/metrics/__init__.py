@@ -25,17 +25,10 @@ __all__ = ['build_metric']
 
 def build_metric(config):
     """ build_metric """
-    from .f1_metric import F1Metric
-    from .map_metric import MapMetric
-    from .hit_metric import HitMetric
-    from .mrank_metric import MrankMetric
-    from .tabcls_metric import TabClsMetric
     from .cls_metric import ClsMetric
-    from .rescore_metric import ReScoreMetric
-    from .det_metric import DetMetric, COCOMetric
-    support_dict = ['TabClsMetric', 'F1Metric', 'MapMetric',
-                    'HitMetric', 'MrankMetric', 'ClsMetric',
-                    'ReScoreMetric', 'DetMetric', 'COCOMetric']
+    from .ocr_metric import OCRMetric
+    from .table_metric import TableMetric
+    support_dict = ['ClsMetric', 'OCRMetric', 'TableMetric']
 
     module_classes = {}
     config = copy.deepcopy(config)

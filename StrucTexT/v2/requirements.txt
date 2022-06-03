@@ -8,3 +8,6 @@ setuptools>=42.0.0
 lap
 sklearn
 imgaug
+pyclipper
+distance
+apted
