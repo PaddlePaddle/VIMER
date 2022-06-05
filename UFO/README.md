@@ -136,13 +136,13 @@ Fast expansion results (without Extra Training Data)：
 
 |    Datasets          |         SOTA           |        10% Finetune |    100% Finetune    |
 |:---------------------|:----------------------:|:-------------------:|:-------------------:|
-|      dmlab           |          77            |         74.8        |        80.93        |
-|      retinopathy     |          80.1          |         60.9        |        82.90        |
-|      aircraft        |          94.90         |         70.84       |        95.02        |
-|      cifar10         |          99.40         |         99.32       |        99.40        |
-|      gtsrb           |          99.7          |         99.83       |        99.90        |
-|      Cityscape       |          84.3          |         -           |        84.36        |
-|      PASCAL VOC      |          89.3          |         -           |        89.14        |
+|      dmlab           |          77.0          |         74.8        |        80.9        |
+|      retinopathy     |          80.1          |         60.9        |        82.9        |
+|      aircraft        |          94.9          |         70.8        |        95.0        |
+|      cifar10         |          99.4          |         99.3        |        99.4        |
+|      gtsrb           |          99.7          |         99.8        |        99.9        |
+|      Cityscape       |          84.3          |         -           |        84.3        |
+|      PASCAL VOC      |          89.3          |         -           |        89.1        |
 
 
 ### Downstream-tasks-distillation
