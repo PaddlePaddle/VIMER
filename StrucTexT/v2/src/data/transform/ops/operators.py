@@ -49,7 +49,9 @@ __all__ = ['DecodeImage',
            'AugMix',
            'AutoAugment',
            'ColorJitter',
-           'RandomSampleAndCrop']
+           'RandomSampleAndCrop',
+           'TableLabelEncode',
+           'ResizeTableImage']
 
 class DecodeImage(object):
     """ decode image """
@@ -316,6 +318,59 @@ class DetResizeForTest(object):
         img_pad[:resize_h, :resize_w, :] = img
 
         return img_pad, [ratio, ratio]
+
+
+class ResizeTableImage(object):
+    """ ResizeTableImage """
+    def __init__(self, max_len, **kwargs):
+        super(ResizeTableImage, self).__init__()
+        self.max_len = max_len
+
+    def resize_img_table(self, img, bbox_list, xs, ys, max_len):
+        height, width = img.shape[0:2]
+        ratio_h = max_len / height * 1.0
+        ratio_w = max_len / width * 1.0
+        img_new = cv2.resize(img, (max_len, max_len))
+        bbox_list_new = []
+        xs = [x * ratio_w for x in xs]
+        ys = [y * ratio_h for y in ys]
+        for bno in range(len(bbox_list)):
+            left, top, right, bottom = bbox_list[bno].copy()
+            left = int(left * ratio_w)
+            top = int(top * ratio_h)
+            right = int(right * ratio_w)
+            bottom = int(bottom * ratio_h)
+            bbox_list_new.append([left, top, right, bottom])
+        return img_new, bbox_list_new, xs, ys
+
+    def resize_img_table_only(self, img, max_len):
+        height, width = img.shape[0:2]
+        ratio_h = max_len / height * 1.0
+        ratio_w = max_len / width * 1.0
+        img_new = cv2.resize(img, (max_len, max_len))
+
+        return img_new
+
+    def __call__(self, data):
+        img = data['image']
+        if 'bboxes' not in data:
+            bboxes = []
+        else:
+            bboxes = data['bboxes']
+        bbox_list = bboxes
+        if 'xs' in data:
+            xs = data['xs']
+            ys = data['ys']
+            img_new, bbox_list_new, new_xs, new_ys = self.resize_img_table(img, bbox_list, xs, ys, self.max_len)
+            data['image'] = img_new
+            data['bboxes'] = bbox_list_new
+            data['max_len'] = self.max_len
+            data['xs'] = new_xs
+            data['ys'] = new_ys
+        else:
+            img_new = self.resize_img_table_only(img, self.max_len)
+            data['image'] = img_new
+        return data
 
 
 class E2EResizeForTest(object):
@@ -752,3 +807,186 @@ class RandomSampleAndCrop(object):
             data['line_bboxes'] = new_line_bboxes
 
         return data
+
+
+class TableLabelEncode(object):
+    """ Convert between text-label and text-index """
+
+    def __init__(self,
+                 max_cell_num,
+                 **kwargs):
+        self.max_cell_num = max_cell_num
+
+    def __call__(self, data):
+        bboxes = data['bboxes']
+        self.row_lines = 500
+        self.col_lines = 250
+        bbox_list = np.zeros((self.max_cell_num, 4), dtype=np.float32)
+        row_col_index_list = np.zeros((self.max_cell_num, 2))
+        row_col_indexs = data['row_col_indexs']
+        row_maps = np.zeros((self.row_lines))
+        col_maps = np.zeros((self.col_lines))
+        xs = data['xs']
+        ys = data['ys']
+        xs_cls = data['xs_cls']
+        ys_cls = data['ys_cls']
+        link_up = np.zeros(shape= (self.row_lines, self.col_lines))
+        link_down = np.zeros(shape=(self.row_lines, self.col_lines))
+        link_left = np.zeros(shape=(self.row_lines, self.col_lines))
+        link_right = np.zeros(shape=(self.row_lines, self.col_lines))
+        link_mask = np.zeros(shape=(self.row_lines, self.col_lines))
+        col_link_map_left = data['col_link_map_left']
+        col_link_map_right = data['col_link_map_right']
+        row_link_map_up = data['row_link_map_up']
+        row_link_map_down = data['row_link_map_down']
+        bbox_list_mask = np.zeros(
+            (self.max_cell_num, 1), dtype=np.float32)
+        img_height, img_width, img_ch = data['image'].shape
+        row_height = img_height / 500
+        col_width = img_width / 250
+        for y_index, y in enumerate(ys):
+            row_index = int(y // row_height)
+            row_maps[row_index] = ys_cls[y_index]
+        row_maps = row_maps.tolist()
+        max_row = max(row_maps)
+        final_row_maps = np.zeros((self.row_lines))
+        final_row_maps_mountain = np.zeros((self.row_lines))
+
+        rows_line = []
+        cols_line = []
+        for i in range(1, int(max_row) + 1):
+            temp = []
+            for j, item in enumerate(row_maps):
+                if item == i:
+                    temp.append(j)
+            start_id, end_id = min(temp), max(temp)
+            end_id = min(max(start_id + 4, end_id), self.row_lines - 1)
+            final_row_maps[start_id: end_id] = 1
+            if end_id - start_id <= 2:
+                final_row_maps_mountain[start_id: end_id + 1] = 1
+            else:
+                for index in range(start_id, end_id + 1):
+                    mid_pos = start_id + (end_id - start_id) // 2
+                    final_row_maps_mountain[index] = min(1, (1. - (abs(index - mid_pos) / abs(start_id - mid_pos))) + 1e-2)
+            rows_line.append(start_id)
+            rows_line.append(end_id)
+
+        for x_index, x in enumerate(xs):
+            col_index = int(x // col_width)
+            col_maps[col_index] = xs_cls[x_index]
+
+        col_maps = col_maps.tolist()
+        max_col = max(col_maps)
+        final_col_maps = np.zeros((self.col_lines))
+        final_col_maps_mountain = np.zeros((self.col_lines))
+        for i in range(1, int(max_col) + 1):
+            temp = []
+            for j, item in enumerate(col_maps):
+                if item == i:
+                    temp.append(j)
+            start_id, end_id = min(temp), max(temp)
+            if end_id + 4 < self.col_lines - 1:
+                end_id = min(max(start_id + 4, end_id), self.col_lines -1 )
+            else:
+                end_id = min(max(start_id + 4, end_id), self.col_lines -1 )
+                start_id = end_id - 4
+            final_col_maps[start_id: end_id] = 1
+            if end_id - start_id <= 2:
+                final_col_maps_mountain[start_id: end_id + 1] = 1
+            else:
+                for index in range(start_id, end_id + 1):
+                    mid_pos = start_id + (end_id - start_id) // 2
+                    final_col_maps_mountain[index] = min(1, (1. - (abs(index - mid_pos) / abs(start_id - mid_pos))) + 1e-2)
+            cols_line.append(start_id)
+            cols_line.append(end_id)
+
+        rows = []
+        cols = []
+        for row_index in range(len(rows_line) - 1):
+            rows.append((rows_line[row_index], rows_line[row_index + 1]))
+
+        for col_index in range(len(cols_line) - 1):
+            cols.append((cols_line[col_index], cols_line[col_index + 1]))
+
+        rows_line = np.array(rows_line).reshape(-1, 2).tolist()#[1:]
+        cols_line = np.array(cols_line).reshape(-1, 2).tolist()#[1:]
+        for row_index, row_item in enumerate(rows_line[1:]):
+            for col_index, col_item in enumerate(cols_line[1:]):
+                row_start, row_end = row_item
+                col_start, col_end = col_item
+                link_up[row_start: row_end, col_start:col_end] = col_link_map_right[row_index, col_index]
+                link_left[row_start: row_end, col_start:col_end] = row_link_map_down[row_index, col_index]
+        for row_index, row_item in enumerate(rows_line):
+            for col_index, col_item in enumerate(cols_line):
+                row_start, row_end = row_item
+                col_start, col_end = col_item
+                link_down[row_start: row_end, col_start:col_end] = col_link_map_right[row_index, col_index - 1] if row_index < col_link_map_right.shape[0] and col_index - 1 < col_link_map_right.shape[1] else 0
+                link_right[row_start: row_end, col_start:col_end] = row_link_map_down[row_index - 1, col_index] if row_index - 1 < row_link_map_down.shape[0] and col_index < row_link_map_down.shape[1] else 0
+                link_mask[row_start: row_end, col_start:col_end] = 1
+
+        data['row_col_indexs'] = row_col_index_list
+        data['row_maps'] = final_row_maps
+        data['col_maps'] = final_col_maps
+        data['link_up'] = link_up
+        data['link_down'] = link_down
+        data['link_left'] = link_left
+        data['link_right'] = link_right
+        data['link_mask'] = link_mask
+        data['final_row_maps_mountain'] = final_row_maps_mountain
+        data['final_col_maps_mountain'] = final_col_maps_mountain
+        return data
+
+    def encode(self, text, char_or_elem):
+        """convert text-label into text-index.
+        """
+        if char_or_elem == "char":
+            max_len = self.max_text_length
+            current_dict = self.dict_character
+        else:
+            max_len = self.max_elem_length
+            current_dict = self.dict_elem
+        if len(text) > max_len:
+            return None
+        if len(text) == 0:
+            if char_or_elem == "char":
+                return [self.dict_character['space']]
+            else:
+                return None
+        text_list = []
+        for char in text:
+            if char not in current_dict:
+                return None
+            text_list.append(current_dict[char])
+        if len(text_list) == 0:
+            if char_or_elem == "char":
+                return [self.dict_character['space']]
+            else:
+                return None
+        return text_list
+
+    def get_ignored_tokens(self, char_or_elem):
+        beg_idx = self.get_beg_end_flag_idx("beg", char_or_elem)
+        end_idx = self.get_beg_end_flag_idx("end", char_or_elem)
+        return [beg_idx, end_idx]
+
+    def get_beg_end_flag_idx(self, beg_or_end, char_or_elem):
+        if char_or_elem == "char":
+            if beg_or_end == "beg":
+                idx = np.array(self.dict_character[self.beg_str])
+            elif beg_or_end == "end":
+                idx = np.array(self.dict_character[self.end_str])
+            else:
+                assert False, "Unsupport type %s in get_beg_end_flag_idx of char" \
+                              % beg_or_end
+        elif char_or_elem == "elem":
+            if beg_or_end == "beg":
+                idx = np.array(self.dict_elem[self.beg_str])
+            elif beg_or_end == "end":
+                idx = np.array(self.dict_elem[self.end_str])
+            else:
+                assert False, "Unsupport type %s in get_beg_end_flag_idx of elem" \
+                              % beg_or_end
+        else:
+            assert False, "Unsupport type %s in char_or_elem" \
+                              % char_or_elem
+        return idx

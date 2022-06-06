@@ -55,10 +55,10 @@ class Evaler:
             output = self.model(*input_data, feed_names=feed_names)
             total_time += time.time() - start
             ######### Eval ##########
-            gt_label = output['gt_label']
-            pred_label = self.postprocess(output)
+            label = output['gt_label']
+            pred = self.postprocess(output)
             for key, val in self.eval_classes.items():
-                val.update(pred_label, gt_label)
+                val.update(pred, gt)
             #########################
             total_frame += input_data[0].shape[0]
         metrics = 'fps : {}'.format(total_frame / total_time)

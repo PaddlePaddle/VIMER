@@ -323,8 +323,12 @@ class V2Net(nn.Layer):
         super(V2Net, self).__init__()
 
         self.cnn = ResNet(**kwargs)
-        in_channels = self.cnn.out_channels
         self.out_channels = out_channels
+        attn_heads = kwargs.get('attn_heads', 8)
+        hidden_layers = kwargs.get('hidden_layers', 12)
+        proj_size = kwargs.get('proj_size', 2048)
+        self.has_gate = kwargs.get('has_gate', False)
+        in_channels = self.cnn.out_channels
         weight_attr = paddle.nn.initializer.KaimingUniform()
 
         self.in2_conv = nn.Conv2D(
@@ -382,18 +386,36 @@ class V2Net(nn.Layer):
 
 
         self.input_proj = nn.Conv2D(
-                2048, out_channels, kernel_size=1)
+                proj_size, out_channels, kernel_size=1)
         cfg = {
                 "attention_probs_dropout_prob": 0.1,
                 "hidden_act": "gelu",
                 "hidden_dropout_prob": 0.1,
                 "hidden_size": self.out_channels,
-                "num_attention_heads": 8,
-                "num_hidden_layers": 12
+                "num_attention_heads": attn_heads,
+                "num_hidden_layers": hidden_layers
         }
         self.transformer = ErnieEncoderStack(cfg)
         self.positional_encoding = PositionalEncoding(
                 d_model=self.out_channels)
+
+        if self.has_gate:
+            self.visual_door = nn.Sequential(nn.Conv2D(
+                in_channels=self.out_channels,
+                out_channels=self.out_channels,
+                kernel_size=3,
+                padding=1,
+                weight_attr=ParamAttr(initializer=weight_attr),
+                bias_attr=False),
+                nn.Sigmoid())
+            self.context_door =  nn.Sequential(nn.Conv2D(                                                                                              
+                in_channels=self.out_channels,
+                out_channels=self.out_channels,
+                kernel_size=3,
+                padding=1,
+                weight_attr=ParamAttr(initializer=weight_attr),
+                bias_attr=False),
+                nn.Sigmoid())
 
         self.fuse_conv1 = nn.Conv2D(
             in_channels=self.out_channels * 2,
@@ -452,6 +474,9 @@ class V2Net(nn.Layer):
         visual_embed = paddle.concat([p5, p4, p3, p2], axis=1)
 
         ### Fusion
+        if self.has_gate:
+            visual_embed *= self.visual_door(visual_embed)
+            context_embed *= self.context_door(context_embed)
         fuse = paddle.concat([visual_embed, context_embed], axis=1)
         fuse = self.fuse_conv1(fuse)
         fuse = self.fuse_conv2(fuse)

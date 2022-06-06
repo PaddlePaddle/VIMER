@@ -31,12 +31,13 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 * **文档版式分析**：根据文档数据的内容和空间布局信息，可以将文档图像按照不同属性的进行空间划分包括标题、段落、图、列表、表格等；
 * **表格结构解析**：需要完成对表格数据进行单元格排列信息的解析；
 * **文档 OCR**：对文档图像中出现的文字进行高准确检测和识别；
-* **端到端信息抽取**：完整的文档理解服务需要完成用户定义的关键字段文字信息提取，既要完成字段的准确分类，也要完成对应文字内容的识别。
+<!--* **端到端信息抽取**：完整的文档理解服务需要完成用户定义的关键字段文字信息提取，既要完成字段的准确分类，也要完成对应文字内容的识别。-->
 
 ### 数据集
 * [RVL-CDIP](https://docs.google.com/u/0/uc?export=download&confirm=9NG1&id=0Bz1dfcnrpXM-MUt4cHNzUEFXcmc) 是一个用于图像分类的数据集，它是由扫描的文档图像组成，共分为16类，如信函、表单、电子邮件、简历、备忘录等。该数据集图像分为320000张训练集、40000个验证集和40000个测试集，并且它的图像的特点是低质量、噪声和低分辨率，通常为100 dpi。
 * [PubLayNet](https://github.com/ibm-aur-nlp/PubLayNet) 是一个用于文档图像版面分析的大型数据集，其布局用多边形边框分割标注，它包含超过36万个文档图像，其中对典型的文档布局元素进行了注释，包括文本、标题、列表、表格和图形。
-* [FUNSD](https://guillaumejaume.github.io/FUNSD/) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
+*  [PubTabNet](https://github.com/ibm-aur-nlp/PubTabNet) 是一个用于图像表格识别的大型数据集，包含56.8万以上的表格图像，以及基于HTML表示的标注。
+* [FUNSD](https://guillaumejaume.github.io/FUNSD) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
 
 ## 公开基准效果
 
@@ -44,7 +45,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 |  ----  | ---- | ----  |   :----:  |
 | 文档图像分类   | RVL-CDIP |  Accuray | 93.3 |
 | 文档版式分析   | PubLayNet  |   F1-score  |  95.4 |
-| 表格结构解析   | PubTabNet  | TEDs | 97.1 |
+| 表格结构解析   | PubTabNet  | TEDs | 97.2 |
 | 文档 OCR     | FUNSD  | 1-NED | 87.9 |
 | 端到端信息抽取 | FUNSD | 1-NED |  65.1 |
 
@@ -58,13 +59,6 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 * python 3.6+ 
 * opencv-python 4.2.0+
 * tqdm
-* shapely
-* scipy
-* imgaug
-* pyclipper
-* distance
-* apted
-* pycocotools
 * tabulate
 * cuda >= 10.1
 * cudnn >= 7.6
@@ -80,14 +74,15 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 | 下游任务 finetune | 下载链接 | 
 | :---- |:---- |
 | MLP Classification| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| Cascade RCNN Detection | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) | 
+| Cascade RCNN Detection | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| Transformer Decoder | [StrucTexT\_v2 Base for Table Structext Recognition](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 | DB Detection + Attention-OCR | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
 
 ```python
-# 1. 下载并解压RVL-CDIP数据集到 ./data/rvl-cdip/
+# 1. 下载并解压RVL-CDIP数据集到 ./data/
 # 2. 下载模型：StrucTexT_v2_document_classify_base.pdparams
 # 3. 运行下述脚本启动图像分类任务评测
 python -u ./tools/eval.py \
@@ -97,17 +92,30 @@ python -u ./tools/eval.py \
     --image_path=./data/rvl-cdip/images \
     --weights_path=StrucTexT_v2_document_classify_base.pdparams
 ```
-   * PublayNet版式分析检测
+   * PubLayNet版式分析检测
 
 ```python
 # 1. 进入目录：./src/tasks/layout_analysis/
-# 2. 下载并解压PublayNet数据集到 ./data/publaynet/
+# 2. 下载并解压PubLayNet数据集到 ./data/
 # 3. 下载模型：StrucTexT_v2_layout_analysis_base.pdparams
 # 4. 运行下述脚本启动版式分析检测任务评测
 sh set_env.sh
 python -u ./tools/eval.py \
 	-c configs/layout_analysis/cascade_rcnn/cascade_rcnn_v2.yml \
 	-o weights=StrucTexT_v2_layout_analysis_base.pdparams
+```
+   * PubTabNet表格结构解析
+
+```python
+# 1. 下载并解压PubTabNet数据集到 ./data/
+# 2. 下载模型：StrucTexT_v2_table_recognition_base.pdparams
+# 3. 运行下述脚本启动表格结构解析任务评测
+python -u tools/eval.py \
+    --config_file configs/table_recognition/recg_pubtabnet_base.json \
+    --task_type table_recognition \
+    --label_path ./data/pubtabnet/PubTabNet_2.0.0_val.jsonl \
+    --image_path ./data/pubtabnet/val/ \
+    --weights_path StrucTexT_v2_table_recognition_base.pdparams
 ```
    * FUNSD数据集端到端OCR
 

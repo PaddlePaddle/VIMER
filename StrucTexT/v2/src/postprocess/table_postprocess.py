@@ -27,9 +27,9 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(__dir__, '..')))
 
 class TablePostProcess(object):
-    def __init__(self, save_img = False,
-        row_thresh = 0.3,  col_threshold = 0.2,
-        link_thresh = 0.5):
+    def __init__(self, save_img=False,
+        row_thresh=0.3,  col_threshold=0.2,
+        link_thresh=0.5):
         self.save_img = save_img
         self.row_thresh = row_thresh
         self.col_thresh = col_threshold
@@ -297,7 +297,8 @@ class TablePostProcess(object):
                 cell_dict[row_index, col_index] = [cell_col_lines[col_index], cell_row_lines[row_index], cell_col_lines[col_index + 1], cell_row_lines[row_index + 1]]
         final_bboxes, pred_html = self.merge_cell(cell_dict, merge_dict)
 
-        return final_bboxes, pred_html
+        #return final_bboxes, pred_html
+        return pred_html
 
     def __call__(self, outs_dict):
         if isinstance(outs_dict, list):

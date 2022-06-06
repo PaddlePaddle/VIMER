@@ -34,7 +34,7 @@ class Dataset(BaseDataset):
         image_path = config['image_path']
 
         if os.path.isfile(data_path):
-            with open(data_path, 'r', 'utf-8') as f:
+            with open(data_path) as f:
                 data_list = [[x.strip(), image_path] for x in f.readlines()]
                 label_list = [data_list]
         else:
@@ -54,32 +54,17 @@ class Dataset(BaseDataset):
         convert_example_to_feature
         :param examples: batch_samples for document
         """
-        example = examples[0]
-        bboxes = np.array(example['cell_bboxes']).reshape(-1, 4).tolist()
-        row_col_indexs = np.array(example['row_col_indexes']).reshape(-1, 2)
-        xs = np.array(example['xs']).reshape(-1)
-        ys = np.array(example['ys']).reshape(-1)
-        row_link_map_up = np.array(example['row_link_map_up'])
-        row_link_map_down = np.array(example['row_link_map_down'])
-        col_link_map_left = np.array(example['col_link_map_left'])
-        col_link_map_right = np.array(example['col_link_map_right'])
-
-        xs_cls = np.array(example['xs_cls']).reshape(-1)
-        ys_cls = np.array(example['ys_cls']).reshape(-1)
-        feature = {'image': example['image'],
-                   'bboxes': bboxes,
-                   'row_col_indexs': row_col_indexs.tolist(),
-                   'xs': xs,
-                   'ys': ys,
-                   'xs_cls': xs_cls,
-                   'ys_cls': ys_cls,
-                   'row_link_map_up': row_link_map_up,
-                   'row_link_map_down': row_link_map_down,
-                   'col_link_map_left': col_link_map_left,
-                   'col_link_map_right':col_link_map_right}
-        if self.transform:
-            feature = self.transform(example)
-        return feature
+        images = []
+        labels = []
+        for example in examples:
+            label = example['html']['structure']['tokens']
+            label = list(filter(lambda x: ('head' not in x) and ('body' not in x), label))
+            example = {'image': example['image']}
+            if self.transform:
+                feature = self.transform(example)
+            images.append(feature['image'])
+            labels.append(label)
+        return {'image': np.asarray(images), 'label': labels}
 
     def _read_data(self, example):
         data, image_path = example
