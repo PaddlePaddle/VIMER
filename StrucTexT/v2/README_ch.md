@@ -56,10 +56,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 `pip3 install paddlepaddle-gpu --upgrade -i https://mirror.baidu.com/pypi/simple`
 
 #### 环境要求 
-* python 3.6+ 
-* opencv-python 4.2.0+
-* tqdm
-* tabulate
+* python 3.6+
 * cuda >= 10.1
 * cudnn >= 7.6
 * gcc >= 8.2
@@ -111,24 +108,24 @@ python -u ./tools/eval.py \
 # 2. 下载模型：StrucTexT_v2_table_recognition_base.pdparams
 # 3. 运行下述脚本启动表格结构解析任务评测
 python -u tools/eval.py \
-    --config_file configs/table_recognition/recg_pubtabnet_base.json \
-    --task_type table_recognition \
-    --label_path ./data/pubtabnet/PubTabNet_2.0.0_val.jsonl \
-    --image_path ./data/pubtabnet/val/ \
-    --weights_path StrucTexT_v2_table_recognition_base.pdparams
+    --config_file=configs/table_recognition/recg_pubtabnet_base.json \
+    --task_type=table_recognition \
+    --label_path=./data/pubtabnet/PubTabNet_2.0.0_val.jsonl \
+    --image_path=./data/pubtabnet/val/ \
+    --weights_path=StrucTexT_v2_table_recognition_base.pdparams
 ```
    * FUNSD数据集端到端OCR
 
 ```python
-# 1. 下载并解压FUNSD数据集到 ./data/funsd/
-# 2. 下载模型：StrucTexT_v2_end2end_ocr_base.pdparams
+# 1. 下载并解压FUNSD数据集到 ./data/
+# 2. 下载模型：StrucTexT_v2_end2end_ie_base.pdparams
 # 3. 运行下述脚本启动端到端OCR任务评测
 python -u ./tools/eval.py \
     --config_file=configs/end2end_ocr/ocr_funsd_base.json \
     --task_type=end2end_ocr \
-    --label_path=./data/testing_data/annotation \
-    --image_path=./data/testing_data/image \
-    --weights_path=StrucTexT_v2_end2end_ocr_base.pdparams
+    --label_path=./data/funsd/testing_data/annotation \
+    --image_path=./data/funsd/testing_data/image \
+    --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
 ```
 
 ## 典型应用场景
