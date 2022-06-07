@@ -28,8 +28,8 @@ sys.path.append(os.path.abspath(os.path.join(__dir__, '..')))
 
 class TablePostProcess(object):
     def __init__(self, save_img=False,
-        row_thresh=0.3,  col_threshold=0.2,
-        link_thresh=0.5):
+        row_thresh=0.25,  col_threshold=0.3,
+        link_thresh=0.4):
         self.save_img = save_img
         self.row_thresh = row_thresh
         self.col_thresh = col_threshold

@@ -45,7 +45,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 |  ----  | ---- | ----  |   :----:  |
 | 文档图像分类   | RVL-CDIP |  Accuray | 93.3 |
 | 文档版式分析   | PubLayNet  |   F1-score  |  95.4 |
-| 表格结构解析   | PubTabNet  | TEDs | 97.2 |
+| 表格结构解析   | PubTabNet  | TEDs | 97.1 |
 | 文档 OCR     | FUNSD  | 1-NED | 87.9 |
 | 端到端信息抽取 | FUNSD | 1-NED |  65.1 |
 
