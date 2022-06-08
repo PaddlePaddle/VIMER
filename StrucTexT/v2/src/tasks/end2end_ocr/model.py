@@ -146,8 +146,6 @@ class Model(Encoder):
         self.binarize = DBHead(in_channels, binarize_name_list)
         self.thresh = DBHead(in_channels, thresh_name_list)
 
-        self.det_loss_weight = self.det_config.get('loss_weight')
-
         self.neck_conv = ConvBNLayer(
             in_channels=128,
             out_channels=256,
@@ -165,7 +163,6 @@ class Model(Encoder):
         self.decoder_layers = self.recg_config.get('decoder_layers')
         self.return_intermediate_dec = self.recg_config.get('return_intermediate_dec')
         self.recg_loss = self.recg_config['recg_loss']
-        self.recg_loss_weight = self.recg_config['loss_weight']
 
         self.ocr_recg = RecgHead(
             method=self.method,
@@ -270,15 +267,13 @@ class Model(Encoder):
 
         rois_num = paddle.to_tensor(rois_num, dtype='int32')
         rois = paddle.concat(rois, axis=0)
-        rois, rois_masks, roi_w = self.pad_rois_w(rois)
         roi_feat = roi_align(
             x,
             rois,
-            output_size=(5, roi_w),
+            output_size=(5, 50),
             spatial_scale=0.25,
             boxes_num=rois_num)
 
-        roi_feat *= rois_masks
         neck_feat = self.neck_conv(roi_feat)
         recg_out = self.ocr_recg(neck_feat)[-1]
 
@@ -317,8 +312,7 @@ class Model(Encoder):
                     text = self.label_converter.decode(text.numpy()).upper()
                     bbox = bbox.numpy().astype('int').tolist()
                     cls = cls.numpy().tolist()[0]
-                    if len(text) > 0:
-                        gt_label.append([bbox, cls, text])
+                    gt_label.append([bbox, cls, text])
             results['gt_label'] = gt_label
             results.update(input_data)
         return results

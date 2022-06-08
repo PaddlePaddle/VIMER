@@ -33,15 +33,6 @@ Lexicon_Table_95 = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ','
     'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', \
     'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', ' ']
 
-
-TEXT_CLASSES = {
-    "question": 0,
-    "answer": 1,
-    "header": 2,
-    "other": 3
-}
-
-
 class LabelConverter(object):
     """convert between text and lexicon index"""
     def __init__(self, seq_len=50, lexicon=None, recg_loss='CE'):
@@ -146,14 +137,7 @@ def _parse_ann_info_funsd(anno_path):
             ignore_tag = False
             box, transcript = word['box'], word['text']
             poly = _bbox2poly(list(map(float, box)))
-
-            if len(transcript) == 0:
-                transcript = ""
-            else:
-                for char in transcript:
-                    if char not in Lexicon_Table_95:
-                        transcript = ""
-                        break
+            transcript = ''.join(filter(lambda char: char in Lexicon_Table_95, transcript))
             res.append((poly, transcript, 0, ignore_tag))
 
     if len(res) == 0:
@@ -205,13 +189,8 @@ class Dataset(BaseDataset):
         example = examples[0]
         anno_path = example['boxes_and_texts_file']
         anno = _parse_ann_info_funsd(anno_path)
-        if anno is None:
-            return None
-
         # sort the box based on the position
         anno = _sort_box_with_list(anno)
-        image = example['image']
-        image_name = example['image_name']
 
         polys = []
         texts = []
@@ -224,21 +203,19 @@ class Dataset(BaseDataset):
             ignore_tags.append(ignore_tag)
             classes.append(text_class)
 
-        label_word = {'image': image}
+        label_word = {'image': example['image']}
         label_word['polys'] = np.array(polys, dtype=np.float32).reshape(-1, 4, 2)
         label_word['texts'] = np.array(texts, dtype=np.int64)
         label_word['classes'] = np.array(classes, dtype=np.int64)
         label_word['ignore_tags'] = np.array(ignore_tags, dtype=np.bool)
 
         data = self.transform(label_word)
-        data['org_image'] = image
-        data['image_name'] = image_name
         return data
 
     def _read_data(self, example):
         """load image from image path and return image with data path
         Input:
-            example: ['X51005268200.txt', '../text_spotting_data/sroie/train/image/'] <List>
+            example: ['X51005268200.txt', '../funsd/training_data/image/'] <List>
         Output:
             example: readed image and label path <Dict>
         """
@@ -259,8 +236,6 @@ class Dataset(BaseDataset):
             logging.debug('Dataset... Error in load image for %s', image_path)
             return None
 
-        example = {'image': image,
-                   'boxes_and_texts_file': data_path,
-                   'image_name': image_name}
+        example = {'image': image, 'boxes_and_texts_file': data_path}
 
         return example

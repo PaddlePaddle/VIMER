@@ -95,7 +95,7 @@ def eval_one_file(pred, gt, iou_thresh):
             gt_str = gt[max_iou_idx][2]
             if gt_str.lower() == pred_str.lower():
                 hit_str_num += 1
-            ned = 1 - editdistance.eval(pred_str, gt_str) / max(len(gt_str), len(pred_str))
+            ned = 1 - editdistance.eval(pred_str, gt_str) / max(1, max(len(gt_str), len(pred_str)))
             ned_count += ned
         else:
             fp_count += 1
@@ -127,7 +127,7 @@ class OCRMetric(paddle.metric.Metric):
         """
         return metrics
         """
-        ned_e2e = float(self.ned_count / max(self.fp_count + self.gt_count, 1))
+        ned_e2e = float(self.ned_count / max(self.gt_count, 1))
         res = {self.main_indicator: ned_e2e}
         return res
 

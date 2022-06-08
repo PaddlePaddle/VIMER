@@ -13,7 +13,6 @@
             "num_classes":95,
             "max_seq_len":32,
             "recg_loss":"CE",
-            "loss_weight":1,
             "decoder_layers":6,
             "return_intermediate_dec":true
         },
@@ -21,7 +20,7 @@
             "thresh":0.3,
             "box_thresh":0.7,
             "max_candidates":1000,
-            "unclip_ratio":0.63,
+            "unclip_ratio":0.85,
             "score_mode":"fast"
         }
     },
@@ -32,17 +31,13 @@
         }
     ],
     "eval":{
-        "results_dir": "./result",
         "feed_names":[
             "image",
             "bboxes_padded_list",
             "bboxes_4pts_padded_list",
             "texts_padded_list",
             "classes_padded_list",
-            "masks_padded_list",
-            "ratio",
-            "org_image",
-            "image_name"
+            "masks_padded_list"
         ],
         "loader":{
             "collect_batch":true,
@@ -56,7 +51,7 @@
             "image_path":"./data/funsd/testing_data/image",
             "batch_size":1,
             "shuffle":false,
-            "max_seq_len":31,
+            "max_seq_len":32,
             "recg_loss":"CE",
             "transform":[
                 {
@@ -69,7 +64,7 @@
                     "DBTextSpottingTest":{
                         "max_side_len":1920,
                         "max_bbox_num":512,
-                        "max_seq_len":31
+                        "max_seq_len":32
                     }
                 }
             ]

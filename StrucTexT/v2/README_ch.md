@@ -42,11 +42,11 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 ## 公开基准效果
 
 | 任务类型 |  测试集合 | 评价方式 | V2.0 |
-|  ----  | ---- | ----  |   :----:  |
+|  ----  | ---- | ----  | :----: |
 | 文档图像分类   | RVL-CDIP |  Accuray | 93.3 |
 | 文档版式分析   | PubLayNet  |   F1-score  |  95.4 |
 | 表格结构解析   | PubTabNet  | TEDs | 97.1 |
-| 文档 OCR     | FUNSD  | 1-NED | 87.9 |
+| 文档 OCR     | FUNSD  | 1-NED | 89.0 |
 | 端到端信息抽取 | FUNSD | 1-NED |  65.1 |
 
 ## 快速体验
@@ -68,12 +68,12 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 
 ### 下载推理模型
 
-| 下游任务 finetune | 下载链接 | 
-| :---- |:---- |
-| MLP Classification| [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| Cascade RCNN Detection | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| Transformer Decoder | [StrucTexT\_v2 Base for Table Structext Recognition](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-| DB Detection + Attention-OCR | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| 下游任务 | 模型参数(M) | 下载链接 | 
+| :---- | :---- | :---- |
+| MLP Classification| 28.4 | [StrucTexT\_v2 Base for Document Classify](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| Cascade RCNN Detection | 50.2 | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| Transformer Decoder | 128.5 | [StrucTexT\_v2 Base for Table Structext Recognition](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| DB Detection + Attention-OCR | 37.3 | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类

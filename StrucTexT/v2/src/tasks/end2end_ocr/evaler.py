@@ -11,7 +11,7 @@ import paddle as P
 import cv2
 
 from tqdm import trange
-from src.postprocess.ocr_postprocess import OCRPostProcess
+from src.postprocess.ocr_postprocess import split_anno_by_symbol
 
 class Evaler:
     """
@@ -33,7 +33,6 @@ class Evaler:
 
         self.init_model = config['init_model']
         self.config = config['eval']
-        self.postprocess = OCRPostProcess(self.config['results_dir'])
 
     @P.no_grad()
     def run(self):
@@ -56,9 +55,9 @@ class Evaler:
             total_time += time.time() - start
             ######### Eval ##########
             label = output['gt_label']
-            pred = self.postprocess(output)
+            pred = split_anno_by_symbol(output['e2e_preds'][0])
             for key, val in self.eval_classes.items():
-                val.update(pred, gt)
+                val.update(pred, label)
             #########################
             total_frame += input_data[0].shape[0]
         metrics = 'fps : {}'.format(total_frame / total_time)
