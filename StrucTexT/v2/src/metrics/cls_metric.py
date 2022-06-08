@@ -31,7 +31,7 @@ class ClsMetric(paddle.metric.Metric):
         if masks is None:
             masks = np.ones_like(labels)
         masks = masks.astype('int32')
-        correct = np.array(preds == labels, dtype='int32')
+        correct = np.array(np.argmax(preds, axis=1) == labels, dtype='int32')
         correct *= masks
         all = np.ones_like(labels)
         all *= masks

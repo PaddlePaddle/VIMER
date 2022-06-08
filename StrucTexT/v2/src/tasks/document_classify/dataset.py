@@ -37,7 +37,8 @@ class Dataset(BaseDataset):
 
         if os.path.isfile(data_path):
             labels = [e.strip().split() for e in open(data_path).readlines()]
-            labels = [[os.path.join(image_path, os.path.basename(image)), int(label)] for image, label in labels]
+            #labels = [[os.path.join(image_path, os.path.basename(image)), int(label)] for image, label in labels]
+            labels = [[os.path.join(image_path, image), int(label)] for image, label in labels]
             label_list = list(filter(lambda e: os.path.exists(e[0]), labels))
             label_list = [label_list]
         else:
