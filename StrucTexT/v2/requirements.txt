@@ -11,3 +11,7 @@ imgaug
 pyclipper
 distance
 apted
+Polygon3
+editdistance
+lxml
+
