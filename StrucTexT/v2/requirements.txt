@@ -14,4 +14,3 @@ apted
 Polygon3
 editdistance
 lxml
-

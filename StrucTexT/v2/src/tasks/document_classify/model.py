@@ -56,4 +56,5 @@ class Model(Encoder):
         enc_final = self.conv2(self.conv1(enc_final))
         enc_final = enc_final.flatten(1)
         logit = self.label_classifier(enc_final)
+        logit = P.argmax(logit, axis=-1)
         return {'logit': logit, 'label': label}
