@@ -21,7 +21,7 @@ CAE is a novel masked image modeling (MIM) approach for self-supervised represen
 <br />  
 In comparison to previous MIM methods (e.g., BEiT) that couple the encoding and pretext task completion roles, our approach benefits the separation of the representation learning (encoding) role and the pretext task completion role, improving the representation learning capacity and accordingly helping more on downstream tasks. In addition, we present the explanations about why contrastive pretraining and supervised pretraining perform similarly and why MIM potentially performs better. We demonstrate the effectiveness of our CAE through superior transfer performance in downstream tasks: semantic segmentation, and object detection and instance segmentation.
 
-<div align=center><img src="https://github.com/PaddlePaddle/VIMER/blob/main/CAE/figs/CAE2.png" width="30%"></div>
+<div align=center><img src="https://github.com/PaddlePaddle/VIMER/blob/main/CAE/figs/CAE2.png" width="80%"></div>
 
 ## Result on ImageNet-1K
 
