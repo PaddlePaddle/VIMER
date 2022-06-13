@@ -4,7 +4,7 @@
 </div>
 
 * This repo is the official implementation of [Context Autoencoder for Self-Supervised Representation Learning](https://arxiv.org/abs/2202.03026). It includes codes and models for the following tasks:
-> **Semantic Segmentation**: See [SEGMENTATION.md](Segmentation/README.md). \
+> **Semantic Segmentation**: See [SEGMENTATION.md](Segmentation/README.md). 
 
 
 
@@ -28,7 +28,6 @@ In comparison to previous MIM methods (e.g., BEiT) that couple the encoding and 
 |   model  | pretrain | Linear Prob | accuracy | weight |
 |:--------:|:--------:|:--------:|:--------:| :--------:|
 | Vit-Base |   800e   |   90e   |   69.32%  | [Vit-Base-800e](https://vimer.bj.bcebos.com/CAE/pt_ep800_fp32_checkpoint-799.pd)|
-|
 
 
 
@@ -44,8 +43,9 @@ gcc 8.2
 
 
 * Installation PaddlePaddle
+
+This code base needs to be executed on the [develep paddle](https://vimer.bj.bcebos.com/CAE/paddlepaddle_gpu-0.0.0-cp37-cp37m-linux_x86_64.whl):
 ```
-This code base needs to be executed on the [develep paddle](ttps://vimer.bj.bcebos.com/CAE/paddlepaddle_gpu-0.0.0-cp37-cp37m-linux_x86_64.whl):
 python3 -m pip install paddlepaddle_gpu-0.0.0-cp37-cp37m-linux_x86_64.whl)
 
 ```
