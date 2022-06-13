@@ -275,7 +275,8 @@ def get_sinusoid_encoding_table(n_position, d_hid, token=False):
     
 @manager.BACKBONES.add_component
 class CAE(nn.Layer):
-    """ CAE with support for patch input
+    """
+     CAE with support for patch input
     """
 
     def __init__(self,
@@ -350,7 +351,8 @@ class CAE(nn.Layer):
         self.init_weight()
 
     def init_weight(self):
-        utils.load_pretrained_model(self, self.pretrained)
+        if self.pretrained:
+            utils.load_pretrained_model(self, self.pretrained)
 
         # load and resize pos_embed
         model_path = self.pretrained

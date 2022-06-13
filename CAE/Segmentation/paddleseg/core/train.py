@@ -73,6 +73,7 @@ def train(model,
           keep_checkpoint_max=5,
           test_config=None,
           precision='fp32',
+          amp_level='O1',
           profiler_options=None,
           to_static_training=False):
     """
@@ -96,13 +97,16 @@ def train(model,
         keep_checkpoint_max (int, optional): Maximum number of checkpoints to save. Default: 5.
         test_config(dict, optional): Evaluation config.
         precision (str, optional): Use AMP if precision='fp16'. If precision='fp32', the training is normal.
+        amp_level (str, optional): Auto mixed precision level. Accepted values are “O1” and “O2”: O1 represent mixed precision, 
+        test_config(dict, optional): Evaluation config.
+        precision (str, optional): Use AMP if precision='fp16'. If precision='fp32', the training is normal.
         profiler_options (str, optional): The option of train profiler.
         to_static_training (bool, optional): Whether to use @to_static for training.
     """
     model.train()
     nranks = paddle.distributed.ParallelEnv().nranks
     local_rank = paddle.distributed.ParallelEnv().local_rank
-
+    '''
     # model
     # TODO
     num_layers = model.backbone.get_num_layers() 
@@ -119,6 +123,7 @@ def train(model,
     print("iters: ", iters)
     optimizer = create_optimizer(model, skip_list=skip_weight_decay_list, num_layers=num_layers, decay_dict=decay_dict)
     lr_scheduler_values = polynomial_scheduler(base_value=1e-4, final_value=0., total_iters=iters, start_warmup_value=0, warmup_iters=1500)
+    '''
 
     start_iter = 0
     if resume_model is not None:
@@ -129,6 +134,16 @@ def train(model,
             os.remove(save_dir)
         os.makedirs(save_dir)
 
+    # use amp
+    if precision == 'fp16':
+        logger.info('use AMP to train. AMP level = {}'.format(amp_level))
+        scaler = paddle.amp.GradScaler(init_loss_scaling=1024)
+        if amp_level == 'O2':
+            model, optimizer = paddle.amp.decorate(
+            models=model,
+            optimizers=optimizer,
+            level='O2',
+            save_dtype='float32')
     if nranks > 1:
         paddle.distributed.fleet.init(is_collective=True)
         optimizer = paddle.distributed.fleet.distributed_optimizer(
@@ -144,11 +159,12 @@ def train(model,
         num_workers=num_workers,
         return_list=True,
         worker_init_fn=worker_init_fn, )
-
-    # use amp
+    '''
+    # use amp       
     if precision == 'fp16':
         logger.info('use amp to train')
         scaler = paddle.amp.GradScaler(init_loss_scaling=1024)
+    '''
 
     if use_vdl:
         from visualdl import LogWriter
@@ -171,7 +187,7 @@ def train(model,
     iter = start_iter
     while iter < iters:
         for data in loader:
-            optimizer.set_lr(lr_scheduler_values[iter])
+            #optimizer.set_lr(lr_scheduler_values[iter])
             iter += 1
             if iter > iters:
                 version = paddle.__version__
@@ -190,15 +206,14 @@ def train(model,
 
             if precision == 'fp16':
                 with paddle.amp.auto_cast(
+                        level=amp_level,
                         enable=True,
                         custom_white_list={
                             "elementwise_add", "batch_norm", "sync_batch_norm"
                         },
                         custom_black_list={'bilinear_interp_v2'}):
-                    if nranks > 1:
-                        logits_list = ddp_model(images)
-                    else:
-                        logits_list = model(images)
+                    logits_list = ddp_model(images) if nranks > 1 else model(
+                        images)
                     loss_list = loss_computation(
                         logits_list=logits_list,
                         labels=labels,
@@ -213,10 +228,7 @@ def train(model,
                 else:
                     scaler.minimize(optimizer, scaled)  # update parameters
             else:
-                if nranks > 1:
-                    logits_list = ddp_model(images)
-                else:
-                    logits_list = model(images)
+                logits_list = ddp_model(images) if nranks > 1 else model(images)
                 loss_list = loss_computation(
                     logits_list=logits_list,
                     labels=labels,
@@ -294,7 +306,10 @@ def train(model,
                     test_config = {}
 
                 mean_iou, acc, _, _, _ = evaluate(
-                    model, val_dataset, num_workers=num_workers, **test_config)
+                    model,
+                    val_dataset,
+                    num_workers=num_workers,
+                    **test_config)
 
                 model.train()
 

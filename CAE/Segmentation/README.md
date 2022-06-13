@@ -1,22 +1,22 @@
 # CAE for Semantic Segmentaion
 
 This repo contains the supported code and configuration files to reproduce semantic segmentaion results of [Context Autoencoder for Self-Supervised Representation Learning](https://arxiv.org/pdf/2202.03026.pdf). 
-It is based on PaddleSeg(https://github.com/PaddlePaddle/PaddleSeg).
+It is based on [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg).
 
 
 ## Updates
-***06/10/2022*** Initial commits
+***06/12/2022*** Initial commits
 
 
 ## Results and Models
 ### ADE20K
 | Backbone | Method | Crop Size | Lr Schd | mIoU | #params | FLOPs | config | log | model |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| CAE-B | UperNet | 512x512 | 160K | 49.69 | 81M | 1038G | [config]() | [github]()/[baidu]() | [github]()/[baidu]() |
+| CAE-B | UperNet | 512x512 | 160K | 49.69 | 81M | 1038G | [config](https://github.com/PaddlePaddle/VIMER/blob/main/CAE/Segmentation/configs/upernet/upernet_cae_base_ade20k_512x512_160k.yml) | [github]()/[baidu]() | [model](https://vimer.bj.bcebos.com/CAE/seg_base.pdparams) |
 
 
 **Notes**: 
-- **Pre-trained models can be downloaded from [ CAE Vision Transformer for ImageNet Classification](https://github.com/)**.
+- **Pre-trained models can be downloaded from [here](https://vimer.bj.bcebos.com/CAE/pt_ep800_fp32_checkpoint-799.pd)**.
 
 
 ## Usage
@@ -53,6 +53,12 @@ pip3 install --upgrade -r requirements.txt -i https://mirror.baidu.com/pypi/simp
 python -m paddle.distributed.launch val.py \
        --config <CONFIG_FILE> --model_path <SEG_CHECKPOINT_FILE>
 ```
+For example, to infer an UPerNet model with the given model, run:
+```
+python -u -m paddle.distributed.launch val.py \
+      --config configs/upernet/upernet_cae_base_ade20k_512x512_160k.yml \ 
+      --model_path https://vimer.bj.bcebos.com/CAE/pt_ep800_fp32_checkpoint-799.pd 
+``` 
 
 ### Training
 

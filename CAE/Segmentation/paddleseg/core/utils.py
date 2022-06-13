@@ -24,8 +24,6 @@ from paddle.optimizer import AdamW
 __all__ = ['AdamWDL', ]
 
 
-# file1
-
 # Layerwise decay
 def layerwise_lr_decay(decay_rate, name_dict, n_layers, param):
     """
@@ -197,12 +195,6 @@ class AdamWDL(AdamW):
         param_and_grad[0].optimize_attr["learning_rate"] = prev_lr
         return res
 
-
-# file2
-# import paddle 
-# from paddle import optimizer as optim
-# from util.adamw import AdamWDL as AdamW 
-
 AdamW = AdamWDL
 
 def create_optimizer(model, filter_bias_and_bn=True, num_layers=None, skip_list=None, decay_dict=None):
@@ -233,7 +225,7 @@ def create_optimizer(model, filter_bias_and_bn=True, num_layers=None, skip_list=
     else:
         parameters = model.parameters()
 
-    #opt_args = dict(learning_rate=args.lr, weight_decay=weight_decay)
+    # opt_args = dict(learning_rate=args.lr, weight_decay=weight_decay)
     opt_args = dict(learning_rate=2e-4, weight_decay=weight_decay)
 
     opt_args['parameters'] = parameters 
