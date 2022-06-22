@@ -132,17 +132,17 @@ For AI services that only require a single or individual processing power, some 
 For new tasks that are not supported by the VIMER-UFO 2.0 model, VIMER-UFO 2.0 supports fewshot finetuning in the case of updating only part parameters to achieve fast task expansion. According to the previous principle part, there is a share branch (Attention and FFN-Shared) in the super network of VIMER-UFO 2.0. This branch uses all the task data to optimize the training process of the VIMER-UFO 2.0 large model, so it has Powerful task generalization, for new tasks that are not supported, only need to extract the parameters of the branch and use a small amount of data for fine-tuning to achieve > excellent performance on new tasks. At the same time, because only some parameters need to be updated, the cost of downstream finetune is greatly reduced, which solves the current problem of mainstream large model landing applications.
 
 
-Fast expansion results：
+Fast expansion results (without Extra Training Data)：
 
 |    Datasets          |         SOTA           |        10% Finetune |    100% Finetune    |
 |:---------------------|:----------------------:|:-------------------:|:-------------------:|
-|      dmlab           |          77            |         74.8        |        80.93        |
-|      retinopathy     |          80.1          |         60.9        |        82.90        |
-|      aircraft        |          94.90         |         70.84       |        95.02        |
-|      cifar10         |          99.40         |         99.32       |        99.40        |
-|      gtsrb           |          99.7          |         99.83       |        99.90        |
-|      Cityscape       |          84.3  (without Extra Training Data)        |         -           |        84.36        |
-|      PASCAL VOC      |          89.3          |         -           |        89.14        |
+|      dmlab           |          77.0          |         74.8        |        80.9        |
+|      retinopathy     |          80.1          |         60.9        |        82.9        |
+|      aircraft        |          94.9          |         70.8        |        95.0        |
+|      cifar10         |          99.4          |         99.3        |        99.4        |
+|      gtsrb           |          99.7          |         99.8        |        99.9        |
+|      Cityscape       |          84.3          |         -           |        84.3        |
+|      PASCAL VOC      |          89.3          |         -           |        89.1        |
 
 
 ### Downstream-tasks-distillation
