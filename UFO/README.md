@@ -1,9 +1,9 @@
 English | [简体中文](README_ch.md) | [ECCV 2022 paper](https://arxiv.org/pdf/2207.10341v1.pdf)
 
-# UFO: Unified Feature Optimization [[arXiv]](https://arxiv.org/pdf/2207.10341v1.pdf) 
+# UFO:Unified Feature Optimization [[arXiv]](https://arxiv.org/pdf/2207.10341v1.pdf) 
 ```BibTex
 @inproceedings{
-  title={UFO: Unified Feature Optimization},
+  title={UFO:Unified Feature Optimization},
   author={Teng Xi, Yifan Sun, Deli Yu, Bi Li, Nan Peng, Gang Zhang et al.},
   booktitle={European Conference on Computer Vision},
   year={2022},
