@@ -1,4 +1,4 @@
-English | [简体中文](README_ch.md)
+English | [简体中文](README_ch.md) | [ECCV 2022 paper](https://arxiv.org/pdf/2207.10341v1.pdf)
 
 # VIMER-UFO 2.0 (CV Foundation Model)
 
