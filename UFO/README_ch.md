@@ -1,5 +1,16 @@
 简体中文 | [English](README.md) | [ECCV 2022 paper](https://arxiv.org/pdf/2207.10341v1.pdf)
 
+# UFO: Unified Feature Optimization [[arXiv]](https://arxiv.org/pdf/2207.10341v1.pdf) 
+```BibTex
+@inproceedings{
+  title={UFO: Unified Feature Optimization},
+  author={Teng Xi, Yifan Sun, Deli Yu, Bi Li, Nan Peng, Gang Zhang et al.},
+  booktitle={European Conference on Computer Vision},
+  year={2022},
+  url={https://arxiv.org/pdf/2207.10341v1.pdf}
+}
+```
+
 # VIMER-UFO 2.0 (文心-CV大模型)
 
 - [整体概述](#整体概述)
