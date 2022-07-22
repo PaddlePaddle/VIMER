@@ -1,4 +1,4 @@
-简体中文 | [English](README.md)
+简体中文 | [English](README.md) | [ECCV 2022 paper](https://arxiv.org/pdf/2207.10341v1.pdf)
 
 # VIMER-UFO 2.0 (文心-CV大模型)
 
