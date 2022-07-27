@@ -3,6 +3,7 @@ English | [简体中文](README_ch.md) | [ECCV 2022 paper](https://arxiv.org/pdf
 # UFO:Unified Feature Optimization [[arXiv]](https://arxiv.org/pdf/2207.10341v1.pdf) 
 ```BibTex
 @inproceedings{
+  xi2022ufo,
   title={UFO:Unified Feature Optimization},
   author={Teng Xi, Yifan Sun, Deli Yu, Bi Li, Nan Peng, Gang Zhang et al.},
   booktitle={European Conference on Computer Vision},
@@ -179,7 +180,7 @@ In order to better support deployment on mobile and edge devices, VIMER-UFO 2.0 
 ## Instructions
 
 1. Models, training codes and evaluation scripts related to VIMER-UFO 2.0 have been open sourced. More details, visit: https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
-2. VIMER-UFO 2.0 will also be opened on Baidu's zero-threshold AI development platform EasyDL in the near future.
+2. VIMER-UFO 2.0 has been implemented in Baidu's zero-threshold AI development platform EasyDL.
 
 
 ### Download-17B-pretrained-model

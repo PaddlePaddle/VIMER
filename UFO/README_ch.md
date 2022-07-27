@@ -3,6 +3,7 @@
 # UFO:Unified Feature Optimization [[arXiv]](https://arxiv.org/pdf/2207.10341v1.pdf) 
 ```BibTex
 @inproceedings{
+  xi2022ufo,
   title={UFO:Unified Feature Optimization},
   author={Teng Xi, Yifan Sun, Deli Yu, Bi Li, Nan Peng, Gang Zhang et al.},
   booktitle={European Conference on Computer Vision},
@@ -160,7 +161,7 @@ VIMER-UFO 2.0 大模型可被广泛应用于智慧城市、无人驾驶、工业
 ## 使用方案
 
 1. VIMER-UFO 2.0 相关的模型、训练代码和评测脚本均已开源，了解详细信息可访问：https://github.com/PaddlePaddle/VIMER/tree/main/UFO/OneForAll
-2. VIMER-UFO 2.0 大模型近期也将开放在百度零门槛 AI 开发平台 EasyDL 中，敬请期待。
+2. VIMER-UFO 2.0 大模型已经开放在百度零门槛 AI 开发平台 EasyDL 中。
 
 ### 170亿参数预训练模型下载
 
