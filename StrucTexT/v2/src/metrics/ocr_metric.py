@@ -76,7 +76,7 @@ def eval_one_file(pred, gt, iou_thresh):
 
     for pred_pts in pred:
         pred_poly = pts2PolyPred(pred_pts[0])
-        pred_str = pred_pts[1]
+        pred_str = pred_pts[1].lower()
         max_iou = 0
         max_iou_idx = -1
         # Compute the iou between gt_poly and pred_poly
@@ -92,8 +92,8 @@ def eval_one_file(pred, gt, iou_thresh):
         if max_iou > iou_thresh:
             hit_count += 1
             gt_match_record[max_iou_idx] = 1
-            gt_str = gt[max_iou_idx][2]
-            if gt_str.lower() == pred_str.lower():
+            gt_str = gt[max_iou_idx][2].lower()
+            if gt_str == pred_str:
                 hit_str_num += 1
             ned = 1 - editdistance.eval(pred_str, gt_str) / max(1, max(len(gt_str), len(pred_str)))
             ned_count += ned
@@ -127,7 +127,7 @@ class OCRMetric(paddle.metric.Metric):
         """
         return metrics
         """
-        ned_e2e = float(self.ned_count / max(self.gt_count, 1))
+        ned_e2e = float(self.ned_count / max(self.fp_count + self.gt_count, 1))
         res = {self.main_indicator: ned_e2e}
         return res
 
