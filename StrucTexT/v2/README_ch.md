@@ -135,7 +135,7 @@ python -u ./tools/eval.py \
 # 2. 下载模型：StrucTexT_v2_end2end_ie_base.pdparams
 # 3. 运行下述脚本启动端到端信息抽取任务评测
 python -u ./tools/eval.py \
-    --config_file=configs/end2end_ocr/ocr_funsd_base.json \
+    --config_file=configs/end2end_ie/ocr_funsd_base.json \
     --task_type=end2end_ie \
     --label_path=./data/funsd/testing_data/annotation \
     --image_path=./data/funsd/testing_data/image \
