@@ -126,7 +126,7 @@ python -u ./tools/eval.py \
     --task_type=end2end_ocr \
     --label_path=./data/funsd/testing_data/annotation \
     --image_path=./data/funsd/testing_data/image \
-    --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
+    --weights_path=StrucTexT_v2_end2end_ocr_base.pdparams
 ```
    * FUNSD数据集端到端信息抽取
 
