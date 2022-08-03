@@ -1,3 +1,4 @@
+""" autoaugment """
 # Copyright (c) 2021 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -204,6 +205,7 @@ class SVHNPolicy(object):
 
 
 class SubPolicy(object):
+    """ SubPolicy """
     def __init__(self,
                  p1,
                  operation1,
@@ -229,8 +231,10 @@ class SubPolicy(object):
             "invert": [0] * 10
         }
 
-        # from https://stackoverflow.com/questions/5252170/specify-image-filling-color-when-rotating-in-python-with-pil-and-setting-expand
         def rotate_with_fill(img, magnitude):
+            """ from https://stackoverflow.com/questions/5252170/specify-image- \
+                     filling-color-when-rotating-in-python-with-pil-and-setting-expand
+            """
             rot = img.convert("RGBA").rotate(magnitude)
             return Image.composite(rot,
                                    Image.new("RGBA", rot.size, (128, ) * 4),

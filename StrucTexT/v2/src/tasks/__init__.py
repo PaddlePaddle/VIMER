@@ -24,7 +24,7 @@ __all__ = ['build_task']
 
 def build_task(task):
     """ build_task """
-    support_dict = ['end2end_ocr', 'document_classify', 'table_recognition']
+    support_dict = ['end2end_ocr', 'end2end_ie', 'document_classify', 'table_recognition']
     assert task in support_dict, Exception(
             'task only support {}'.format(support_dict))
     model = importlib.import_module('src.tasks.' + task + '.model')

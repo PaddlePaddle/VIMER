@@ -25,6 +25,12 @@ sys.path.append(os.path.abspath(os.path.join(__dir__, '../../..')))
 from src.data import build_transform
 from src.data.dataset import BaseDataset
 
+TEXT_CLASSES = {
+        'question': 0,
+        'answer': 1,
+        'header': 2,
+        'other': 3
+}
 
 Lexicon_Table_95 = ['!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', \
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', \
@@ -73,7 +79,7 @@ class LabelConverter(object):
         else:
             new_text_idx[:text_len] = text_idx
 
-        return new_text_idx
+        return new_text_idx, text_idx
 
     def decode(self, text_idx):
         """ convert text-index into text-label.
@@ -127,20 +133,26 @@ def _parse_ann_info_funsd(anno_path):
     Output:
         res: (poly, transcript, text_class, ignore_tag) <Tuple>
     """
-    res = []
+    res = {'word': [], 'line': []}
     with codecs.open(anno_path, 'r', 'utf-8') as f:
         data = json.load(f)
 
     ## funsd word level
     for line in data['form']:
+        box, transcript, label = line['box'], line['text'], line['label']
+        if len(transcript) == 0:
+            continue
+        poly = _bbox2poly(list(map(float, box)))
+        transcript = ''.join(filter(lambda char: char in Lexicon_Table_95, transcript))
+        text_class = TEXT_CLASSES[label]
+        res['line'].append((poly, transcript, text_class, False))
         for word in line['words']:
-            ignore_tag = False
             box, transcript = word['box'], word['text']
             poly = _bbox2poly(list(map(float, box)))
             transcript = ''.join(filter(lambda char: char in Lexicon_Table_95, transcript))
-            res.append((poly, transcript, -1, ignore_tag))
+            res['word'].append((poly, transcript, -1, False))
 
-    if len(res) == 0:
+    if len(res['line']) == 0 or len(res['word']) == 0:
         return None
     return res
 
@@ -189,27 +201,53 @@ class Dataset(BaseDataset):
         example = examples[0]
         anno_path = example['boxes_and_texts_file']
         anno = _parse_ann_info_funsd(anno_path)
+        if anno is None:
+            return None
+        anno_line, anno_word = anno['line'], anno['word']
         # sort the box based on the position
-        anno = _sort_box_with_list(anno)
+        anno_line = _sort_box_with_list(anno_line)
+        anno_word = _sort_box_with_list(anno_word)
 
-        polys = []
-        texts = []
-        classes = []
-        ignore_tags = []
+        polys_word = []
+        texts_word = []
+        classes_word = []
+        ignore_tags_word = []
 
-        for poly, text, text_class, ignore_tag in anno:
-            polys.append(poly)
-            texts.append(self.label_converter.encode(text, ignore_tag))
-            ignore_tags.append(ignore_tag)
-            classes.append(text_class)
+        for poly, text, text_class, ignore_tag in anno_word:
+            polys_word.append(poly)
+            classes_word.append(text_class)
+            texts_word.append(self.label_converter.encode(text, ignore_tag)[0])
+            ignore_tags_word.append(ignore_tag)
 
-        label_word = {'image': example['image']}
-        label_word['polys'] = np.array(polys, dtype=np.float32).reshape(-1, 4, 2)
-        label_word['texts'] = np.array(texts, dtype=np.int64)
-        label_word['classes'] = np.array(classes, dtype=np.int64)
-        label_word['ignore_tags'] = np.array(ignore_tags, dtype=np.bool)
+        label_word = {}
+        label_word['polys'] = np.array(polys_word, dtype=np.float32).reshape(-1, 4, 2)
+        label_word['texts'] = np.array(texts_word, dtype=np.int64)
+        label_word['classes'] = np.array(classes_word, dtype=np.int64)
+        label_word['ignore_tags'] = np.array(ignore_tags_word, dtype=np.bool)
 
-        data = self.transform(label_word)
+        polys_line = []
+        texts_line = []
+        classes_line = []
+        ignore_tags_line = []
+
+        for poly, text, text_class, ignore_tag in anno_line:
+            polys_line.append(poly)
+            texts_line.append(self.label_converter.encode(text, ignore_tag)[1])
+            ignore_tags_line.append(ignore_tag)
+            classes_line.append(text_class)
+
+        label_line = {}
+        label_line['polys'] = np.array(polys_line, dtype=np.float32).reshape(-1, 4, 2)
+        label_line['texts'] = texts_line
+        label_line['classes'] = np.array(classes_line, dtype=np.int64)
+        label_line['ignore_tags'] = np.array(ignore_tags_line, dtype=np.bool)
+
+        example = {'image': example['image'], 'multi_label': [label_word, label_line]}
+        transform_out = self.transform(example)
+        data = transform_out[0]
+        for key, val in transform_out[1].items():
+            if key not in ['image', 'ratio']:
+                data[key + '_line'] = val
         return data
 
     def _read_data(self, example):

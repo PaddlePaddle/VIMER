@@ -1,3 +1,4 @@
+""" op_functional """
 # Copyright (c) 2021 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +17,6 @@
 
 import numpy as np
 from PIL import Image, ImageOps, ImageEnhance
-
 
 
 def int_parameter(level, maxval):
@@ -44,23 +44,28 @@ def float_parameter(level, maxval):
 
 
 def sample_level(n):
+    """ sample_level """
     return np.random.uniform(low=0.1, high=n)
 
 
 def autocontrast(pil_img, *args):
+    """ autocontrast """
     return ImageOps.autocontrast(pil_img)
 
 
 def equalize(pil_img, *args):
+    """ equalize """
     return ImageOps.equalize(pil_img)
 
 
 def posterize(pil_img, level, *args):
+    """ posterize """
     level = int_parameter(sample_level(level), 4)
     return ImageOps.posterize(pil_img, 4 - level)
 
 
 def rotate(pil_img, level, *args):
+    """ rotate """
     degrees = int_parameter(sample_level(level), 30)
     if np.random.uniform() > 0.5:
         degrees = -degrees
@@ -68,11 +73,13 @@ def rotate(pil_img, level, *args):
 
 
 def solarize(pil_img, level, *args):
+    """ solarize """
     level = int_parameter(sample_level(level), 256)
     return ImageOps.solarize(pil_img, 256 - level)
 
 
 def shear_x(pil_img, level):
+    """ shear_x """
     level = float_parameter(sample_level(level), 0.3)
     if np.random.uniform() > 0.5:
         level = -level
@@ -82,6 +89,7 @@ def shear_x(pil_img, level):
 
 
 def shear_y(pil_img, level):
+    """ shear_y """
     level = float_parameter(sample_level(level), 0.3)
     if np.random.uniform() > 0.5:
         level = -level
@@ -91,6 +99,7 @@ def shear_y(pil_img, level):
 
 
 def translate_x(pil_img, level):
+    """ translate_x """
     level = int_parameter(sample_level(level), pil_img.size[0] / 3)
     if np.random.random() > 0.5:
         level = -level
@@ -100,6 +109,7 @@ def translate_x(pil_img, level):
 
 
 def translate_y(pil_img, level):
+    """ translate_y """
     level = int_parameter(sample_level(level), pil_img.size[1] / 3)
     if np.random.random() > 0.5:
         level = -level
@@ -108,26 +118,26 @@ def translate_y(pil_img, level):
                              resample=Image.BILINEAR)
 
 
-# operation that overlaps with ImageNet-C's test set
 def color(pil_img, level, *args):
+    """ operation that overlaps with ImageNet-C's test set """
     level = float_parameter(sample_level(level), 1.8) + 0.1
     return ImageEnhance.Color(pil_img).enhance(level)
 
 
-# operation that overlaps with ImageNet-C's test set
 def contrast(pil_img, level, *args):
+    """ operation that overlaps with ImageNet-C's test set """
     level = float_parameter(sample_level(level), 1.8) + 0.1
     return ImageEnhance.Contrast(pil_img).enhance(level)
 
 
-# operation that overlaps with ImageNet-C's test set
 def brightness(pil_img, level, *args):
+    """ operation that overlaps with ImageNet-C's test set """
     level = float_parameter(sample_level(level), 1.8) + 0.1
     return ImageEnhance.Brightness(pil_img).enhance(level)
 
 
-# operation that overlaps with ImageNet-C's test set
 def sharpness(pil_img, level, *args):
+    """ operation that overlaps with ImageNet-C's test set """
     level = float_parameter(sample_level(level), 1.8) + 0.1
     return ImageEnhance.Sharpness(pil_img).enhance(level)
 

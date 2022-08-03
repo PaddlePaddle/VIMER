@@ -39,7 +39,7 @@ def iou(poly1, poly2):
     """
     intersec = poly1.area() + poly2.area() - (poly1 + poly2).area()
     union = (poly1 + poly2).area()
-    return intersec / union
+    return intersec / max(1e-5, union)
 
 
 def pts2PolyPred(poly):
@@ -77,11 +77,12 @@ def eval_one_file(pred, gt, iou_thresh):
     for pred_pts in pred:
         pred_poly = pts2PolyPred(pred_pts[0])
         pred_str = pred_pts[1].lower()
+        pred_label = pred_pts[2]
         max_iou = 0
         max_iou_idx = -1
         # Compute the iou between gt_poly and pred_poly
-        for idx, (gt_pts, labtag, gt_str) in enumerate(gt):
-            gt_poly = pts2PolyGt(gt_pts)
+        for idx in range(len(gt)):
+            gt_poly = pts2PolyGt(gt[idx][0])
             if gt_match_record[idx] == 1:
                 continue
             cur_iou = iou(gt_poly.poly, pred_poly.poly)
@@ -92,11 +93,13 @@ def eval_one_file(pred, gt, iou_thresh):
         if max_iou > iou_thresh:
             hit_count += 1
             gt_match_record[max_iou_idx] = 1
+            gt_label = gt[max_iou_idx][1]
             gt_str = gt[max_iou_idx][2].lower()
-            if gt_str == pred_str:
-                hit_str_num += 1
-            ned = 1 - editdistance.eval(pred_str, gt_str) / max(1, max(len(gt_str), len(pred_str)))
-            ned_count += ned
+            if gt_label == -1 or gt_label == pred_label:
+                if gt_str == pred_str:
+                    hit_str_num += 1
+                ned = 1 - editdistance.eval(pred_str, gt_str) / max(1, max(len(gt_str), len(pred_str)))
+                ned_count += ned
         else:
             fp_count += 1
 

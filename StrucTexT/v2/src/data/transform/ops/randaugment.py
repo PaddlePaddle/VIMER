@@ -1,3 +1,4 @@
+""" randaugment """
 # Copyright (c) 2021 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +24,7 @@ from PIL import Image, ImageEnhance, ImageOps
 __all__ = ['RandAugment']
 
 class RandAugment(object):
+    """ RandAugment """
     def __init__(self, num_layers=2, magnitude=5, fillcolor=(128, 128, 128)):
         self.num_layers = num_layers
         self.magnitude = magnitude
@@ -49,6 +51,7 @@ class RandAugment(object):
         # from https://stackoverflow.com/questions/5252170/
         # specify-image-filling-color-when-rotating-in-python-with-pil-and-setting-expand
         def rotate_with_fill(img, magnitude):
+            """ rotate_with_fill """
             rot = img.convert("RGBA").rotate(magnitude)
             return Image.composite(rot,
                                    Image.new("RGBA", rot.size, (128, ) * 4),

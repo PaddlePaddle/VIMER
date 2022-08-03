@@ -11,7 +11,7 @@ import paddle as P
 import cv2
 
 from tqdm import trange
-from src.postprocess.table_postprocess import TablePostProcess
+from src.postprocess.ocr_postprocess import split_anno_by_symbol, grouping
 
 class Evaler:
     """
@@ -19,12 +19,12 @@ class Evaler:
     """
 
     def __init__(self, config, model, data_loader, eval_classes):
-        """
+        '''
         :param config:
         :param model:
         :param data_loader:
         :param eval_classes:
-        """
+        '''
         self.config = config
         self.model = model
         self.valid_data_loader = data_loader
@@ -33,13 +33,12 @@ class Evaler:
 
         self.init_model = config['init_model']
         self.config = config['eval']
-        self.postprocess = TablePostProcess()
 
     @P.no_grad()
     def run(self):
-        """
+        '''
         print evaluation results
-        """
+        '''
         self._resume_model()
         self.model.eval()
 
@@ -55,8 +54,10 @@ class Evaler:
             output = self.model(*input_data, feed_names=feed_names)
             total_time += time.time() - start
             ######### Eval ##########
-            label = output['label'][0]
-            pred = self.postprocess(output)
+            label = output['gt_label']
+            pred = grouping(output['e2e_preds'][0], output['line_preds'][0])
+            # print('+++++', pred)
+            # print('-----', label)
             for key, val in self.eval_classes.items():
                 val.update(pred, label)
             #########################
@@ -68,10 +69,10 @@ class Evaler:
         print('[Eval Validation] {}'.format(metrics))
 
     def _resume_model(self):
-        """
+        '''
         Resume from saved model
         :return:
-        """
+        '''
         para_path = self.init_model
         if os.path.exists(para_path):
             para_dict = P.load(para_path)

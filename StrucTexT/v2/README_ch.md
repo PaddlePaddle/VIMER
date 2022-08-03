@@ -74,6 +74,7 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 | Cascade RCNN Detection | 50.2 | [StrucTexT\_v2 Base for Layout Analysis](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 | Transformer Decoder | 128.5 | [StrucTexT\_v2 Base for Table Structext Recognition](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 | DB Detection + Attention-OCR | 37.3 | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
+| DB Detection + Attention-OCR + Labeling | 41.3 | [StrucTexT\_v2 Base for End2End Information Extraction](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
@@ -118,7 +119,7 @@ python -u tools/eval.py \
 
 ```python
 # 1. 下载并解压FUNSD数据集到 ./data/
-# 2. 下载模型：StrucTexT_v2_end2end_ie_base.pdparams
+# 2. 下载模型：StrucTexT_v2_end2end_ocr_base.pdparams
 # 3. 运行下述脚本启动端到端OCR任务评测
 python -u ./tools/eval.py \
     --config_file=configs/end2end_ocr/ocr_funsd_base.json \
@@ -127,6 +128,20 @@ python -u ./tools/eval.py \
     --image_path=./data/funsd/testing_data/image \
     --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
 ```
+   * FUNSD数据集端到端信息抽取
+
+```python
+# 1. 下载并解压FUNSD数据集到 ./data/
+# 2. 下载模型：StrucTexT_v2_end2end_ie_base.pdparams
+# 3. 运行下述脚本启动端到端信息抽取任务评测
+python -u ./tools/eval.py \
+    --config_file=configs/end2end_ocr/ocr_funsd_base.json \
+    --task_type=end2end_ie \
+    --label_path=./data/funsd/testing_data/annotation \
+    --image_path=./data/funsd/testing_data/image \
+    --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
+```
+
 
 ## 典型应用场景
 1. 泛卡证票据信息抽取应用，可广泛适用于身份认证、金融开户、征信评估、商户入驻等业务场- 景，性能相较 VIMER-StrucTexT 1.0 提升 30% 以上。

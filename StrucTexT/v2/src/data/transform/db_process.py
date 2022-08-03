@@ -1,3 +1,4 @@
+""" db_process """
 # Copyright (c) 2020 PaddlePaddle Authors. All Rights Reserved
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -573,20 +574,26 @@ class DBTextSpottingTest(object):
         return im, [ratio_h, ratio_w]
 
     def __call__(self, data):
+        org_data = []
         im = data['image']
-        text_polys = data['polys']
-        text_tags = data['ignore_tags']
-        texts = data['texts']
-        classes = data['classes']
+        if 'multi_label' in data.keys():
+            data = data['multi_label']
+        else:
+            data = [data]
+        text_polys_list = [l['polys'] for l in data]
+        texts_list = [l['texts'] for l in data]
+        text_tags_list = [l['ignore_tags'] for l in data]
+        classes_list = [l['classes'] for l in data]
 
         h, w, _ = im.shape
-
         # pad and resize image
         im, ratio = self.preprocess(im)
-        ratio_h, ratio_w = ratio
-        text_polys[:, :, 0] *= ratio_w
-        text_polys[:, :, 1] *= ratio_h
         new_h, new_w, _ = im.shape
+        ratio_h, ratio_w = ratio
+        for i, text_polys, in enumerate(text_polys_list):
+            text_polys[:, :, 0] *= ratio_w
+            text_polys[:, :, 1] *= ratio_h
+            text_polys_list[i] = text_polys
 
         # normalize img
         img_mean = [0.485, 0.456, 0.406]
@@ -596,31 +603,33 @@ class DBTextSpottingTest(object):
         im /= img_std
         im = im.transpose((2, 0, 1)).astype(np.float32)
 
-        # [num, 4] 
-        bboxes_padded_list = np.zeros((self.max_bbox_num, 4), dtype=np.float32)
-        bboxes_4pts_padded_list = np.zeros((self.max_bbox_num, 8), dtype=np.float32)
-        texts_padded_list = np.zeros((self.max_bbox_num, self.max_seq_len), dtype=np.int64)
-        classes_padded_list = np.zeros((self.max_bbox_num), dtype=np.int64)
-        masks_padded_list = np.zeros((self.max_bbox_num), dtype=np.float32)
-        
-        valid_cnt = 0
-        # FIXME valid_cnt may be greater than max_bbox_num
-        for i, (poly, text, tag, text_class) in enumerate(zip(text_polys, texts, text_tags, classes)):
-            bboxes_padded_list[valid_cnt, :] = poly[::2].reshape(-1)
-            bboxes_4pts_padded_list[valid_cnt, :] = poly.reshape(-1)
-            texts_padded_list[valid_cnt, :] = text
-            classes_padded_list[valid_cnt] = text_class
-            masks_padded_list[valid_cnt] = 1
-            valid_cnt += 1
+        for text_polys, texts, text_tags, classes in zip(text_polys_list, texts_list, text_tags_list, classes_list):
+            data = {}
+            # [num, 4]
+            bboxes_padded_list = np.zeros((self.max_bbox_num, 4), dtype=np.float32)
+            bboxes_4pts_padded_list = np.zeros((self.max_bbox_num, 8), dtype=np.float32)
+            texts_padded_list = np.zeros((self.max_bbox_num, self.max_seq_len), dtype=np.int64)
+            classes_padded_list = np.zeros((self.max_bbox_num), dtype=np.int64)
+            masks_padded_list = np.zeros((self.max_bbox_num), dtype=np.float32)
 
-        data['image'] = im
-        data['ratio'] = np.array(ratio)
-        data['bboxes_padded_list'] = bboxes_padded_list
-        data['bboxes_4pts_padded_list'] = bboxes_4pts_padded_list
-        data['texts_padded_list'] = texts_padded_list
-        data['classes_padded_list'] = classes_padded_list
-        data['masks_padded_list'] = masks_padded_list
+            valid_cnt = 0
+            # FIXME valid_cnt may be greater than max_bbox_num
+            for i, (poly, text, tag, text_class) in enumerate(zip(text_polys, texts, text_tags, classes)):
+                bboxes_padded_list[valid_cnt, :] = poly[::2].reshape(-1)
+                bboxes_4pts_padded_list[valid_cnt, :] = poly.reshape(-1)
+                if isinstance(text, np.ndarray):
+                    texts_padded_list[valid_cnt, :] = text
+                classes_padded_list[valid_cnt] = text_class
+                masks_padded_list[valid_cnt] = 1
+                valid_cnt += 1
 
+            data['image'] = im
+            data['ratio'] = np.array(ratio)
+            data['bboxes_padded_list'] = bboxes_padded_list
+            data['bboxes_4pts_padded_list'] = bboxes_4pts_padded_list
+            data['texts_padded_list'] = texts_padded_list if isinstance(texts, np.ndarray) else texts
+            data['classes_padded_list'] = classes_padded_list
+            data['masks_padded_list'] = masks_padded_list
+            org_data.append(data)
+        data = org_data[0] if len(org_data) == 1 else org_data
         return data
-
-

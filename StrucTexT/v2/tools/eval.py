@@ -43,7 +43,7 @@ args = parser.parse_args()
 print_arguments(args)
 config = json.loads(open(args.config_file).read())
 
-ALL_MODULES = ['document_classify', 'end2end_ocr', 'table_recognition']
+ALL_MODULES = ['document_classify', 'end2end_ocr', 'end2end_ie', 'table_recognition']
 if args.task_type not in ALL_MODULES:
     raise ValueError('Not valid task_type %s in %s' % (args.task_type, str(ALL_MODULES)))
 

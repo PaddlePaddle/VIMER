@@ -60,12 +60,12 @@ class ConvNormLayer(nn.Layer):
                 weight_attr=ParamAttr(learning_rate=lr),
                 bias_attr=False)
         else:
-            self.offset_channel = 2 * filter_size**2
-            self.mask_channel = filter_size**2
+            self.offset_channel = 2 * filter_size ** 2
+            self.mask_channel = filter_size ** 2
 
             self.conv_offset = nn.Conv2D(
                 in_channels=ch_in,
-                out_channels=3 * filter_size**2,
+                out_channels=3 * filter_size ** 2,
                 kernel_size=filter_size,
                 stride=stride,
                 padding=(filter_size - 1) // 2,
@@ -637,7 +637,8 @@ class V2Net(nn.Layer):
 
     @property
     def out_shape(self):
+        """ out_shape """
         return [
             ShapeSpec(
-                channels=self.out_channels, stride=s) for s in [4,8,16,32]
+                channels=self.out_channels, stride=s) for s in [4, 8, 16, 32]
         ]

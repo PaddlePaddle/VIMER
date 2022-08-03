@@ -1,3 +1,4 @@
+""" teds_utils """
 # Copyright 2020 IBM
 # Author: peter.zhong@au1.ibm.com
 #
@@ -19,6 +20,7 @@ from tqdm import tqdm
 from .parallel import parallel_process
 
 class TableTree(Tree):
+    """ TableTree """
     def __init__(self, tag, colspan=None, rowspan=None, content=None, *children):
         self.tag = tag
         self.colspan = colspan
@@ -39,6 +41,7 @@ class TableTree(Tree):
 
 
 class CustomConfig(Config):
+    """ CustomConfig """
     @staticmethod
     def maximum(*sequences):
         """Get maximum possible value
@@ -61,8 +64,8 @@ class CustomConfig(Config):
 
 
 class TEDS(object):
-    ''' Tree Edit Distance basead Similarity
-    '''
+    """ Tree Edit Distance basead Similarity
+    """
     def __init__(self, structure_only=False, n_jobs=1, ignore_nodes=None):
         assert isinstance(n_jobs, int) and (n_jobs >= 1), 'n_jobs must be an integer greather than 1'
         self.structure_only = structure_only
@@ -71,8 +74,8 @@ class TEDS(object):
         self.__tokens__ = []
 
     def tokenize(self, node):
-        ''' Tokenizes table cells
-        '''
+        """ Tokenizes table cells
+        """
         # print('node', node.tag, node.text)
         self.__tokens__.append('<%s>' % node.tag)
         if node.text is not None:
@@ -85,8 +88,8 @@ class TEDS(object):
             self.__tokens__ += list(node.tail)
 
     def load_html_tree(self, node, parent=None):
-        ''' Converts HTML tree to the format required by apted
-        '''
+        """ Converts HTML tree to the format required by apted
+        """
         global __tokens__
         if node.tag == 'td':
             if self.structure_only:
@@ -112,9 +115,9 @@ class TEDS(object):
             return new_node
 
     def evaluate(self, pred, true):
-        ''' Computes TEDS score between the prediction and the ground truth of a
+        """ Computes TEDS score between the prediction and the ground truth of a
             given sample
-        '''
+        """
         if (not pred) or (not true):
             return 0.0
         parser = html.HTMLParser(remove_comments=True, encoding='utf-8')
@@ -139,17 +142,19 @@ class TEDS(object):
             return 0.0
 
     def batch_evaluate(self, pred_json, true_json):
-        ''' Computes TEDS score between the prediction and the ground truth of
+        """ Computes TEDS score between the prediction and the ground truth of
             a batch of samples
             @params pred_json: {'FILENAME': 'HTML CODE', ...}
             @params true_json: {'FILENAME': {'html': 'HTML CODE'}, ...}
             @output: {'FILENAME': 'TEDS SCORE', ...}
-        '''
+        """
         samples = true_json.keys()
         if self.n_jobs == 1:
-            scores = [self.evaluate(pred_json.get(filename, ''), true_json[filename]['html']) for filename in tqdm(samples)]
+            scores = [self.evaluate(pred_json.get(filename, ''),
+                      true_json[filename]['html']) for filename in tqdm(samples)]
         else:
-            inputs = [{'pred': pred_json.get(filename, ''), 'true': true_json[filename]['html']} for filename in samples]
+            inputs = [{'pred': pred_json.get(filename, ''),
+                'true': true_json[filename]['html']} for filename in samples]
             scores = parallel_process(inputs, self.evaluate, use_kwargs=True, n_jobs=self.n_jobs, front_num=1)
         scores = dict(zip(samples, scores))
         return scores

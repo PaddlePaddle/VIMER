@@ -1,3 +1,4 @@
+""" cutout """
 # Copyright (c) 2021 PaddlePaddle Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +21,7 @@ import random
 __all__ = ['Cutout']
 
 class Cutout(object):
+    """ Cutout """
     def __init__(self, n_holes=1, length=112):
         self.n_holes = n_holes
         self.length = length
