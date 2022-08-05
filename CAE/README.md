@@ -93,6 +93,7 @@ python -m paddle.distributed.launch --gpus="0,1,2,3,4,5,6,7" tools/run_cae_pretr
 ```
 **Notes:** 
 - The INIT_MODEL can be loaded from [pt_model](https://vimer.bj.bcebos.com/CAE/pt_init.pdparams)
+- The encoder model can be loaded from [encoder_weight](https://vimer.bj.bcebos.com/CAE/encoder_weight.pd) and [decoder_weight](https://vimer.bj.bcebos.com/CAE/decoder_weight.pd)
 
 
 ### Linear Probing
