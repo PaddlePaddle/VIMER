@@ -138,7 +138,7 @@ sh eval_scripts/run_eval_ums_base_inshop.sh
 2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
 3. Run shell script for peformance evaluation on COCO-CTC datasets
 ```
-sh eval_scripts/run_eval_ums_base_inshop.sh ums_ctc.pdparams
+sh eval_scripts/run_eval_ums_base_ctc.sh ums_ctc.pdparams
 ```
 
 ## Citation
