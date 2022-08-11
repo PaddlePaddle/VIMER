@@ -81,8 +81,8 @@ def eval_one_file(pred, gt, iou_thresh):
         max_iou = 0
         max_iou_idx = -1
         # Compute the iou between gt_poly and pred_poly
-        for idx in range(len(gt)):
-            gt_poly = pts2PolyGt(gt[idx][0])
+        for idx, gt_pts in enumerate(gt):
+            gt_poly = pts2PolyGt(gt_pts[0])
             if gt_match_record[idx] == 1:
                 continue
             cur_iou = iou(gt_poly.poly, pred_poly.poly)

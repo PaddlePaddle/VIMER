@@ -34,10 +34,11 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 <!--* **端到端信息抽取**：完整的文档理解服务需要完成用户定义的关键字段文字信息提取，既要完成字段的准确分类，也要完成对应文字内容的识别。-->
 
 ### 数据集
-* [RVL-CDIP](https://docs.google.com/u/0/uc?export=download&confirm=9NG1&id=0Bz1dfcnrpXM-MUt4cHNzUEFXcmc) 是一个用于图像分类的数据集，它是由扫描的文档图像组成，共分为16类，如信函、表单、电子邮件、简历、备忘录等。该数据集图像分为320000张训练集、40000个验证集和40000个测试集，并且它的图像的特点是低质量、噪声和低分辨率，通常为100 dpi。
+* [RVL-CDIP](https://docs.google.com/u/0/uc?export=download&confirm=9NG1&id=0Bz1dfcnrpXM-MUt4cHNzUEFXcmc) 是一个用于图像分类的数据集，它是由扫描的文档图像组成，共分为16类，如信函、表单、电子邮件、简历、备忘录等。该数据集图像分为320000张训练集、40000个验证集和40000个测试集，并且它的图像的特点是低质量、噪声和低分辨率。
 * [PubLayNet](https://github.com/ibm-aur-nlp/PubLayNet) 是一个用于文档图像版面分析的大型数据集，其布局用多边形边框分割标注，它包含超过36万个文档图像，其中对典型的文档布局元素进行了注释，包括文本、标题、列表、表格和图形。
 *  [PubTabNet](https://github.com/ibm-aur-nlp/PubTabNet) 是一个用于图像表格识别的大型数据集，包含56.8万以上的表格图像，以及基于HTML表示的标注。
 * [FUNSD](https://guillaumejaume.github.io/FUNSD) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
+* [XFUND](https://github.com/doc-analysis/XFUND) 是一个多语种（中文、日语、西班牙语、法语、意大利语、德语、葡萄牙语）的基于人工标注的表单理解数据集。我们在中文子集上测试模型的基准效果。
 
 ## 公开基准效果
 
@@ -51,7 +52,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 
 ## 快速体验
 ### 安装Paddle环境
-本代码库基于PaddlePaddle 2.2.0+，你可参阅[paddlepaddle-quick](https://www.paddlepaddle.org.cn/install/quick)进行环境准备，或者使用pip进行安装：
+本代码库基于PaddlePaddle 2.2.0+，你可参阅[PaddlePaddle-Quick](https://www.paddlepaddle.org.cn/install/quick)进行环境准备，或者使用pip进行安装：
 
 `pip3 install paddlepaddle-gpu --upgrade -i https://mirror.baidu.com/pypi/simple`
 
@@ -140,6 +141,15 @@ python -u ./tools/eval.py \
     --label_path=./data/funsd/testing_data/annotation \
     --image_path=./data/funsd/testing_data/image \
     --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
+```
+   * XFUND数据集端到端信息抽取
+      * 由于我们在中文OCR预测中嵌入了PaddleOCR[多模态表单识别](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/applications/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E5%8D%95%E8%AF%86%E5%88%AB.md)的识别模型，为了方便起见，在此提供用于评测的数据和脚本
+
+```python
+# 1. 运行下述脚本启动端到端信息抽取任务评测
+python tools/eval_xfund.py \
+    --pred_folder data/xfund/res/ \
+    --gt_file data/xfund/xfun_normalize_val.json
 ```
 
 
