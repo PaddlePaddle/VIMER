@@ -49,6 +49,7 @@ VIMER-StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict �
 | 表格结构解析   | PubTabNet  | TEDs | 97.1 |
 | 文档 OCR     | FUNSD  | 1-NED | 84.1 |
 | 端到端信息抽取 | FUNSD | 1-NED |  55.0 |
+| 中文信息抽取 | XFUND | 1-NED |  67.5 |
 
 ## 快速体验
 ### 安装Paddle环境
@@ -142,14 +143,14 @@ python -u ./tools/eval.py \
     --image_path=./data/funsd/testing_data/image \
     --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
 ```
-   * XFUND数据集端到端信息抽取
-      * 由于我们在中文OCR预测中嵌入了PaddleOCR[多模态表单识别](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/applications/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E5%8D%95%E8%AF%86%E5%88%AB.md)的识别模型，为了方便起见，在此提供用于评测的数据和脚本
+   * XFUND数据集中文信息抽取
+      * 由于我们在OCR预测中嵌入了PaddleOCR[多模态表单识别](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/applications/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E5%8D%95%E8%AF%86%E5%88%AB.md)的中文识别模型，为了方便起见，仅在此提供用于评测的数据和脚本
 
 ```python
 # 1. 运行下述脚本启动端到端信息抽取任务评测
 python tools/eval_xfund.py \
-    --pred_folder data/xfund/res/ \
-    --gt_file data/xfund/xfun_normalize_val.json
+    --pred_folder=data/xfund/res/ \
+    --gt_file=data/xfund/xfun_normalize_val.json
 ```
 
 
