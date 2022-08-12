@@ -39,11 +39,42 @@ class Evaler:
         '''
         print evaluation results
         '''
-        pass
+        self._resume_model()
+        self.model.eval()
+
+        total_time = 0.0
+        total_frame = 0.0
+        t = trange(self.len_step)
+        loader = self.valid_data_loader()
+        for step_idx in t:
+            t.set_description('deal with %i' % step_idx)
+            input_data = next(loader)
+            feed_names = self.config['feed_names']
+            start = time.time()
+            output = self.model(*input_data, feed_names=feed_names)
+            total_time += time.time() - start
+            ######### Eval ##########
+            label = output['gt_label']
+            pred = grouping(output['e2e_preds'][0], output['line_preds'][0])
+            # print('+++++', pred)
+            # print('-----', label)
+            for key, val in self.eval_classes.items():
+                val.update(pred, label)
+            #########################
+            total_frame += input_data[0].shape[0]
+        metrics = 'fps : {}'.format(total_frame / total_time)
+        for key, val in self.eval_classes.items():
+            metrics += '\n{}:\n'.format(key) + str(val.accumulate())
+            val.reset()
+        print('[Eval Validation] {}'.format(metrics))
 
     def _resume_model(self):
         '''
         Resume from saved model
         :return:
         '''
-        pass
+        para_path = self.init_model
+        if os.path.exists(para_path):
+            para_dict = P.load(para_path)
+            self.model.set_dict(para_dict)
+            logging.info('Load init model from %s', para_path)

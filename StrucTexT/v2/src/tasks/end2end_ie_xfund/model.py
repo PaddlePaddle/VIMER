@@ -17,7 +17,6 @@ sys.path.append(os.path.abspath(os.path.join(__dir__, '../../..')))
 from StrucTexT.arch.base_model import Encoder
 from paddle.vision.ops import roi_align
 from .dataset import LabelConverter
-from .recg_head import RecgHead
 from postprocess.db_postprocess import DBPostProcess
 
 
