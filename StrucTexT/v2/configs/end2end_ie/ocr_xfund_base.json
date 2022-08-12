@@ -1,0 +1,66 @@
+{
+    "architecture":{
+        "image_module":{
+            "name":"V2Net",
+            "out_channels":128
+        },
+        "det_module":{
+            "model_name":"small",
+            "loss_weight":1
+        },
+        "labeling_module": {
+            "num_labels": 4,
+            "proposal_h": 4,
+            "proposal_w": 32
+        },
+        "postprocess":{
+            "thresh":0.3,
+            "box_thresh":0.7,
+            "max_candidates":1000,
+            "unclip_ratio":0.85,
+            "score_mode":"fast"
+        }
+    },
+    "eval":{
+        "feed_names":[
+            "image",
+            "bboxes_padded_list",
+            "bboxes_4pts_padded_list",
+            "texts_padded_list",
+            "classes_padded_list",
+            "masks_padded_list",
+            "image_path",
+            "shape"
+        ],
+        "loader":{
+            "collect_batch":true,
+            "num_workers":0,
+            "shuffle":false,
+            "drop_last":false,
+            "use_shared_memory":false
+        },
+        "dataset":{
+            "data_path":"./data/XFUND/zh_val/xfun_normalize_val.json",
+            "image_path":"./data/XFUND/zh_val/image/",
+            "batch_size":1,
+            "shuffle":false,
+            "max_seq_len":32,
+            "recg_loss":"CE",
+            "transform":[
+                {
+                    "DecodeImage":{
+                        "img_mode":"BGR",
+                        "channel_first":false
+                    }
+                },
+                {
+                    "DBTextSpottingTest":{
+                        "max_side_len":1440,
+                        "max_bbox_num":512,
+                        "max_seq_len":32
+                    }
+                }
+            ]
+        }
+    }
+}
