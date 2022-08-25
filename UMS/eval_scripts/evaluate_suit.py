@@ -77,7 +77,9 @@ def compute_ar(rank_list, GT_labels, gallery_label_ids, gallery_id_label, N):
             label_expect_count[label] += int(N / len(GT_labels))
 
     for label in label_expect_count:
-        label_expect_count[label] = min(label_expect_count[label], len(gallery_label_ids[label]))
+        label_expect_count[label] = min(
+            label_expect_count[label], len(gallery_label_ids[label])
+        )
 
     label_retrieval_count = {}
     for id in rank_list:
@@ -89,7 +91,9 @@ def compute_ar(rank_list, GT_labels, gallery_label_ids, gallery_id_label, N):
                 label_retrieval_count[label] += 1
 
     for label in label_retrieval_count:
-        label_retrieval_count[label] = min(label_retrieval_count[label], label_expect_count[label])
+        label_retrieval_count[label] = min(
+            label_retrieval_count[label], label_expect_count[label]
+        )
 
     label_ap = 0
 
@@ -104,8 +108,8 @@ def compute_ar(rank_list, GT_labels, gallery_label_ids, gallery_id_label, N):
 def get_retrieval_id_list():
     """get_retrieval_id_list"""
 
-    prefix1 = 'product1m_test'
-    prefix2 = 'product1m_gallery'
+    prefix1 = "product1m_test"
+    prefix2 = "product1m_gallery"
 
     test_image_features = np.load("{}_image_features.npy".format(prefix1))
     test_text_features = np.load("{}_text_features.npy".format(prefix1))
@@ -117,16 +121,18 @@ def get_retrieval_id_list():
     gallery_image_ids = []
     gallery_fea = []
 
-    test_filename = '{}_pairs_info.txt'.format(prefix1)
-    gallery_filename = '{}_pairs_info.txt'.format(prefix2)
+    test_filename = "{}_pairs_info.txt".format(prefix1)
+    gallery_filename = "{}_pairs_info.txt".format(prefix2)
 
-    with open(gallery_filename, 'r') as f:
+    with open(gallery_filename, "r") as f:
         for i, line in enumerate(f):
             conts = line.strip().split("\t")
             image_id, text, _, _, instance_text = conts
 
             gallery_image_ids.append(image_id)
-            gallery_fea.append(np.concatenate((gallery_image_features[i], gallery_text_features[i])))
+            gallery_fea.append(
+                np.concatenate((gallery_image_features[i], gallery_text_features[i]))
+            )
             # gallery_fea.append(gallery_image_features[i])
             # gallery_fea.append(gallery_text_features[i])
 
@@ -136,7 +142,9 @@ def get_retrieval_id_list():
             image_id, text, _, _, multi_instance_text = conts
 
             test_image_ids.append(image_id)
-            test_fea.append(np.concatenate((test_image_features[i], test_text_features[i])))
+            test_fea.append(
+                np.concatenate((test_image_features[i], test_text_features[i]))
+            )
             # test_fea.append(test_image_features[i])
             # test_fea.append(test_text_features[i])
 
@@ -177,8 +185,12 @@ def get_retrieval_id_list():
 def main():
     args = parse_args()
 
-    gallery_unit_id_label_txt = open("{}/product1m_gallery_ossurl_v2.txt".format(args.GT_dir)).readlines()
-    test_query_suit_id_label_txt = open("{}/product1m_test_ossurl_v2.txt".format(args.GT_dir)).readlines()
+    gallery_unit_id_label_txt = open(
+        "{}/product1m_gallery_ossurl_v2.txt".format(args.GT_dir)
+    ).readlines()
+    test_query_suit_id_label_txt = open(
+        "{}/product1m_test_ossurl_v2.txt".format(args.GT_dir)
+    ).readlines()
     # dev_query_suit_id_label_txt=open("{}/product1m_dev_ossurl_v2.txt".format(args.GT_dir)).readlines()
 
     gallery_unit_id_label = {}
@@ -187,9 +199,7 @@ def main():
         line_split = line.split("#####")
         item_id = line_split[0]
         label_list = line_split[4].split("#;#")
-        gallery_unit_id_label[item_id] = {
-            "label": label_list
-        }
+        gallery_unit_id_label[item_id] = {"label": label_list}
 
     test_query_suit_id_label = {}
     for line in test_query_suit_id_label_txt:
@@ -197,9 +207,7 @@ def main():
         line_split = line.split("#####")
         item_id = line_split[0]
         label_list = line_split[4].split("#;#")
-        test_query_suit_id_label[item_id] = {
-            "label": label_list
-        }
+        test_query_suit_id_label[item_id] = {"label": label_list}
     # for line in dev_query_suit_id_label_txt:
     #     line=line.strip()
     #     line_split=line.split("#####")
@@ -250,11 +258,13 @@ def main():
             mAP += ap
             mP += p
 
-            Ar = compute_ar(rank_list=rank_id_list,
-                            GT_labels=query_suit_labels,
-                            gallery_label_ids=gallery_unit_label_id,
-                            gallery_id_label=gallery_unit_id_label,
-                            N=topk_temp)
+            Ar = compute_ar(
+                rank_list=rank_id_list,
+                GT_labels=query_suit_labels,
+                gallery_label_ids=gallery_unit_label_id,
+                gallery_id_label=gallery_unit_id_label,
+                N=topk_temp,
+            )
             mAR += Ar
 
         mAP /= cnt
@@ -270,8 +280,22 @@ def main():
     print("mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f" % (mARs[1], mARs[2], mARs[3]))
     print("Prec@10:%.4f, Prec@50:%.4f, Prec@100:%.4f" % (Ps[1], Ps[2], Ps[3]))
 
-    str_write = args.ckpt + " { top1:%.4f; mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f; mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f;prec@10:%.4f, prec@50:%.4f, prec@100:%.4f ; }\n" % (
-        mAPs[0], mAPs[1], mAPs[2], mAPs[3], mARs[1], mARs[2], mARs[3], Ps[1], Ps[2], Ps[3])
+    str_write = (
+        args.ckpt
+        + " { top1:%.4f; mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f; mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f;prec@10:%.4f, prec@50:%.4f, prec@100:%.4f ; }\n"
+        % (
+            mAPs[0],
+            mAPs[1],
+            mAPs[2],
+            mAPs[3],
+            mARs[1],
+            mARs[2],
+            mARs[3],
+            Ps[1],
+            Ps[2],
+            Ps[3],
+        )
+    )
 
     with open(args.output_path, "a") as f:
         f.write(str_write)
@@ -279,5 +303,5 @@ def main():
     return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

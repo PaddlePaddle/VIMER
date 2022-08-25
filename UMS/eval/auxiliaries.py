@@ -6,7 +6,11 @@ import warnings
 
 warnings.filterwarnings("ignore")
 import paddle
-import numpy as np, os, csv, datetime, faiss
+import numpy as np
+import os
+import csv
+import datetime
+import faiss
 from PIL import Image
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -21,7 +25,6 @@ import cv2
 def args2exp_name(args):
     exp_name = f"{args.dataset}_{args.loss}_{args.lr}_bs{args.bs}_spc{args.samples_per_class}_embed{args.embed_dim}_arch{args.arch}_decay{args.decay}_fclr{args.fc_lr_mul}_anneal{args.sigmoid_temperature}"
     return exp_name
-
 
 
 ################# SAVE TRAINING PARAMETERS IN NICE STRING #################
@@ -45,7 +48,6 @@ def gimme_save_string(args):
             base_str += "\n\t" + str(varx[key])
         base_str += "\n\n"
     return base_str
-
 
 
 def eval_metrics_one_dataset(model, test_dataloader, k_vals, args):
@@ -98,7 +100,6 @@ def eval_metrics_one_dataset(model, test_dataloader, k_vals, args):
             print("only use cpu")
         faiss_search_index.add(computed_centroids)
         _, model_generated_cluster_labels = faiss_search_index.search(feature_coll, 1)
-
 
         ### Recover max(k_vals) nehbours to use for recall computation
         faiss_search_index = faiss.IndexFlatL2(feature_coll.shape[-1])
@@ -626,4 +627,3 @@ def metrics_to_examine(dataset, k_vals):
     metric_dict["val"] += ["Recall @ {}".format(k) for k in k_vals]
 
     return metric_dict
-

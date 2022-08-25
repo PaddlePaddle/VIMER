@@ -8,6 +8,4 @@ add vilbert
 
 from .scene_text_dataset import LocalSceneTextDataset
 
-__all__=["LocalSceneTextDataset"]
-
-
+__all__ = ["LocalSceneTextDataset"]

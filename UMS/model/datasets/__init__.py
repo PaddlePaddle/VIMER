@@ -8,7 +8,6 @@ add datasets
 
 from .product1m_dataset import Product1MDataset
 from .datasets import give_dataloaders
-from .ctc_dataset import CTCDataset 
-__all__=["Product1MDataset", "give_dataloaders", "CTCDataset"]
+from .ctc_dataset import CTCDataset
 
-
+__all__ = ["Product1MDataset", "give_dataloaders", "CTCDataset"]

@@ -10,8 +10,8 @@ from sklearn.metrics.pairwise import cosine_similarity, paired_distances
 print(sys.argv, len(sys.argv))
 
 ckpt = ""
-prefix1 = 'product1m_test'
-prefix2 = 'product1m_gallery'
+prefix1 = "product1m_test"
+prefix2 = "product1m_gallery"
 
 if len(sys.argv) == 2:
     ckpt = sys.argv[1]
@@ -33,8 +33,8 @@ test_fea = []
 gallery_image_ids = []
 gallery_fea = []
 
-test_filename = '{}_pairs_info.txt'.format(prefix1)
-gallery_filename = '{}_pairs_info.txt'.format(prefix2)
+test_filename = "{}_pairs_info.txt".format(prefix1)
+gallery_filename = "{}_pairs_info.txt".format(prefix2)
 # test_filename = '../../Product1M/product1m_test_ossurl_v2.txt'
 # gallery_filename = '../../Product1M/product1m_gallery_ossurl_v2.txt'
 
@@ -42,7 +42,7 @@ gallery_filename = '{}_pairs_info.txt'.format(prefix2)
 
 gallery_instances = {}
 gallery_category_image_ids = {}
-with open(gallery_filename, 'r') as f:
+with open(gallery_filename, "r") as f:
     for i, line in enumerate(f):
         # print(line)
         conts = line.strip().split("\t")
@@ -58,7 +58,9 @@ with open(gallery_filename, 'r') as f:
         gallery_category_image_ids[instance_text].append(image_id)
 
         gallery_image_ids.append(image_id)
-        gallery_fea.append(np.concatenate((gallery_image_features[i], gallery_text_features[i])))
+        gallery_fea.append(
+            np.concatenate((gallery_image_features[i], gallery_text_features[i]))
+        )
         # gallery_fea.append(gallery_image_features[i])
         # gallery_fea.append(gallery_text_features[i])
 
@@ -305,9 +307,9 @@ def save_prediction(predictions):
         topN_results.append(topN_results_per)
         topN_similarities.append(topN_similarities_per)
 
-    np.save('test_ids.npy', np.array(test_ids))
-    np.save('topN_results.npy', np.array(topN_results))
-    np.save('topN_similarities.npy', np.array(topN_similarities))
+    np.save("test_ids.npy", np.array(test_ids))
+    np.save("topN_results.npy", np.array(topN_results))
+    np.save("topN_similarities.npy", np.array(topN_similarities))
     # pdb.set_trace()
 
 
@@ -327,17 +329,25 @@ def save_prediction(predictions):
 # save_prediction(predict_dict)
 # print("multi")
 
-mAP10, mAP50, mAP100 = cal_multi_mAP(target_dict, predict_dict, gallery_instances, targets_flatten)
-print("mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f\n" % (mAP10, mAP50, mAP100))
-mAR10, mAR50, mAR100 = cal_multi_mAR(target_dict, predict_dict, gallery_instances, gallery_category_image_ids)
-print("mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f\n" % (mAR10, mAR50, mAR100))
+print("Evaluation:")
+mAP10, mAP50, mAP100 = cal_multi_mAP(
+    target_dict, predict_dict, gallery_instances, targets_flatten
+)
+print("mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f" % (mAP10, mAP50, mAP100))
+mAR10, mAR50, mAR100 = cal_multi_mAR(
+    target_dict, predict_dict, gallery_instances, gallery_category_image_ids
+)
+print("mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f" % (mAR10, mAR50, mAR100))
 prec10, prec50, prec100 = cal_multi_prec(target_dict, predict_dict, gallery_instances)
-print("prec@10:%.4f, prec@50:%.4f, prec@100:%.4f\n" % (prec10, prec50, prec100))
+print("prec@10:%.4f, prec@50:%.4f, prec@100:%.4f" % (prec10, prec50, prec100))
 top1 = cal_mAP(target_dict, predict_dict, gallery_instances, targets_flatten, 1)
-print("top1:%.4f\n" % (top1))
+print("top1:%.4f" % (top1))
 
-str_write = ckpt + " { mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f; mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f;prec@10:%.4f, prec@50:%.4f, prec@100:%.4f ;top:%.4f }\n" % (
-mAP10, mAP50, mAP100, mAR10, mAR50, mAR10, prec10, prec50, prec100, top1)
+str_write = (
+    ckpt
+    + " { mAP@10:%.4f, mAP@50:%.4f, mAP@100:%.4f; mAR@10:%.4f, mAR@50:%.4f, mAR@100:%.4f;prec@10:%.4f, prec@50:%.4f, prec@100:%.4f ;top:%.4f }\n"
+    % (mAP10, mAP50, mAP100, mAR10, mAR50, mAR10, prec10, prec50, prec100, top1)
+)
 
 with open("eval_results_product1m.txt", "a") as f:
     f.write(str_write)

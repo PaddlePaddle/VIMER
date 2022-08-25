@@ -1,35 +1,17 @@
-# copyright (c) 2021 PaddlePaddle Authors. All Rights Reserve.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# Code was based on https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py
-"""vision_transformer
+"""fusion_transformer_base
 """
+from collections import OrderedDict
 import numpy as np
 import paddle
 import paddle.nn as nn
 from paddle.nn.initializer import TruncatedNormal, Constant, Normal
-import os
-from functools import partial
-from paddle import ParamAttr
-from paddle.nn.initializer import Assign
+from paddlenlp.transformers import BertModel
+import pdb
 
-__all__ = [
-    "vit_deit_base_patch16_224",
-    "vit_deit_base_patch16_384",
-    "deit_base_patch16_224",
-    "deit_base_patch16_384",
-]
+# import os
+# import torch
+# from paddlenlp.transformers import BertModel
+__all__ = ["fusion_base_patch16_224", "fusion_base_patch16_384"]
 
 trunc_normal_ = TruncatedNormal(std=0.02)
 normal_ = Normal
@@ -268,7 +250,7 @@ class PatchEmbed(nn.Layer):
         return x
 
 
-class VisionTransformer(nn.Layer):
+class VisionStFusionTransformer(nn.Layer):
     """Vision Transformer with support for patch input"""
 
     def __init__(
@@ -288,11 +270,14 @@ class VisionTransformer(nn.Layer):
         attn_drop_rate=0.0,
         drop_path_rate=0.0,
         norm_layer=nn.LayerNorm,
-        add_norm_before_transformer=False,
-        no_patch_embed_bias=False,
         config=None,
-        ocr_max_len=15,
+        scene_text_max_len=15,
+        scene_text_depth=12,
+        fusion_depth=4,
+        scene_text_feature_size=768,
+        scene_text_lacation_size=5,
         epsilon=1e-6,
+        scene_text_model_dir="./bert-base-uncased/",
         **kwargs
     ):
         super().__init__()
@@ -301,7 +286,7 @@ class VisionTransformer(nn.Layer):
         self.class_num = class_num
 
         self.num_features = self.embed_dim = embed_dim
-        self.add_norm_before_transformer = add_norm_before_transformer
+
         self.patch_embed = PatchEmbed(
             img_size=img_size,
             patch_size=patch_size,
@@ -320,11 +305,13 @@ class VisionTransformer(nn.Layer):
             shape=(1, 1, embed_dim), default_initializer=zeros_
         )
         self.add_parameter("cls_token", self.cls_token)
-        self.token_type_embeddings = nn.Embedding(2, embed_dim)
+        self.token_type_embeddings = nn.Embedding(3, embed_dim)
+        self.fusion_token = self.create_parameter(
+            shape=(1, 1, embed_dim), default_initializer=zeros_
+        )
+        self.add_parameter("fusion_token", self.fusion_token)
 
         self.pos_drop = nn.Dropout(p=drop_rate)
-        if add_norm_before_transformer:
-            self.pre_norm = norm_layer(embed_dim, epsilon=epsilon)
 
         dpr = np.linspace(0, drop_path_rate, depth)
 
@@ -346,9 +333,38 @@ class VisionTransformer(nn.Layer):
             ]
         )
 
+        self.scene_text_fusion_blocks = nn.LayerList(
+            [
+                Block(
+                    dim=embed_dim,
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratio,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop_rate,
+                    attn_drop=attn_drop_rate,
+                    drop_path=dpr[i],
+                    norm_layer=norm_layer,
+                    epsilon=epsilon,
+                )
+                for i in range(fusion_depth)
+            ]
+        )
+
+        self.scene_text_model = BertModel.from_pretrained(scene_text_model_dir)
+
+        self.fusion_depth = fusion_depth
+
         self.norm = norm_layer(embed_dim, epsilon=epsilon)
 
+        self.fusion_pos_embed = self.create_parameter(
+            shape=(1, 1, embed_dim), default_initializer=zeros_
+        )
+        self.add_parameter("fusion_pos_embed", self.fusion_pos_embed)
+        self.ocr_pos_projection = nn.Linear(4, embed_dim)
         trunc_normal_(self.pos_embed)
+        trunc_normal_(self.fusion_pos_embed)
+        trunc_normal_(self.fusion_token)
         trunc_normal_(self.cls_token)
         self.apply(self._init_weights)
 
@@ -361,8 +377,8 @@ class VisionTransformer(nn.Layer):
             zeros_(m.bias)
             ones_(m.weight)
 
-    def forward_features(self, x):
-        """forward_features"""
+    def pre_encoder_vision(self, x):
+        """pre_encoder_vision"""
         x = self.patch_embed(x)
         cls_tokens = self.cls_token.expand((paddle.shape(x)[0], -1, -1))
         x = paddle.concat((cls_tokens, x), axis=1)
@@ -370,133 +386,153 @@ class VisionTransformer(nn.Layer):
             paddle.zeros(shape=[paddle.shape(x)[0], paddle.shape(x)[1]], dtype="int64")
         )
         x = x + token_type_embeddings_image + self.pos_embed
-        x = self.pos_drop(x)
-        for blk in self.blocks:
-            x = blk(x)
-        x = self.norm(x)
-        return x
+        img_features = self.pos_drop(x)
+        for blk in self.blocks[: -1 * self.fusion_depth]:
+            img_features = blk(img_features, mask=None)
 
-    def forward(self, x):
-        """forward"""
-        x = self.forward_features(x)
-        return x[:, 0]
+        return img_features, x
 
-
-class _VisionTransformer(nn.Layer):
-    def __init__(
+    def pre_encoder_scene_text(
         self,
-        img_size=224,
-        patch_size=16,
-        in_chans=3,
-        num_classes=1000,
-        embed_dim=768,
-        depth=12,
-        num_heads=12,
-        mlp_ratio=4.0,
-        qkv_bias=False,
-        qk_scale=None,
-        drop_rate=0.0,
-        attn_drop_rate=0.0,
-        drop_path_rate=0.0,
-        hybrid_backbone=None,
-        norm_layer=nn.LayerNorm,
+        input_ids=None,  # scene_text_ids
+        attention_mask=None,  # scene_text_attention_mask
+        token_type_ids=None,  # scene_text_token_type_ids
+        position_ids=None,
+        head_mask=None,
+        inputs_embeds=None,
+        encoder_hidden_states=None,
+        encoder_attention_mask=None,
+        past_key_values=None,
+        use_cache=None,
+        output_attentions=None,
+        output_hidden_states=None,
+        return_dict=None,
     ):
-        super().__init__()
-        self.num_classes = num_classes
-        self.num_features = self.embed_dim = embed_dim
-        norm_layer = norm_layer or nn.LayerNorm
+        """pre_encoder_scene_text"""
 
-        if hybrid_backbone is not None:
-            pass
-        else:
-            self.patch_embed = PatchEmbed(
-                img_size=img_size,
-                patch_size=patch_size,
-                in_chans=in_chans,
-                embed_dim=embed_dim,
+        extended_attention_mask = attention_mask.unsqueeze(axis=[1, 2]).astype(
+            paddle.get_default_dtype()
+        )
+        extended_attention_mask = (1.0 - extended_attention_mask) * -1e4
+
+        scene_text_features = self.scene_text_model.embeddings(
+            input_ids=input_ids,
+            token_type_ids=token_type_ids,
+        )
+
+        for layer_module in self.scene_text_model.encoder.layers[
+            : -1 * self.fusion_depth
+        ]:  # BERT first several layers
+            layer_outputs = layer_module(
+                scene_text_features,
+                src_mask=extended_attention_mask,
             )
-        num_patches = self.patch_embed.num_patches
+            scene_text_features = layer_outputs
 
-        self.cls_token = self.create_parameter(
-            attr=ParamAttr(
-                name="cls_token",
-                initializer=Assign(paddle.zeros(shape=(1, 1, embed_dim))),
-            ),
-            shape=(1, 1, embed_dim),
-        )
-        self.pos_embed = self.create_parameter(
-            attr=ParamAttr(
-                name="pos_embed",
-                initializer=Assign(paddle.zeros(shape=(1, num_patches + 1, embed_dim))),
-            ),
-            shape=(1, num_patches + 1, embed_dim),
-        )
-        self.pos_drop = nn.Dropout(p=drop_rate)
+        return scene_text_features  # [bs, seq_length, scene_text_feature_size]
 
-        dpr = [
-            x for x in np.linspace(0, drop_path_rate, depth)
-        ]  # stochastic depth decay rule
-        self.blocks = nn.LayerList(
-            [
-                Block(
-                    dim=embed_dim,
-                    num_heads=num_heads,
-                    mlp_ratio=mlp_ratio,
-                    qkv_bias=qkv_bias,
-                    qk_scale=qk_scale,
-                    drop=drop_rate,
-                    attn_drop=attn_drop_rate,
-                    drop_path=dpr[i],
-                    norm_layer=norm_layer,
-                )
-                for i in range(depth)
-            ]
-        )
-        self.norm = norm_layer(embed_dim)
-
-        # Classifier head
-        self.head = (
-            nn.Linear(self.num_features, num_classes) if num_classes > 0 else Identity()
+    def forward_features(
+        self,
+        x,
+        scene_text_ids=None,
+        scene_text_attention_mask=None,
+        scene_text_token_type_ids=None,
+        scene_text_pos=None,
+    ):
+        """forward_features"""
+        img_features, x = self.pre_encoder_vision(x)
+        scene_text_features = self.pre_encoder_scene_text(
+            input_ids=scene_text_ids,
+            attention_mask=scene_text_attention_mask,
+            token_type_ids=scene_text_token_type_ids,
         )
 
-    def get_classifier(self):
-        return self.head
+        if scene_text_pos is not None:
+            scene_text_pos = self.ocr_pos_projection(scene_text_pos)
+            scene_text_features = scene_text_features + scene_text_pos
 
-    def reset_classifier(self, num_classes, global_pool=""):
-        self.num_classes = num_classes
-        self.head = (
-            nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else Identity()
+        fusion_token = self.fusion_token.expand((paddle.shape(x)[0], -1, -1))
+        fusion_token_token_type_embed = self.token_type_embeddings(
+            paddle.full(
+                shape=[paddle.shape(fusion_token)[0], paddle.shape(fusion_token)[1]],
+                fill_value=2,
+                dtype="int64",
+            )
         )
+        fusion_token = (
+            fusion_token + fusion_token_token_type_embed + self.fusion_pos_embed
+        )
+        image_fusion_attention_mask = paddle.ones(
+            shape=[paddle.shape(x)[0], paddle.shape(x)[1] + 1], dtype="int64"
+        )
+        fusion_attention_mask = paddle.ones(shape=[paddle.shape(x)[0], 1])
+        scene_text_fusion_attention_mask = paddle.concat(
+            (fusion_attention_mask, scene_text_attention_mask), axis=1
+        )
+        extended_scenet_text_fusion_attention_mask = (
+            scene_text_fusion_attention_mask.unsqueeze(axis=[1, 2]).astype(
+                paddle.get_default_dtype()
+            )
+        )
+        extended_scenet_text_fusion_attention_mask = (
+            1.0 - extended_scenet_text_fusion_attention_mask
+        ) * -1e4
 
-    def forward_features(self, x):
-        x = self.patch_embed(x)
-        B = paddle.shape(x)[0]
-        C = paddle.shape(x)[2]
+        for i in range(self.fusion_depth):
+            image_fusion_x = paddle.concat((img_features, fusion_token), axis=1)
+            image_fusion_x = self.blocks[i - self.fusion_depth](
+                image_fusion_x, mask=image_fusion_attention_mask
+            )
+            scene_text_fusion_x = paddle.concat(
+                (fusion_token, scene_text_features), axis=1
+            )
 
-        cls_tokens = paddle.fluid.layers.expand(self.cls_token, (B, 1, 1))
-        x = paddle.concat((cls_tokens, x), axis=1)  # [B, 50, 768]
+            layer_outputs = self.scene_text_model.encoder.layers[i - self.fusion_depth](
+                scene_text_fusion_x,
+                src_mask=extended_scenet_text_fusion_attention_mask,
+            )
 
-        x = x + self.pos_embed
-        x = self.pos_drop(x)
+            scene_text_fusion_x = layer_outputs
+            fusion_token = image_fusion_x[:, -1, :] + scene_text_fusion_x[:, 0, :]
+            fusion_token = fusion_token.unsqueeze(1)
+            img_features = image_fusion_x[:, :-1, :]
+            scene_text_features = scene_text_fusion_x[:, 1:, :]
 
-        for blk in self.blocks:
-            x = blk(x)
+        image_fusion_x = self.norm(image_fusion_x)
+        scene_text_fusion_x = self.norm(scene_text_fusion_x)
+        fusion_token = image_fusion_x[:, -1, :] + scene_text_fusion_x[:, 0, :]
+        img_features = image_fusion_x[:, :-1, :]
+        scene_text_features = scene_text_fusion_x[:, 1:, :]
+        image_cls = img_features[:, 0, :]
+        scene_text_cls = scene_text_features[:, 0, :]
+        return image_cls, scene_text_cls, fusion_token
 
-        x = self.norm(x)[:, 0]
+    def forward(
+        self,
+        x,
+        scene_text_ids=None,
+        scene_text_attention_mask=None,
+        scene_text_token_type_ids=None,
+        scene_text_pos=None,
+    ):
+        """forward"""
+        x = self.forward_features(
+            x,
+            scene_text_ids=scene_text_ids,
+            scene_text_attention_mask=scene_text_attention_mask,
+            scene_text_token_type_ids=scene_text_token_type_ids,
+            scene_text_pos=scene_text_pos,
+        )
         return x
 
-    def forward(self, x):
-        x = self.forward_features(x)
-        x = nn.functional.normalize(x, p=2, axis=1)
-        return x
 
-
-def vit_deit_base_patch16_224(**kwargs):
-    """vit_deit_base_patch16_224"""
-    model = VisionTransformer(
+def fusion_base_patch16_224(fusion_depth=4, **kwargs):
+    """fusion_base_patch16_224"""
+    model = VisionStFusionTransformer(
         img_size=224,
         num_classes=1000,
         representation_size=None,
+        fusion_depth=fusion_depth,
         patch_size=16,
         embed_dim=768,
         depth=12,
@@ -511,12 +547,13 @@ def vit_deit_base_patch16_224(**kwargs):
     return model
 
 
-def vit_deit_base_patch16_384(**kwargs):
-    """vit_deit_base_patch16_384"""
-    model = VisionTransformer(
+def fusion_base_patch16_384(fusion_depth=4, **kwargs):
+    """fusion_base_patch16_384"""
+    model = VisionStFusionTransformer(
         img_size=384,
         num_classes=1000,
         representation_size=None,
+        fusion_depth=fusion_depth,
         patch_size=16,
         embed_dim=768,
         depth=12,
@@ -529,39 +566,3 @@ def vit_deit_base_patch16_384(**kwargs):
     )
     model.default_cfg = _cfg()
     return model
-
-
-def deit_base_patch16_224():
-    backbone = _VisionTransformer(
-        img_size=224,
-        drop_path_rate=0.1,
-        patch_size=16,
-        embed_dim=768,
-        depth=12,
-        num_heads=12,
-        mlp_ratio=4,
-        qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, epsilon=1e-6),
-        num_classes=-1,
-    )
-    backbone.default_cfg = _cfg()
-
-    return backbone
-
-
-def deit_base_patch16_384():
-    backbone = _VisionTransformer(
-        img_size=384,
-        drop_path_rate=0.1,
-        patch_size=16,
-        embed_dim=768,
-        depth=12,
-        num_heads=12,
-        mlp_ratio=4,
-        qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, epsilon=1e-6),
-        num_classes=-1,
-    )
-    backbone.default_cfg = _cfg()
-
-    return backbone

@@ -8,11 +8,15 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-import numpy as np, pandas as pd, copy, random, os
-
+import numpy as np
+import pandas as pd
+import copy
+import random
+import os
 from paddle.io import Dataset
 from PIL import Image
-import itertools, math
+import itertools
+import math
 import paddle.vision.transforms as transforms
 import paddle
 
@@ -53,7 +57,7 @@ def give_InShop_datasets(args):
         dict of PyTorch datasets for training, testing (by query and gallery separation) and evaluation.
     """
     # Load train-test-partition text file.
-    # assert os.path.exists(args.source_path+'/list_eval_partition.txt'), f"{args.source_path+'/list_eval_partition.txt'} NOT found."
+    assert os.path.exists(args.source_path+'/list_eval_partition.txt'), f"{args.source_path+'/list_eval_partition.txt'} NOT found."
     data_info = np.array(
         pd.read_table(
             args.source_path + "/list_eval_partition.txt",
@@ -127,6 +131,7 @@ def give_InShop_datasets(args):
         "testing_gallery": gallery_dataset,
     }
 
+
 def give_OnlineProducts_datasets_hard(args):
     """
     This function generates a training, testing and evaluation dataloader for Metric Learning on the Online-Products dataset.
@@ -138,6 +143,7 @@ def give_OnlineProducts_datasets_hard(args):
     Returns:
         dict of PyTorch datasets for training, testing and evaluation.
     """
+    assert os.path.exists(args.source_path + "/Ebay_train.txt"), f"{args.source_path + '/Ebay_train.txt'} NOT found."
     image_sourcepath = args.source_path
     training_files = pd.read_table(
         args.source_path + "/Ebay_train.txt", header=0, delimiter=" "
@@ -201,6 +207,7 @@ def give_OnlineProducts_datasets_hard(args):
         "evaluation": eval_dataset,
     }
 
+
 ################## BASIC PYTORCH DATASET USED FOR ALL DATASETS ##################################
 class BaseTripletDataset(Dataset):
     """
@@ -248,7 +255,7 @@ class BaseTripletDataset(Dataset):
         transf_list = []
         self.transform = transforms.Compose(
             [
-                transforms.Resize(256),
+                transforms.Resize(248),
                 transforms.CenterCrop(224),
                 transforms.ToTensor(),
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
@@ -302,17 +309,13 @@ class BaseTripletDataset(Dataset):
                     if prev_class in counter:
                         counter.remove(prev_class)
                 self.current_class = counter[idx % len(counter)]
-                self.classes_visited = self.classes_visited[1:] + [
-                    self.current_class
-                ]
+                self.classes_visited = self.classes_visited[1:] + [self.current_class]
                 self.n_samples_drawn = 0
             class_sample_idx = idx % len(self.image_dict[self.current_class])
             self.n_samples_drawn += 1
             out_img = self.transform(
                 self.ensure_3dim(
-                    Image.open(
-                        self.image_dict[self.current_class][class_sample_idx]
-                    )
+                    Image.open(self.image_dict[self.current_class][class_sample_idx])
                 )
             )
             return self.current_class, out_img

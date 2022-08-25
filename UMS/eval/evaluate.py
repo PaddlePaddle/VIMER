@@ -20,6 +20,7 @@ import eval.auxiliaries as aux
 import os
 import paddle
 
+
 def evaluate(dataset, LOG, **kwargs):
     """
     Given a dataset name, applies the correct evaluation function.
@@ -39,6 +40,7 @@ def evaluate(dataset, LOG, **kwargs):
         raise Exception("No implementation for dataset {} available!")
 
     return ret
+
 
 def evaluate_one_dataset(
     LOG, dataloader, model, args, save=True, give_return=True, epoch=0
@@ -67,7 +69,9 @@ def evaluate_one_dataset(
             recall_at_ks,
             feature_matrix_all,
             map_at_r,
-        ) = aux.eval_metrics_one_dataset(model, dataloader, k_vals=args.k_vals, args=args)
+        ) = aux.eval_metrics_one_dataset(
+            model, dataloader, k_vals=args.k_vals, args=args
+        )
         # Make printable summary string.
 
         result_str = ", ".join(
@@ -91,6 +95,7 @@ def evaluate_one_dataset(
         return recall_at_ks, NMI, F1
     else:
         None
+
 
 def evaluate_query_and_gallery_dataset(
     LOG,

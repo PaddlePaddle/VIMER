@@ -16,77 +16,79 @@ English | [简体中文](README_ch.md)
 - [Citation](#citation)
 
 ## Model description
-Based on the massive amount of Internet product graphic information, Baidu proposed a multi-source information unified modeling product graphic representation pre-training model VIMER-UMS (Unified Multi-Source Pre-training for Product), which is the first unified visual single-modality and Commodity multimodal pre-training model for multi-source image and text modal representation in the industry. Aiming at the problem of incomplete modal information in the multi-modal modeling of graphics and text, by constructing a multi-task learning framework for comparing visual features with multi-source graphics and text, the pre-training of unified graphic and text representations is realized, and the visual single-modal and multi-modal recognition of commodities is also covered. And retrieval tasks, significantly optimize the visual retrieval of goods, advertising recognition, multi-modal commodity search and recommendation experience, effectively improve the effect of offline retail commodity recognition, and solve the pain point of small sample customization optimization.
+Based on the massive amount of Internet product graphic information, Baidu proposed a product image-text representation pre-training model unified modeling multi-source information, which is named VIMER-UMS (Vision Foundation Models for Enhanced Representation - Unified Multi-Source Pre-training for Product). It is the first commodity multimodal pre-training model in the industry unifying single visual modality and multi-source image-text modality representation. 
+
+For the problem of incomplete modal information in the multi-source image-text information application scenario, the VIMER-UMS model achieves unified image-text representation pre-training. It uses a multi-task learning framework to construct the comparison of visual features and multi-source image-text features. The VIMER-UMS model covers both visual single modal and multimodal retrieval tasks. It significantly optimizes the recommendation experience of visual commodity retrieval and multimodal commodity retrieval.
 
 ## Principle introduction
-Existing multi-modal image and text pre-training methods are mainly oriented to cross-modal image and text search, multi-modal understanding and generation tasks, focusing on the relationship representation of image and text modal features, and insufficient support for the effect of single-modal visual downstream tasks. The large-scale graphics and text pre-training methods represented by OpenAI CLIP and Google Align rely on a large number of training resources and billion-level big data, and the high cost restricts the large-scale application of multi-modal large models.
-Furthermore, multimodal linked data in real scenes is not limited to simple image-text pairs. Compared with the two-dimensional image-text pair form, multi-source information refers to information sources with multiple dimensions. Taking the commodity search scene as an example, it includes text modalities (search input, scene text, text title, category label), visual modalities. The multi-dimensional and multi-modal information of the state (commodity map, the same label), which contains rich semantic associations, has great potential for mining and utilization and application value. However, in practical applications, multi-source commodity information usually has the problem of lack of modal information, which is an important challenge for multi-source information modal modeling applications.
+Existing multimodal image-text pre-training methods are mainly oriented to cross-modal image-text retrieval, multimodal understanding, and generation tasks. They focus on the relationship representation of image and text modal features while are insufficient to support the downstream visual-only tasks. The large-scale image-text pre-training methods represented by OpenAI CLIP and Google Align rely on a large number of training resources and billion-level big data. The optimization of visual downstream tasks also relies heavily on massive data. Such high cost restricts the large-scale application of large multimodal models.
+
 <div align="center">
     <img src="./doc/fig1.png" width="800">
 </div>
 <p align="center">Figure1. Principle introduction </p>
-In response to the above problems, Baidu proposed a multi-source information unified modeling product image and text representation pre-training model VIMER-UMS for the commodity search scenario, which aims to unify the visual modal, graphic multi-modal search representation tasks, and overcome multi-source information. The problem of incomplete modal information in the scene, while improving the effect of visual and multi-modal search tasks.
+
+Furthermore, multimodal linked data in real scenes is not limited to simple image-text pairs. As shown in Fig.1, compared with existing large-scale image-text pre-training, multi-source information refers to information sources with multiple dimensions. Taking the commodity retrieval scenario as an example, multi-source information includes the multi-dimensional multimodal information of text modality (For example, search input, scene text, text titles, and category labels) and visual modality (For example, commodity images and same labels). They contain rich semantic associations and have great potential and application value. However, in practical applications, multi-source information is incomplete usually, which is a severe challenge for multi-source information modal modeling applications.
+
+In response to the above problems, Baidu proposed a multi-source information unified modeling commodity image-text representation pre-training model VIMER-UMS for the commodity retrieval scenario. It aims to unify the visual modal, image-text multimodal retrieval tasks. It overcomes the problem of incomplete modal information in multi-source information scenarios and also improves the performance of visual and multimodal retrieval tasks.
 
 ## Unified product visual and image-text representation
-Based on the end-to-end Transformer training method, VIMER-UMS provides a unified expression structure for multi-source commodity information through visual coding, text coding, fusion coding, and search query coding. Since the existing mainstream multimodal pre-training methods rely on language as Weakly supervised correlation signals, and the visual representation ability is degraded. In order to solve this problem, VIMER-UMS achieves unified enhanced representation of visual features and graphic features by establishing multi-task pre-training for visual and multi-source graphic and text comparison.
+Based on the end-to-end Transformer training method, VIMER-UMS provides a unified expression structure for multi-source commodity information through visual encoding, text encoding, fusion encoding, and search query encoding. Since the existing mainstream multimodal pre-training methods rely on language as weakly supervised correlation signals, the visual representation ability is degraded. To solve this problem, VIMER-UMS establishes a multi-task pre-training framework of visual and multi-source image-text comparison, which achieves a unified enhanced representation of visual features and image-text features.
+
 <div align="center">
     <img src="./doc/fig2.png" width="500">
 </div>
 <p align="center">Figure2. VIMER-UMS </p>
 
 ## Extensive coverage of product search tasks
-For practical business applications, based on the VIMER-UMS commodity graphic representation pre-training model, a small amount of labeled or unlabeled data is used to efficiently achieve downstream commodity visual retrieval, fine-grained identification, and multi-modal search capabilities.
+For practical business applications, the VIMER-UMS model could use a small amount of labeled or unlabeled data to efficiently achieve downstream commodity visual retrieval and multimodal retrieval capabilities.
+
 <div align="center">
     <img src="./doc/fig3.png" width="600">
 </div>
 <p align="center">Figure3. Product search tasks </p>
 
 ## Model performance
-Based on the VIMER-UMS commodity graphic representation pre-training model, it realizes the SOTA effect of multiple commodity downstream visual retrieval and cross-modal retrieval tasks, and supports direct deployment and pre-training fine-tuning applications.
+The VIMER-UMS model realizes the SOTA performance of multiple commodity downstream visual retrieval and cross-modal retrieval tasks. It also supports direct deployment and pre-training fine-tuning applications.
 
 ### Product visual retrieval task
   * Dataset
-    * [SOP](https://cvgl.stanford.edu/projects/lifted_struct/):This dataset has 22,634 classes with 120,053 product images. The first 11,318 classes (59,551 images) are split for training and the other 11,316 (60,502 images) classes are used for testing.
-    * [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html):The dataset contains 22,634 items and a total of 120,053 annotated images for evaluating the visual retrieval effect of items. There are 59,551 training images and 11,318 product categories, and 60,502 test images and 11,316 product categories.
-  * Performance: SOP, InShop visual retrieval tasks, and downstream task fine-tuning effects are evaluated based on Recall@1, and single-card GPU prediction supports fast identification applications.
+    * [SOP](https://cvgl.stanford.edu/projects/lifted_struct/): This dataset contains 22,634 classes and a total of 120,053 annotated product images. 11,318 classes (59,551 images) are used for training and the other 11,316 (60,502 images) classes are used for testing.
+    * [InShop](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html): This dataset contains 7,982 classes and a total of 52,712 annotated images. The different views of each product instance are included.
+  * Implementation: The downstream fine-tuning visual retrieval tasks of SOP and InShop are evaluated by Recall@1. It bases on the prediction library of PaddlePaddle GPU and supports fast deployment of single-card GPU.
 
-     | Model         | Downstream fine-tuning method               | SOP        | InShop         | Time/ms         |
-     | :------------ | :-----------------------------------------: | :-------:  | :------------: | :-------------: |
-     | previous SOTA | [ROADMAP](https://arxiv.org/abs/2110.01445) | 86.0       | 91.9           | ~12             |
-     | ViT_small     | Rank Loss                                   | 85.8       | 92.9           | ~12             |
-     | ViT_base      | Rank Loss                                   | 87.1       | 93.6           | ~18             |
-     | UMS           | Rank Loss                                   | **88.5**   | **94.7**       | ~18             |
+    | Model                                          |                Downstream fine-tuning method                | Resolution |    SOP    |  InShop   |
+    | :-------------------------------------------------- | :-----------------------------------------: | :----: | :-------: | :-------: |
+    | UMS(ViT-Base)                                       |                  Rank Loss                  |  224   | 88.72 | 94.70 |
 
 ### Product multi-modal retrieval task
   * Dataset
-    * [Product1M](https://github.com/zhanxlin/Product1M):The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions), 2,673 test samples, and 40,033 products base library samples are used as search evaluation data.
-  * Performance: The multi-modal retrieval task of commodities uses the mAP@R index (mean Average Precision) to evaluate the ranking effect of the search.
+    * [Product1M](https://github.com/zhanxlin/Product1M): The multimodal product dataset contains 1,182,083 training samples (a pair of product images and caption text descriptions). It used 2,673 test samples and 40,033 products gallery samples as retrieval evaluation data.
+  * Implementation: The downstream fine-tuning multimodal product retrieval task of the Product1M uses the mAP@N (mean Average Precision, N=10, 50, 100) to evaluate the ranking effect of the retrieval.
 
-      | Model                                       | mAP@10     | mAP@50     | mAP@100     | Time/ms     |
-      | :------------------------------------------ | :--------: | :--------: | :---------: | :---------: |
-      | [CLIP](https://arxiv.org/abs/2103.00020)    | 70.25      | 69.28      | 67.3        | ~40         |
-      | [UNITER](https://arxiv.org/abs/1909.11740)  | 74.69      | 71.02      | 70.93       | ~900        |
-      | [CAPTURE](https://arxiv.org/abs/2107.14572) | 79.36      | 74.79      | 74.63       | ~900        |
-      | UMS                                         | **83.27**  | **78.69**  | **76.01**   | **~40**     |
+    | Model                                          | Resolution |  mAP@10   |  mAP@50   |  mAP@100  |
+    | :-------------------------------------------------- | :----: | :-------: | :-------: | :-------: |
+    | UMS(ViT-Base)                                       |  224   | 85.68 | 83.10 | 81.13 |
+
+
 ### Image-text cross-modal retrieval task
   * Datasets
-     * [COCO-Text Captioned](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/):train set contains 28415 captions describing 5683 images. We conduct cross-modal retrieval task on CTC-1K test set.
+     * [COCO-Text Captioned (CTC)](https://europe.naverlabs.com/research/computer-vision/stacmr-scene-text-aware-cross-modal-retrieval/): The train set contains 28,415 captions describing 5,683 images. The CTC-1K test set is used for both image-to-text and text-to-image retrieval tasks.
+  * Implementation: The downstream image-to-text and text-to-image retrieval tasks of the CTC are evaluated by Recall@N (N=1, 5, 10).
 
-  * Performance
-     * image-to-text and text-to-image retrieval results on CTC-1K test set.
-        | Model                                        | CTC-1K<br>Image-to-text<br>R@1/R@5/R@10            | CTC-1K<br>Text-to-image<br>R@1/R@5/R@10           |           
-        | :------------------------------------------ | :-----------------------------------------: | :-----------------------------------------: |
-        | [STARNet](https://arxiv.org/abs/2012.04329) | 44.1/74.8/82.7                              | 31.5/60.8/72.4                              |
-        | [ViSTA](https://arxiv.org/abs/2203.16778)   | 52.5/77.9/87.2                              | 36.7/66.2/77.8                              |
-        | UMS                                         | **70.8/90.2/94.3**                          | **54.0/80.1/87.8**                          |
+     |                     Model                      | Resolution | CTC-1K<br>Image-to-text<br>R@1/R@5/R@10 | CTC-1K<br>Text-to-image<br>R@1/R@5/R@10 |
+     | :-------------------------------------------------: | :----: | :------------------------------: | :------------------------------: |
+     |                    UMS(ViT-Base)                    |  224   |    64.90/88.20/93.90     |        49.24/77.08/86.18         |
+
 
 ## Application scenarios
-Based on VIMER-UMS commodity graphic representation pre-training, the effect has been improved and implemented in multiple business scenarios such as actual commodity photography, multi-modal search and content recommendation, commodity advertising, and retail offline digitization, effectively solving single-modal, multi-modal It solves the various problems of downstream tasks in the state, and significantly alleviates the industry pain points of inefficient identification, customization and optimization of offline retail products.
-1. **Product search**: Text search products, image search products and other functions are used to find products of the same style and similar boxes, and take pictures to identify products, which is convenient for searching products and recommending related products.
+The VIMER-UMS model could be implemented in multiple business scenarios. It could effectively solve the various problems of single modal and multimodal downstream tasks, and alleviates the industry pain points of inefficient identification, customization, and optimization of offline retail products.
 
-2. **Product recommendation**: For the e-commerce content platform, identify the content of author and identify the intention to bring goods, increase the display and loading capacity of the goods, and bring conversion and monetization capabilities to the platform.
+1. **Product search**: The functions of retrieving products by text or images are used to find products of the same or similar style, or take pictures to identify products, which is convenient for searching products and recommending related products.
 
-3. **Offline retail digitalization**: For the fast-moving consumer goods industry, create a [digital visit and sales solution](https://ai.baidu.com/solution/fmcg), accurately identify the quantity and type of goods displayed on the shelves, freezers and end shelves, and analyze the display layout for brand owners. Provide strong data support for distribution rate, out-of-stock rate, and qualified rate.
+2. **Product recommendation**: Facing the e-commerce search platform, identify the content of goods and the intention to bring goods, improve the quality and quantity of goods displayed, and then improve the platform's conversion and monetization capabilities.
+
+3. **Offline retail digitalization**: Facing the fast-moving consumer goods industry, accurately identifies the types and quantities of shelves, freezers, and end racks, as well as displayed goods, enabling brands to achieve digital insights and efficient sales decisions at outlets.
 
 VIMER-UMS image-text representation pre-training will be integrated into Baidu's zero-threshold AI development platform - Retail Edition [EasyDL Retail Industry Edition](https://ai.baidu.com/easydl/retail) in the near future, so stay tuned.
 
@@ -96,19 +98,20 @@ VIMER-UMS image-text representation pre-training will be integrated into Baidu's
 Check [INSTALL.md](./doc/INSTALL.md) for installation instructions.
 
 ### Download inference models
+
 | Model link                                              | Params(M) |
 | :------------------------------------------------- | :-----------|
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147518" target="_blank">UMS for Product1M multi-modal retrieval   </a>| 751 |
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147519" target="_blank">UMS for SOP image retrieval   </a>| 327 |
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147520" target="_blank">UMS for InShop image retrieval   </a>| 327 |
-| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/147541" target="_blank">UMS for COCO_CTC image-text retrieval   </a>| 749 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/166172" target="_blank">UMS model for Product1M multi-modal retrieval   </a>| 1113 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/166168" target="_blank">UMS model for SOP image retrieval   </a>| 328 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/166166" target="_blank">UMS model for InShop image retrieval   </a>| 328 |
+| <a href="https://aistudio.baidu.com/aistudio/datasetdetail/166171" target="_blank">UMS model for COCO-CTC image-text retrieval   </a>| 1168 |
 
 ### Downstream task model inference
   
 #### Evaluation on Product1M
 
 1. Download and extract the [Product1M](https://github.com/zhanxlin/Product1M) dataset at current directory <./Product1M>
-2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_product1m.pdparams
+2. Download infer modal [config_p1m](https://aistudio.baidu.com/aistudio/datasetdetail/166291), ums_product1m.pdparams
 3. Run shell script for peformance evaluation on Product1M dataset
 ```
 sh eval_scripts/run_eval_ums_base_product1m.sh ums_product1m.pdparams
@@ -134,8 +137,8 @@ sh eval_scripts/run_eval_ums_base_inshop.sh
 
 #### Evaluation on COCO-CTC
 
-1. Download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/147436/0) dataset at current directory <./data>
-2. Download infer modal [configs](https://aistudio.baidu.com/aistudio/datasetdetail/147523), ums_ctc.pdparams
+1. Download and extract the [COCO-CTC](https://aistudio.baidu.com/aistudio/datasetdetail/166165) dataset at current directory <./data>
+2. Download infer modal [config_ctc](https://aistudio.baidu.com/aistudio/datasetdetail/166292), ums_ctc.pdparams
 3. Run shell script for peformance evaluation on COCO-CTC datasets
 ```
 sh eval_scripts/run_eval_ums_base_ctc.sh ums_ctc.pdparams

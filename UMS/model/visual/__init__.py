@@ -4,3 +4,7 @@ from .vision_transformer import vit_deit_base_patch16_224
 from .vision_transformer import vit_deit_base_patch16_384
 from .vision_transformer import deit_base_patch16_224
 from .vision_transformer import deit_base_patch16_384
+from .fusion_transformer_base import fusion_base_patch16_224
+from .fusion_transformer_base import fusion_base_patch16_384
+from .fusion_transformer_base_share import fusion_base_share_patch16_224
+from .fusion_transformer_base_share import fusion_base_share_patch16_384
