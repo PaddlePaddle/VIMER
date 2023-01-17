@@ -236,7 +236,7 @@ class Encoder(ErnieModel):
 
         embedded = token_embeded + pos_embeded + sent_embeded + line_embeded + layout_embeded
 
-        nan_count = int(embedded.isnan().cast('int32').sum().numpy()[0])
+        nan_count = int(embedded.isnan().cast('int32').sum())
         if nan_count > 0:
             embedded = P.where(embedded.is_nan(), P.zeros_like(embedded, 'float32'), embedded)
             logging.error('there are nan in embedded input', nan_count)
