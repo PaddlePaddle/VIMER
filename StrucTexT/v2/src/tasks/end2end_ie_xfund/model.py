@@ -526,6 +526,6 @@ class Model(Encoder):
         probs = probs.topk(1, axis=-1, largest=True, sorted=True)[0].reshape([-1])
         preds_index = preds_index.reshape([-1])
         word = self.label_converter.decode(preds_index)
-        prob = 0.0 if len(word) == 0 else probs[:len(word)].mean().numpy()[0]
+        prob = 0.0 if len(word) == 0 else float(probs[:len(word)].mean())
 
         return word, prob
