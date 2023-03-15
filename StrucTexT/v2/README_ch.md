@@ -47,11 +47,7 @@ StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict 机制�
 * [PubLayNet](https://github.com/ibm-aur-nlp/PubLayNet) 是一个用于文档图像版面分析的大型数据集，其布局用多边形边框分割标注，它包含超过36万个文档图像，其中对典型的文档布局元素进行了注释，包括文本、标题、列表、表格和图形。
 *  [PubTabNet](https://github.com/ibm-aur-nlp/PubTabNet) 是一个用于图像表格识别的大型数据集，包含56.8万以上的表格图像，以及基于HTML表示的标注。
 * [FUNSD](https://guillaumejaume.github.io/FUNSD) 是一个用于表单理解的数据集，它包含199张真实的、完全标注的扫描版图片，类型包括市场报告、广告以及学术报告等，并分为149张训练集以及50张测试集。
-<<<<<<< HEAD
-* [XFUND](https://github.com/doc-analysis/XFUND) 是一个多语种（中文、日语、西班牙语、法语、意大利语、德语、葡萄牙语）的基于人工标注的表单理解数据集。我们在中文子集XFUND-CHN上测试模型的基准效果。
-=======
 * [XFUND](https://github.com/doc-analysis/XFUND) 是一个多语种（中文、日语、西班牙语、法语、意大利语、德语、葡萄牙语）的基于人工标注的表单理解数据集。我们在中文子集XFUND-ZH上测试模型的基准效果。
->>>>>>> update readme for StrucTexT_v2
 
 ## 公开基准效果
 
@@ -61,12 +57,8 @@ StrucTexT 2.0 预训练环节采用的是 CV&NLP 前沿的 Mask-Predict 机制�
 | 文档版式分析   | PubLayNet  |   F1-score  |  95.4 |
 | 表格结构解析   | PubTabNet  | TEDs | 97.1 |
 | 文档 OCR     | FUNSD  | 1-NED | 84.1 |
-<<<<<<< HEAD
-| 中文信息抽取 | XFUND-CHN | 1-NED |  67.5 |
-=======
 | 端到端信息抽取 | FUNSD | 1-NED |  55.0 |
 | 中文信息抽取 | XFUND-ZH | 1-NED |  67.5 |
->>>>>>> update readme for StrucTexT_v2
 
 ## 快速体验
 ### 安装Paddle环境
@@ -94,11 +86,7 @@ StrucTexT的依赖库已在requirements.txt中列出，你可以使用以下命�
 | Transformer Decoder | 128.5 | [StrucTexT\_v2 Base for Table Structext Recognition](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 | DB Detection + Attention-OCR | 37.3 | [StrucTexT\_v2 Base for End2End OCR](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
 | DB Detection + Attention-OCR + Labeling | 41.3 | [StrucTexT\_v2 Base for End2End Information Extraction](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-<<<<<<< HEAD
-| DB Detection + Labeling | 104.8 | [StrucTexT\_v2 Base for End2End Information Extraction(XFUND-CHN)](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
-=======
 | DB Detection + Labeling | 27.4 | [StrucTexT\_v2 Base for End2End Information Extraction(XFUND-ZH)](https://aistudio.baidu.com/aistudio/datasetdetail/147611) |
->>>>>>> update readme for StrucTexT_v2
 
 ### 使用预训练模型推理
    * RVL-CDIP文档图像分类
@@ -165,23 +153,6 @@ python -u ./tools/eval.py \
     --image_path=./data/funsd/testing_data/image \
     --weights_path=StrucTexT_v2_end2end_ie_base.pdparams
 ```
-<<<<<<< HEAD
-   * XFUND-CHN数据集中文信息抽取
-      * 由于中文识别任务需要较多的数据，XFUND-CHN标注量较少无法支撑识别分支的有效训练，因此我们在中文任务上微调了字段检测和分类两个分支，识别分支直接采用PaddleOCR提供的[识别模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/applications/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E5%8D%95%E8%AF%86%E5%88%AB.md)，并提供最终用于评测的数据和脚本。
-
-```python
-# 1. 下载并解压XFUND-CHN数据集到 ./data/
-# 2. 下载模型：StrucTexT_v2_end2end_ie_base_xfund.pdparams
-# 3. 运行下述脚本启动字段检测和分类推理
-python tools/infer_xfund.py \
-    --config_file=configs/end2end_ie/ocr_xfund_base.json \
-    --task_type=end2end_ie_xfund \
-    --label_path=./data/xfun_normalize_val.json \
-    --image_path=./data/XFUND/zh_val/image \
-    --weights_path=StrucTexT_v2_end2end_ie_base_xfund.pdparams
-# 4. 调用PaddleOCR提供的识别模型进行字段识别
-# 5. 运行下述脚本启动端到端信息抽取任务评测
-=======
    * XFUND-ZH数据集中文信息抽取
       * 由于中文识别任务需要较多的数据，XFUND-ZH标注量较少无法支撑识别分支的有效训练，因此我们在中文任务上微调了字段检测和分类两个分支，识别分支直接采用PaddleOCR提供的[识别模型](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.5/applications/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E5%8D%95%E8%AF%86%E5%88%AB.md)，并提供最终用于评测的数据和脚本。
 
@@ -191,7 +162,6 @@ python tools/infer_xfund.py
 
 # 2. 调用PaddleOCR提供的识别模型进行字段识别
 # 3. 运行下述脚本启动端到端信息抽取任务评测
->>>>>>> update readme for StrucTexT_v2
 python tools/eval_xfund.py \
     --pred_folder=data/xfund/res/ \
     --gt_file=data/xfund/xfun_normalize_val.json
