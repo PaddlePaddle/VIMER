@@ -106,7 +106,10 @@ def train_one_epoch(model: nn.Layer,
                     model_ema.update(model)
             loss_scale_value = loss_scaler.state_dict()["scale"].item()
 
-        paddle.device.cuda.synchronize()
+        if paddle.device.is_compiled_with_cuda():
+            paddle.device.cuda.synchronize()
+        elif paddle.device.is_compiled_with_xpu():
+            paddle.device.xpu.synchronize()
 
         if mixup_fn is None:
             class_acc = (output.argmax(-1) == targets).astype(paddle.float32).mean().item()

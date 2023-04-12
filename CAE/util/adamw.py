@@ -42,7 +42,7 @@ def layerwise_lr_decay(decay_rate, name_dict, n_layers, param):
         ratio = decay_rate**(n_layers - layer)
     elif "embed" in static_name:
         ratio = decay_rate**(n_layers + 1)
-    param.optimize_attr["learning_rate"] *= ratio
+    return ratio
 
 
 class AdamWDL(AdamW):
@@ -166,6 +166,9 @@ class AdamWDL(AdamW):
         self.n_layers = n_layers
         self.set_param_lr_fun = partial(set_param_lr_fun, layerwise_decay,
                                         name_dict, n_layers)
+        coeff = weight_decay
+        self._coeff = coeff
+        self._lr_to_coeff = dict()
         super(AdamWDL, self).__init__(
             learning_rate=learning_rate,
             parameters=parameters,
@@ -181,13 +184,58 @@ class AdamWDL(AdamW):
 
     def _append_optimize_op(self, block, param_and_grad):
         if self.set_param_lr_fun is None:
-            return super(AdamLW, self)._append_optimize_op(block,
+            return super(AdamWDL, self)._append_optimize_op(block,
                                                            param_and_grad)
 
         self._append_decoupled_weight_decay(block, param_and_grad)
         prev_lr = param_and_grad[0].optimize_attr["learning_rate"]
-        self.set_param_lr_fun(param_and_grad[0])
+        ratio = self.set_param_lr_fun(param_and_grad[0])
+        param_and_grad[0].optimize_attr["learning_rate"] *= ratio
         # excute Adam op
-        res = super(AdamW, self)._append_optimize_op(block, param_and_grad)
+        res = super(AdamWDL, self)._append_optimize_op(block, param_and_grad)
         param_and_grad[0].optimize_attr["learning_rate"] = prev_lr
         return res
+    
+    def _update_param_group(self, parameters):
+        self._coeff = parameters.get("coeff", self._default_dict["coeff"])
+        parameters = parameters.get("params")
+        return parameters
+
+    def _append_decoupled_weight_decay(self, block, param_and_grad):
+        if isinstance(param_and_grad, dict):
+            param_and_grad = self._update_param_group(param_and_grad)
+        param, grad = param_and_grad
+
+        if self._apply_decay_param_fun is not None and not self._apply_decay_param_fun(param.name):
+            return
+
+        if isinstance(self._learning_rate, float):
+            learning_rate = self._learning_rate
+        else:
+            # NOTE. We add this function to the _append_optimize_op(),
+            # for we must make sure _create_param_lr() be called after
+            # optimizer._create_global_learning_rate().
+            learning_rate = self._create_param_lr(param_and_grad)
+
+        with block.program._optimized_guard([param, grad]), paddle.static.name_scope("weight decay"):
+            self._params_name.add(param.name)
+
+            # If it has been calculated, the result will be reused.
+            # NOTE(wangxi): In dygraph mode, apply_gradient will be executed
+            # every step, so need clear _lr_to_coeff every step,
+            # we do this in _create_optimization_pass
+            decay_coeff = self._lr_to_coeff.get(learning_rate, None)
+            if decay_coeff is None:
+                # NOTE(wangxi): for pipeline to set device:all
+                with paddle.static.device_guard(None):
+                    decay_coeff = 1.0 - learning_rate * self._coeff
+                self._lr_to_coeff[learning_rate] = decay_coeff
+
+            find_master = self._multi_precision and param.dtype == paddle.float16
+            if find_master:
+                master_weight = self._master_weights[param.name]
+                scaled_param = master_weight * decay_coeff
+                paddle.assign(x=scaled_param, output=master_weight)
+            else:
+                scaled_param = param * decay_coeff
+                paddle.assign(x=scaled_param, output=param)

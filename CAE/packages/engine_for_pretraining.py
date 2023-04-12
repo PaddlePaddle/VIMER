@@ -144,7 +144,10 @@ def train_one_epoch(model: nn.Layer, d_vae: nn.Layer,
                                 parameters=model.parameters(), create_graph=is_second_order, use_amp=args.amp)
         loss_scale_value = loss_scaler.state_dict().get("scale").item()
 
-        paddle.device.cuda.synchronize()
+        if paddle.device.is_compiled_with_cuda():
+            paddle.device.cuda.synchronize()
+        elif paddle.device.is_compiled_with_xpu():
+            paddle.device.xpu.synchronize()
 
         if args.target_mode == 'clusterID':
             mlm_acc = (outputs.argmax(-1) == labels).astype(paddle.float32).mean().item()
